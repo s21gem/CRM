@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CRM_MANAGER
+  SALES
+  SUPPORT
+  ENGINEER
+  CUSTOMER
+}
+
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  passwordHash   String
+  firstName      String
+  lastName       String
+  role           Role           @default(CUSTOMER)
+  organizationId String?
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  isActive       Boolean        @default(true)
+  departmentId   String?
+  department     Department?    @relation(fields: [departmentId], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  permissions    Permission[]   @relation("UserPermissions")
+  activities     ActivityLog[]
+  tasks          Task[]         @relation("AssignedTasks")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  action      String   // e.g., 'CREATE', 'READ', 'UPDATE', 'DELETE'
+  resource    String   // e.g., 'users', 'projects'
+  description String?
+  users       User[]   @relation("UserPermissions")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Organization {
+  id          String     @id @default(uuid())
+  name        String
+  domain      String?    @unique
+  industry    String?
+  customers   Customer[]
+  users       User[]
+  projects    Project[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Customer {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  email          String?      @unique
+  phone          String?
+  leads          Lead[]
+  tickets        Ticket[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Lead {
+  id          String   @id @default(uuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  status      String
+  source      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id             String       @id @default(uuid())
+  name           String
+  description    String?
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  status         String
+  tasks          Task[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Task {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  assigneeId  String?
+  assignee    User?    @relation("AssignedTasks", fields: [assigneeId], references: [id])
+  status      String
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Ticket {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  status      String
+  priority    String
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Department {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  entity    String
+  entityId  String
+  details   String?
+  createdAt DateTime @default(now())
+}
