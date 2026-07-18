@@ -6,24 +6,33 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Users, Briefcase, Server, Shield, Settings, Users2 } from 'lucide-react';
 import { classNames } from '@fonebox/utils';
 
+import { Role } from '@fonebox/types';
+import { useAuth } from '../../contexts/AuthContext';
+
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'CRM', href: '/crm', icon: Users2 },
-  { name: 'Customers', href: '/customers', icon: Users },
-  { name: 'Projects', href: '/projects', icon: Briefcase },
-  { name: 'Internal', href: '/internal', icon: Server },
-  { name: 'Admin', href: '/admin', icon: Shield },
+  { name: 'CRM', href: '/crm', icon: Users2, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SALES] },
+  { name: 'Customers', href: '/customers', icon: Users, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SALES, Role.SUPPORT] },
+  { name: 'Projects', href: '/projects', icon: Briefcase, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.ENGINEER] },
+  { name: 'Internal', href: '/internal', icon: Server, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.ENGINEER, Role.SUPPORT] },
+  { name: 'Admin', href: '/admin', icon: Shield, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN] },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export const Sidebar = () => {
   const pathname = usePathname();
+  const { hasRole } = useAuth();
 
   return (
     <aside className="hidden w-64 flex-col border-r bg-sidebar lg:flex">
       <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
         <nav className="mt-5 flex-1 space-y-1 px-2">
           {navigation.map((item) => {
+            // Check roles dynamically
+            if (item.requiredRoles && !hasRole(item.requiredRoles)) {
+              return null;
+            }
+
             const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link

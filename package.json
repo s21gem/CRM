@@ -15,10 +15,13 @@
     "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "devDependencies": {
+    "@prisma/client": "^5.22.0",
+    "@prisma/config": "^7.8.0",
     "@typescript-eslint/eslint-plugin": "^8.64.0",
     "@typescript-eslint/parser": "^8.64.0",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
+    "prisma": "^5.22.0",
     "typescript": "^5.4.5"
   }
 }

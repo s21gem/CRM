@@ -1,8 +1,14 @@
+'use client';
+
 import * as React from 'react';
 import Link from 'next/link';
-import { Search, Bell, Menu, ShieldCheck } from 'lucide-react';
+import { Search, Bell, Menu, ShieldCheck, LogOut } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { Button } from '../ui/Button';
 
 export const Navbar = () => {
+  const { user, logout } = useAuth();
+
   return (
     <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b bg-background px-4 shadow-soft">
       <div className="flex items-center gap-4">
@@ -34,9 +40,20 @@ export const Navbar = () => {
           </span>
         </button>
 
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm font-medium text-white cursor-pointer">
-          JD
-        </div>
+        {user && (
+          <div className="flex items-center space-x-4 border-l pl-4">
+            <div className="hidden sm:flex flex-col text-right">
+              <span className="text-sm font-medium">{user.firstName} {user.lastName}</span>
+              <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded-full inline-block mt-0.5">{user.role}</span>
+            </div>
+            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+              {user.firstName[0]}{user.lastName[0]}
+            </div>
+            <Button variant="ghost" size="icon" onClick={logout} title="Log out">
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
+        )}
       </div>
     </header>
   );
