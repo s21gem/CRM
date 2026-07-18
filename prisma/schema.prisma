@@ -8,12 +8,23 @@ datasource db {
 }
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
   CRM_MANAGER
   SALES
   SUPPORT
   ENGINEER
   CUSTOMER
+}
+
+enum AuthEvent {
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  LOGOUT
+  TOKEN_REFRESH
+  PASSWORD_CHANGED
+  SESSION_REVOKED
+  UNAUTHORIZED_ACCESS
 }
 
 model User {
@@ -33,6 +44,10 @@ model User {
   permissions    Permission[]   @relation("UserPermissions")
   activities     ActivityLog[]
   tasks          Task[]         @relation("AssignedTasks")
+  sessions       Session[]
+  refreshTokens  RefreshToken[]
+  loginHistories LoginHistory[]
+  auditLogs      AuditLog[]
 }
 
 model Permission {
@@ -145,4 +160,49 @@ model ActivityLog {
   entityId  String
   details   String?
   createdAt DateTime @default(now())
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token        String   @unique
+  ipAddress    String?
+  userAgent    String?
+  deviceName   String?
+  lastActivity DateTime @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  isRevoked    Boolean  @default(false)
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hashedToken String   @unique
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  isRevoked   Boolean  @default(false)
+}
+
+model LoginHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress String?
+  userAgent String?
+  status    String   // "SUCCESS" or "FAILED"
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String    @id @default(uuid())
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  event     AuthEvent
+  ipAddress String?
+  userAgent String?
+  details   String?
+  createdAt DateTime  @default(now())
 }

@@ -10,6 +10,7 @@ export interface User {
 }
 
 export enum Role {
+  SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
   CRM_MANAGER = 'CRM_MANAGER',
   SALES = 'SALES',
@@ -21,4 +22,34 @@ export enum Role {
 export interface AuthResponse {
   user: User;
   token: string;
+}
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+export interface SessionInfo {
+  id: string;
+  userId: string;
+  ipAddress?: string;
+  userAgent?: string;
+  deviceName?: string;
+  lastActivity: Date;
+  expiresAt: Date;
+}
+
+export interface LoginResponse {
+  user: User;
+  accessToken: string;
+  session: SessionInfo;
+}
+
+export interface Permission {
+  id: string;
+  action: string;
+  resource: string;
+  description?: string;
 }
