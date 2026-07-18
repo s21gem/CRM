@@ -1,0 +1,22 @@
+{
+  "name": "FoneBox Enterprise CRM",
+  "short_name": "FoneBox",
+  "description": "Enterprise Client Management Platform for Customer Operations, CRM, Internal Workforce and Administration.",
+  "theme_color": "#0052cc",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/FoneBox_favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/FoneBox_favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
