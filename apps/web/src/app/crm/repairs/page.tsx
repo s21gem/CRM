@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { SectionCard } from '@/components/ui/SectionCard';
 import { Wrench, CheckCircle, Clock, AlertTriangle, PlayCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { PROJECT_STATUS_LABELS } from '@/lib/constants';
 
 export default function RepairsDashboardPage() {
   const [stats, setStats] = useState<any>(null);
@@ -40,31 +41,31 @@ export default function RepairsDashboardPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center space-x-2">
           <Wrench className="w-6 h-6 text-primary" />
-          <span>Repair Operations</span>
+          <span>Project Operations</span>
         </h1>
-        <p className="text-muted-foreground text-sm">Manage device repairs and assignments.</p>
+        <p className="text-muted-foreground text-sm">Manage enterprise implementations and deployments.</p>
       </div>
 
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <StatCard title="My Repairs" value={stats.myRepairs} icon={Wrench} color="text-blue-500" bg="bg-blue-500/10" />
-          <StatCard title="In Repair" value={stats.inRepair} icon={PlayCircle} color="text-indigo-500" bg="bg-indigo-500/10" />
-          <StatCard title="Waiting Approval" value={stats.waitingApproval} icon={Clock} color="text-orange-500" bg="bg-orange-500/10" />
-          <StatCard title="Waiting Parts" value={stats.waitingParts} icon={AlertTriangle} color="text-amber-500" bg="bg-amber-500/10" />
-          <StatCard title="Ready Today" value={stats.readyToday} icon={CheckCircle} color="text-green-500" bg="bg-green-500/10" />
+          <StatCard title="My Projects" value={stats.myRepairs} icon={Wrench} color="text-blue-500" bg="bg-blue-500/10" />
+          <StatCard title="Implementation" value={stats.inRepair} icon={PlayCircle} color="text-indigo-500" bg="bg-indigo-500/10" />
+          <StatCard title="Awaiting Sign-off" value={stats.waitingApproval} icon={Clock} color="text-orange-500" bg="bg-orange-500/10" />
+          <StatCard title="Awaiting Resources" value={stats.waitingParts} icon={AlertTriangle} color="text-amber-500" bg="bg-amber-500/10" />
+          <StatCard title="Ready To Live" value={stats.readyToday} icon={CheckCircle} color="text-green-500" bg="bg-green-500/10" />
           <StatCard title="Total Active" value={stats.total} icon={Wrench} color="text-primary" bg="bg-primary/10" />
         </div>
       )}
 
       <SectionCard className="p-6">
-        <h3 className="text-lg font-semibold mb-4">All Repairs</h3>
+        <h3 className="text-lg font-semibold mb-4">All Projects</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left border-collapse">
             <thead className="bg-muted text-muted-foreground">
               <tr>
-                <th className="px-4 py-3 font-medium rounded-tl-lg">Repair #</th>
-                <th className="px-4 py-3 font-medium">Customer</th>
-                <th className="px-4 py-3 font-medium">Device</th>
+                <th className="px-4 py-3 font-medium rounded-tl-lg">Project #</th>
+                <th className="px-4 py-3 font-medium">Client</th>
+                <th className="px-4 py-3 font-medium">System</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Priority</th>
                 <th className="px-4 py-3 font-medium">Assigned</th>
@@ -81,7 +82,7 @@ export default function RepairsDashboardPage() {
                     <td className="px-4 py-3">{r.customer?.firstName} {r.customer?.lastName}</td>
                     <td className="px-4 py-3">{r.device?.brand} {r.device?.model}</td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-1 bg-primary/10 text-primary rounded text-xs font-medium uppercase">{r.status}</span>
+                      <span className="px-2 py-1 bg-primary/10 text-primary rounded text-xs font-medium uppercase">{PROJECT_STATUS_LABELS[r.status] || r.status}</span>
                     </td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-1 rounded text-xs font-medium uppercase ${r.priority === 'URGENT' ? 'bg-red-500/10 text-red-500' : 'bg-muted text-muted-foreground'}`}>{r.priority}</span>

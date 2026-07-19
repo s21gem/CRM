@@ -1,23 +1,10 @@
 import { PrismaClient, PaymentMethod, PaymentStatus, AuthEvent, Prisma } from '@prisma/client';
+import { generateSequenceNumber } from '../../utils/sequence';
 
 const prisma = new PrismaClient();
 
 export class PaymentsService {
-  /**
-   * Helper to generate FBXP-000001
-   */
-  static async generateSequenceNumber(tx: Prisma.TransactionClient, sequenceId: string, prefix: string): Promise<string> {
-    let seq = await tx.sequence.findUnique({ where: { id: sequenceId } });
-    if (!seq) {
-      seq = await tx.sequence.create({ data: { id: sequenceId, value: 1 } });
-    } else {
-      seq = await tx.sequence.update({
-        where: { id: sequenceId },
-        data: { value: { increment: 1 } },
-      });
-    }
-    return `${prefix}-${seq.value.toString().padStart(6, '0')}`;
-  }
+  // Removed custom generateSequenceNumber, using shared generator from utils
 
   /**
    * Generates dashboard KPIs for payments
@@ -105,7 +92,7 @@ export class PaymentsService {
     }
 
     return prisma.$transaction(async (tx) => {
-      const paymentNumber = await this.generateSequenceNumber(tx as Prisma.TransactionClient, 'PAYMENT', 'FBXP');
+      const paymentNumber = await generateSequenceNumber(tx, 'PAYMENT', 'FBXP');
       
       const payment = await tx.payment.create({
         data: {
@@ -282,7 +269,7 @@ export class PaymentsService {
       if (!payment) throw new Error('Payment not found');
       if (payment.status !== 'CONFIRMED') throw new Error('Only CONFIRMED payments can generate receipts');
       
-      const receiptNumber = await this.generateSequenceNumber(tx as Prisma.TransactionClient, 'RECEIPT', 'FBXR');
+      const receiptNumber = await generateSequenceNumber(tx, 'RECEIPT', 'FBXRC');
       
       const invoiceNumbers = payment.allocations.map(a => a.invoice.invoiceNumber).join(', ');
 

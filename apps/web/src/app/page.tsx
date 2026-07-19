@@ -11,10 +11,10 @@ export default function Home() {
     <main className="flex min-h-screen flex-col bg-background">
       {/* Hero Section */}
       <Hero 
-        title="Enterprise-Grade Device Operations"
-        subtitle="Secure, scalable, and professional repair operations platform for FinTech, Cyber Security, and Enterprise ICT fleets."
+        title="Secure Government ICT Solutions"
+        subtitle="Delivering trusted identity, fintech, and cybersecurity integration for nations and enterprises worldwide."
         primaryCta={{ text: 'Explore Solutions', href: '/business' }}
-        secondaryCta={{ text: 'Partner with Us', href: '/contact' }}
+        secondaryCta={{ text: 'Contact Sales', href: '/contact' }}
         imageUrl="/images/hero/hero-v1.png"
       >
         <div className="w-full max-w-md">
@@ -25,8 +25,8 @@ export default function Home() {
       {/* Services Grid */}
       <section className="py-20 px-6 max-w-7xl mx-auto w-full">
         <SectionHeader 
-          title="Professional Services" 
-          subtitle="Precision repairs backed by enterprise SLAs and dedicated account management." 
+          title="Our Core Capabilities" 
+          subtitle="Specialized technology solutions designed for scale, security, and national sovereignty." 
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
           {SERVICES.map(service => (
@@ -44,37 +44,37 @@ export default function Home() {
       {/* Why Choose Us */}
       <section className="py-20 px-6 max-w-7xl mx-auto w-full bg-zinc-50 dark:bg-zinc-900/30 rounded-3xl mb-20 border border-border">
         <FeatureGrid 
-          title="Why Choose FoneBox"
-          subtitle="We don't just repair devices. We manage your entire hardware lifecycle."
+          title="Why Partner with FoneBox"
+          subtitle="We deliver critical national infrastructure with uncompromising security and reliability."
           features={[
             {
-              title: 'Data Privacy First',
-              description: 'ISO 27001 compliant workflows ensuring your sensitive corporate data never leaves our secure facility.',
-              icon: <span className="text-3xl">🔒</span>
+              title: 'Global Standards',
+              description: 'Strict adherence to ISO 27001, EMV, and ICAO standards across all deployments.',
+              icon: 'ShieldCheck'
             },
             {
-              title: 'Rapid Turnaround',
-              description: 'SLA-backed repairs ensuring your workforce minimizes downtime. Express service available.',
-              icon: <span className="text-3xl">⚡</span>
+              title: 'Sovereign Control',
+              description: 'On-premise deployments ensuring your national data never leaves your jurisdiction.',
+              icon: 'Server'
             },
             {
-              title: 'OEM Certified',
-              description: 'Genuine components and certified technicians for uncompromising reliability.',
-              icon: <span className="text-3xl">🏅</span>
+              title: 'Turnkey Execution',
+              description: 'End-to-end delivery from initial hardware procurement to final software integration.',
+              icon: 'Settings'
             }
           ]}
         />
       </section>
 
-      {/* CTA Banner */}
-      <section className="px-6 pb-20 max-w-7xl mx-auto w-full">
+      {/* Call to Action */}
+      <section className="px-6 pb-20">
         <CTABanner 
-          title="Ready to transform your hardware management?"
-          description="Join 500+ enterprises who trust FoneBox with their critical device infrastructure."
-          ctaText="Contact Sales"
+          title="Ready to modernize your infrastructure?"
+          description="Schedule a consultation with our specialized engineering team today."
+          ctaText="Request a Proposal"
           href="/contact"
-          secondaryCtaText="View Pricing"
-          secondaryHref="/pricing"
+          secondaryCtaText="View Case Studies"
+          secondaryHref="/business"
         />
       </section>
     </main>

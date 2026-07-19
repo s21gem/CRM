@@ -1,15 +1,11 @@
-import { PrismaClient, RepairStatus, AuthEvent } from '@prisma/client';
+import { PrismaClient, RepairStatus, AuthEvent, Prisma } from '@prisma/client';
+import { generateSequenceNumber } from '../../utils/sequence';
 
 const prisma = new PrismaClient();
 
 export class RepairsService {
   static async generateRepairNumber(): Promise<string> {
-    const sequence = await prisma.sequence.upsert({
-      where: { id: 'repair_number' },
-      update: { value: { increment: 1 } },
-      create: { id: 'repair_number', value: 1 },
-    });
-    return `FBXR-${String(sequence.value).padStart(6, '0')}`;
+    return generateSequenceNumber(prisma, 'REPAIR_ORDER', 'FBXR');
   }
 
   static getValidNextStatuses(currentStatus: RepairStatus): RepairStatus[] {
