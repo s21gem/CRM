@@ -10,8 +10,14 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono' });
 
 export const metadata: Metadata = {
-  title: 'FoneBox Enterprise CRM',
-  description: 'Enterprise Client Management Platform for Customer Operations, CRM, Internal Workforce and Administration.',
+  title: 'FoneBox | Secure Government ICT Solutions',
+  description: 'FoneBox delivers trusted ICT solutions for governments and corporations, specializing in secure identity, fintech systems, and cybersecurity integration worldwide.',
+  keywords: 'e-passport, e-visa, secure bank cards, cybersecurity, identity management, fintech infrastructure, government ICT',
+  openGraph: {
+    title: 'FoneBox | Secure Government ICT Solutions',
+    description: 'FoneBox delivers trusted ICT solutions for governments and corporations.',
+    type: 'website',
+  },
   icons: {
     icon: '/FoneBox_favicon.png',
   },

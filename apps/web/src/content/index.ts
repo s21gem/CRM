@@ -1,73 +1,73 @@
 export const SERVICES = [
   {
-    id: 'phone-repair',
-    title: 'Phone Repair',
-    description: 'Expert repair services for all major smartphone brands. Screen replacement, battery issues, and logic board micro-soldering.',
-    icon: 'Smartphone',
-    href: '/services/phone-repair'
+    id: 'e-passport',
+    title: 'E-Passport Personalization',
+    description: 'End-to-end secure electronic passport solutions adhering to ICAO standards, featuring advanced biometric integration and high-security polycarbonate data pages.',
+    icon: 'Shield',
+    href: '/services/e-passport'
   },
   {
-    id: 'tablet-repair',
-    title: 'Tablet Repair',
-    description: 'Comprehensive repair solutions for iPads and Android tablets. Broken glass, charge port replacement, and data recovery.',
-    icon: 'Tablet',
-    href: '/services/tablet-repair'
+    id: 'e-visa',
+    title: 'E-Visa Systems',
+    description: 'Modern, highly scalable electronic visa systems designed for immigration authorities to streamline traveler processing and enhance border security.',
+    icon: 'Globe',
+    href: '/services/e-visa'
   },
   {
-    id: 'laptop-repair',
-    title: 'Laptop Repair',
-    description: 'Professional servicing for MacBooks and Windows laptops. Hardware upgrades, thermal maintenance, and OS recovery.',
-    icon: 'Laptop',
-    href: '/services/laptop-repair'
+    id: 'bank-card',
+    title: 'Secure Bank Card Issuance',
+    description: 'EMV-certified smart card personalization systems for financial institutions, ensuring secure cryptographic key management and rapid issuance.',
+    icon: 'CreditCard',
+    href: '/services/bank-card'
   },
   {
-    id: 'data-recovery',
-    title: 'Data Recovery',
-    description: 'Advanced forensic data recovery for dead drives, liquid-damaged logic boards, and corrupted flash storage.',
-    icon: 'Database',
-    href: '/services/data-recovery'
+    id: 'cybersecurity',
+    title: 'Cybersecurity Integration',
+    description: 'Military-grade infrastructure protection, SOC (Security Operations Center) deployment, and compliance with international data sovereignty laws.',
+    icon: 'Lock',
+    href: '/services/cybersecurity'
   }
 ];
 
 export const BUSINESS_SOLUTIONS = [
   {
-    id: 'corporate',
-    title: 'Corporate Repair',
-    description: 'Dedicated account managers and priority turnaround for enterprise device fleets.',
+    id: 'government',
+    title: 'Government Identity & Citizen Management',
+    description: 'National ID systems, driver\'s licenses, and centralized identity registries with robust deduplication capabilities.',
   },
   {
-    id: 'bulk-management',
-    title: 'Bulk Device Management',
-    description: 'Lifecycle management, MDM deployment, and secure wiping for retiring hardware.',
+    id: 'financial',
+    title: 'Fintech Infrastructure',
+    description: 'Deploying secure transaction switching, payment gateways, and banking core integrations for central banks and commercial institutions.',
   },
   {
-    id: 'amc',
-    title: 'Annual Maintenance Contracts',
-    description: 'Predictable IT maintenance costs with SLA-backed response times.',
+    id: 'consulting',
+    title: 'Strategic Security Consulting',
+    description: 'Enterprise architecture design, penetration testing, and IT modernization for highly regulated industries.',
   }
 ];
 
 export const PRICING_TIERS = [
   {
-    title: 'Standard Repair',
-    price: 'Starting from $79',
-    features: ['Diagnostic Service', 'OEM Parts', '90-Day Warranty', 'Standard Turnaround'],
-    cta: 'Get a Quote',
+    title: 'Pilot Deployment',
+    price: 'Custom Scope',
+    features: ['Requirements Analysis', 'Proof of Concept (PoC)', 'Security Audit', 'Initial Hardware Setup'],
+    cta: 'Request Consultation',
     href: '/contact'
   },
   {
-    title: 'Express Repair',
-    price: 'Starting from $129',
-    features: ['Skip the Line', 'OEM Parts', '1-Year Warranty', 'Same Day Turnaround'],
-    cta: 'Book Express',
+    title: 'Enterprise Rollout',
+    price: 'Contract Based',
+    features: ['Full System Integration', 'Custom Software Dev', 'ISO-Certified Security', 'Turnkey Implementation'],
+    cta: 'Speak to Sales',
     href: '/contact',
     popular: true
   },
   {
-    title: 'Business AMC',
-    price: 'Custom Quote',
-    features: ['Dedicated Account Manager', 'On-Site Service', 'Priority Parts Allocation', 'SLA Guarantees'],
-    cta: 'Contact Sales',
+    title: 'Managed Services & Support',
+    price: 'Annual Contract',
+    features: ['24/7 Priority SLA', 'On-Site Engineering', 'Hardware Lifecycle Management', 'Continuous Updates'],
+    cta: 'View SLAs',
     href: '/business'
   }
 ];
@@ -75,35 +75,35 @@ export const PRICING_TIERS = [
 export const TESTIMONIALS = [
   {
     id: 1,
-    name: 'Sarah Jenkins',
-    company: 'TechFlow Inc.',
-    role: 'IT Director',
-    quote: 'FoneBox saved our quarterly deployment when 50 of our field iPads were damaged. Their bulk repair turnaround is unmatched in the industry.',
+    name: 'Ministry of Interior',
+    company: 'National Government',
+    role: 'Director of Immigration',
+    quote: 'FoneBox revolutionized our national border control systems. The E-Visa integration reduced processing times by 40% while significantly elevating our security posture.',
   },
   {
     id: 2,
-    name: 'David Chen',
-    company: '',
-    role: 'Customer',
-    quote: 'They recovered 10 years of family photos from my water-damaged iPhone after Apple told me it was completely impossible. Absolute lifesavers.',
+    name: 'Dr. James Okafor',
+    company: 'Pan-African Commercial Bank',
+    role: 'Chief Technology Officer',
+    quote: 'The EMV card personalization center deployed by FoneBox achieved 99.99% uptime in its first year, enabling us to securely issue millions of cards locally.',
   }
 ];
 
 export const FAQS = [
   {
-    question: 'How long does a standard screen repair take?',
-    answer: 'Most standard smartphone screen repairs can be completed within 1-2 hours if the parts are in stock. For tablets and laptops, it generally takes 24-48 hours.'
+    question: 'Are your Identity Solutions compliant with international standards?',
+    answer: 'Yes, all FoneBox identity solutions, including E-Passports and National IDs, strictly adhere to ICAO (International Civil Aviation Organization) Document 9303 standards and ISO/IEC 14443 for secure documents.'
   },
   {
-    question: 'Do you offer a warranty on your repairs?',
-    answer: 'Yes, we offer a standard 90-day warranty on all parts and labor. Express and Enterprise repairs come with an extended 1-year warranty.'
+    question: 'What is the typical deployment timeline for a national E-Visa system?',
+    answer: 'A standard deployment ranges from 6 to 12 months depending on existing infrastructure, data migration requirements, and legislative frameworks. We provide a detailed roadmap during the initial discovery phase.'
   },
   {
-    question: 'Do you use original OEM parts?',
-    answer: 'We offer both OEM (Original Equipment Manufacturer) and high-quality aftermarket parts depending on your budget. We will always clearly communicate which parts are being used for your repair.'
+    question: 'Do you provide local capacity building and training?',
+    answer: 'Absolutely. We believe in knowledge transfer. Every enterprise deployment includes comprehensive training programs for local engineers, administrators, and operators to ensure self-sufficiency.'
   },
   {
-    question: 'How does your business bulk repair program work?',
-    answer: 'Our business program offers discounted tiered pricing, priority SLAs, net-30 payment terms, and a dedicated account manager for fleets of 10+ devices.'
+    question: 'How do you handle data sovereignty and localization?',
+    answer: 'FoneBox designs solutions that keep sovereign data within national borders. We build on-premise data centers and secure private clouds that comply with your country\'s specific data privacy regulations.'
   }
 ];

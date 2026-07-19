@@ -6,6 +6,7 @@ import { SectionCard } from '@/components/ui/SectionCard';
 import { LeadDetailSlideOver } from '@/components/crm/LeadDetailSlideOver';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { LEAD_TYPE_LABELS, LEAD_STATUS_LABELS } from '@/lib/constants';
 
 export default function ServiceQueuePage() {
   const [leads, setLeads] = useState<any[]>([]);
@@ -32,8 +33,8 @@ export default function ServiceQueuePage() {
     <AppLayout>
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Service Queue</h1>
-          <p className="text-muted-foreground">Manage repair requests and support tickets.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Operations Queue</h1>
+          <p className="text-muted-foreground">Manage incoming enterprise implementation requests and support tickets.</p>
         </div>
 
         <SectionCard>
@@ -64,11 +65,11 @@ export default function ServiceQueuePage() {
                       {lead.firstName} {lead.lastName}
                     </td>
                     <td className="px-6 py-4">
-                      {lead.type.replace('_', ' ')}
+                      {LEAD_TYPE_LABELS[lead.type] || lead.type.replace('_', ' ')}
                     </td>
                     <td className="px-6 py-4">
                       <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                        {lead.status}
+                        {LEAD_STATUS_LABELS[lead.status] || lead.status}
                       </span>
                     </td>
                     <td className="px-6 py-4">

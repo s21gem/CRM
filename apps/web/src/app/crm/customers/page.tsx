@@ -58,26 +58,26 @@ export default function CustomersPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Customer Workspace</h1>
-          <p className="text-muted-foreground mt-1">Manage customers and their devices.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Client Workspace</h1>
+          <p className="text-muted-foreground mt-1">Manage corporate clients and their systems.</p>
         </div>
         <button className="bg-primary text-primary-foreground px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-primary/90 transition-colors">
           <Plus className="w-4 h-4" />
-          <span>New Customer</span>
+          <span>New Client</span>
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <SectionCard className="p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">Total Customers</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">Total Clients</h3>
           <p className="text-3xl font-bold mt-2">{total}</p>
         </SectionCard>
         <SectionCard className="p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">Active Devices</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">Active Systems</h3>
           <p className="text-3xl font-bold mt-2">-</p>
         </SectionCard>
         <SectionCard className="p-6">
-          <h3 className="text-sm font-medium text-muted-foreground">Recent Registrations</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">Recent Onboardings</h3>
           <p className="text-3xl font-bold mt-2">-</p>
         </SectionCard>
       </div>
@@ -103,9 +103,9 @@ export default function CustomersPage() {
           <table className="w-full text-sm text-left">
             <thead className="text-xs text-muted-foreground uppercase bg-muted/50">
               <tr>
-                <th className="px-6 py-4 font-medium">Customer</th>
+                <th className="px-6 py-4 font-medium">Client</th>
                 <th className="px-6 py-4 font-medium">Contact</th>
-                <th className="px-6 py-4 font-medium">Devices</th>
+                <th className="px-6 py-4 font-medium">Systems</th>
                 <th className="px-6 py-4 font-medium">Status</th>
                 <th className="px-6 py-4 font-medium">Created</th>
                 <th className="px-6 py-4 font-medium text-right">Actions</th>

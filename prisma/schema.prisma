@@ -48,7 +48,12 @@ enum AuthEvent {
   REPAIR_DELIVERED
   REPAIR_CLOSED
   REPAIR_NOTE_ADDED
-  
+
+  // Invoice Events
+  INVOICE_CREATED
+  INVOICE_UPDATED
+  INVOICE_VOIDED
+
   // Payment Events
   PAYMENT_RECEIVED
   PAYMENT_CONFIRMED
@@ -267,6 +272,9 @@ model User {
   paymentReceiptsIssued PaymentReceipt[]       @relation("ReceiptIssuer")
   paymentActivities     PaymentActivity[]
   paymentStatusHistory  PaymentStatusHistory[]
+
+  @@index([organizationId])
+  @@index([departmentId])
 }
 
 model Permission {
@@ -326,11 +334,12 @@ model Customer {
   @@index([email])
   @@index([phone])
   @@index([createdAt])
+  @@index([organizationId])
 }
 
 model Lead {
   id              String          @id @default(uuid())
-  referenceNumber String          @unique // FBX-YYYY-000001
+  referenceNumber String          @unique // FBXL-000001
   type            LeadType
   priority        LeadPriority    @default(NORMAL)
   category        InquiryCategory @default(OTHER)
@@ -379,6 +388,8 @@ model Lead {
   @@index([email])
   @@index([phone])
   @@index([createdAt])
+  @@index([assignedTo])
+  @@index([customerId])
 }
 
 model Project {
@@ -391,6 +402,8 @@ model Project {
   tasks          Task[]
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
 }
 
 model Task {
@@ -405,6 +418,9 @@ model Task {
   dueDate     DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([projectId])
+  @@index([assigneeId])
 }
 
 model Ticket {
@@ -417,6 +433,8 @@ model Ticket {
   customer    Customer @relation(fields: [customerId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([customerId])
 }
 
 model Department {
@@ -446,6 +464,8 @@ model ActivityLog {
   entityId  String
   details   String?
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Session {
@@ -460,6 +480,8 @@ model Session {
   expiresAt    DateTime
   createdAt    DateTime @default(now())
   isRevoked    Boolean  @default(false)
+
+  @@index([userId])
 }
 
 model RefreshToken {
@@ -470,6 +492,8 @@ model RefreshToken {
   expiresAt   DateTime
   createdAt   DateTime @default(now())
   isRevoked   Boolean  @default(false)
+
+  @@index([userId])
 }
 
 model LoginHistory {
@@ -480,6 +504,8 @@ model LoginHistory {
   userAgent String?
   status    String // "SUCCESS" or "FAILED"
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model AuditLog {
@@ -491,6 +517,8 @@ model AuditLog {
   userAgent String?
   details   String?
   createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 model Sequence {
@@ -633,6 +661,8 @@ model RepairOrder {
   @@index([priority])
   @@index([assignedTechnicianId])
   @@index([createdAt])
+  @@index([leadId])
+  @@index([receivedByUserId])
 }
 
 model RepairActivity {
@@ -676,6 +706,8 @@ model Diagnosis {
   estimatedTime    String?
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
+
+  @@index([repairOrderId])
 }
 
 model ChecklistTemplate {
@@ -822,6 +854,7 @@ model InventoryMovement {
   @@index([inventoryItemId])
   @@index([repairOrderId])
   @@index([createdAt])
+  @@index([createdById])
 }
 
 model InventoryReservation {
@@ -865,6 +898,8 @@ model InventoryAdjustment {
   createdAt DateTime @default(now())
 
   @@index([inventoryItemId])
+  @@index([approvedById])
+  @@index([createdById])
 }
 
 // ==============================================================================
@@ -922,6 +957,8 @@ model Invoice {
   @@index([repairOrderId])
   @@index([status])
   @@index([issueDate])
+  @@index([createdById])
+  @@index([approvedById])
 }
 
 model InvoiceItem {
@@ -981,6 +1018,7 @@ model InvoiceStatusHistory {
 
   @@index([invoiceId])
   @@index([createdAt])
+  @@index([userId])
 }
 
 model InvoiceActivity {
@@ -1058,6 +1096,7 @@ model Payment {
   @@index([status])
   @@index([paymentDate])
   @@index([transactionId])
+  @@index([receivedById])
 }
 
 model PaymentAllocation {
@@ -1079,7 +1118,7 @@ model PaymentAllocation {
 
 model PaymentReceipt {
   id            String @id @default(uuid())
-  receiptNumber String @unique // FBXR-000001
+  receiptNumber String @unique // FBXRC-000001
 
   paymentId String
   payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
@@ -1099,6 +1138,7 @@ model PaymentReceipt {
 
   @@index([receiptNumber])
   @@index([paymentId])
+  @@index([issuedById])
 }
 
 model PaymentStatusHistory {
@@ -1113,6 +1153,7 @@ model PaymentStatusHistory {
 
   @@index([paymentId])
   @@index([createdAt])
+  @@index([userId])
 }
 
 model PaymentActivity {

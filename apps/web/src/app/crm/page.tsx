@@ -29,23 +29,23 @@ export default function CRMDashboardPage() {
         
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <StatCard
-            title="Total Leads"
+            title="Total Opportunities"
             value={metrics.totalLeads.toString()}
             icon={<Users2 className="w-4 h-4" />}
-            description="All-time leads generated"
+            description="All-time opportunities generated"
           />
           <StatCard
-            title="New Leads"
+            title="New Inquiries"
             value={metrics.newLeads.toString()}
             icon={<Inbox className="w-4 h-4" />}
-            description="Pending contact"
+            description="Pending qualification"
             trend={{ value: 100, isPositive: true }}
           />
           <StatCard
-            title="Converted Customers"
+            title="Converted Clients"
             value={metrics.convertedLeads.toString()}
             icon={<CheckCircle2 className="w-4 h-4" />}
-            description="Leads successfully converted"
+            description="Opportunities successfully converted"
             trend={{ value: Math.round((metrics.convertedLeads / (metrics.totalLeads || 1)) * 100), isPositive: true }}
           />
         </div>

@@ -1,5 +1,6 @@
-import { PrismaClient, Lead, LeadType } from '@prisma/client';
+import { PrismaClient, Lead, LeadType, Prisma } from '@prisma/client';
 import { z } from 'zod';
+import { generateSequenceNumber } from '../../utils/sequence';
 
 const prisma = new PrismaClient();
 
@@ -23,21 +24,10 @@ export const leadSchema = z.object({
 
 export class LeadsService {
   /**
-   * Concurrency-safe generation of reference numbers (FBX-YYYY-000001)
+   * Concurrency-safe generation of reference numbers (FBXL-000001)
    */
   private static async generateReferenceNumber(): Promise<string> {
-    const year = new Date().getFullYear();
-    const sequenceKey = `LEAD_${year}`;
-
-    // Upsert atomic increment
-    const sequence = await prisma.sequence.upsert({
-      where: { id: sequenceKey },
-      update: { value: { increment: 1 } },
-      create: { id: sequenceKey, value: 1 },
-    });
-
-    const paddedNumber = sequence.value.toString().padStart(6, '0');
-    return `FBX-${year}-${paddedNumber}`;
+    return generateSequenceNumber(prisma, 'LEAD', 'FBXL');
   }
 
   static async createLead(data: z.infer<typeof leadSchema>): Promise<Lead> {

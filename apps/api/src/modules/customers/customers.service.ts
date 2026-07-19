@@ -1,31 +1,9 @@
 import { PrismaClient, Prisma } from '@prisma/client';
+import { generateSequenceNumber } from '../../utils/sequence';
 
 const prisma = new PrismaClient();
 
 export class CustomersService {
-  /**
-   * Generates a unique sequential number like FBXC-000001
-   */
-  static async generateSequenceNumber(type: 'CUSTOMER' | 'DEVICE'): Promise<string> {
-    const prefix = type === 'CUSTOMER' ? 'FBXC' : 'FBXD';
-    const sequenceId = `${type}_SEQ`;
-
-    return await prisma.$transaction(async (tx) => {
-      let seq = await tx.sequence.findUnique({ where: { id: sequenceId } });
-      
-      if (!seq) {
-        seq = await tx.sequence.create({ data: { id: sequenceId, value: 1 } });
-      } else {
-        seq = await tx.sequence.update({
-          where: { id: sequenceId },
-          data: { value: { increment: 1 } }
-        });
-      }
-
-      return `${prefix}-${seq.value.toString().padStart(6, '0')}`;
-    });
-  }
-
   /**
    * Retrieves a single customer by ID or Email/Phone
    */
@@ -43,7 +21,7 @@ export class CustomersService {
   }
 
   static async createCustomer(data: any, userId: string, ip: string, userAgent: string | undefined) {
-    const customerNumber = await this.generateSequenceNumber('CUSTOMER');
+    const customerNumber = await generateSequenceNumber(prisma, 'CUSTOMER', 'FBXC');
     return prisma.$transaction(async (tx) => {
       const customer = await tx.customer.create({
         data: {
@@ -106,7 +84,7 @@ export class CustomersService {
   }
 
   static async registerDevice(customerId: string, data: any, userId: string, ip: string, userAgent: string | undefined) {
-    const deviceNumber = await this.generateSequenceNumber('DEVICE');
+    const deviceNumber = await generateSequenceNumber(prisma, 'DEVICE', 'FBXD');
     return prisma.$transaction(async (tx) => {
       const device = await tx.device.create({
         data: {

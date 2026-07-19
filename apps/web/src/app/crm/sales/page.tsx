@@ -7,6 +7,7 @@ import { useDroppable, useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { LeadDetailSlideOver } from '@/components/crm/LeadDetailSlideOver';
 import { toast } from 'sonner';
+import { LEAD_STATUS_LABELS } from '@/lib/constants';
 
 const COLUMNS = ['NEW', 'CONTACTED', 'IN_PROGRESS', 'CONVERTED', 'LOST'];
 
@@ -127,12 +128,12 @@ export default function SalesPipelinePage() {
         <div className="flex-1 overflow-x-auto pb-4">
           <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
             <div className="flex gap-4 h-full">
-              {COLUMNS.map(column => (
+              {COLUMNS.map(col => (
                 <DroppableColumn
-                  key={column}
-                  id={column}
-                  title={column.replace('_', ' ')}
-                  leads={leads.filter(l => l.status === column)}
+                  key={col}
+                  id={col}
+                  title={LEAD_STATUS_LABELS[col] || col}
+                  leads={leads.filter(l => l.status === col)}
                   onLeadClick={setSelectedLeadId}
                 />
               ))}

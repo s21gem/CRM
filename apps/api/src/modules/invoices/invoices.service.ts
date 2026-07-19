@@ -1,24 +1,10 @@
-import { PrismaClient, Prisma, InvoiceStatus, SourceType, InvoiceItemType, Currency } from '@prisma/client';
+import { PrismaClient, Prisma, InvoiceStatus, SourceType, InvoiceItemType, Currency, AuthEvent } from '@prisma/client';
+import { generateSequenceNumber } from '../../utils/sequence';
 
 const prisma = new PrismaClient();
 
 export class InvoicesService {
-  /**
-   * Helper to generate FBXI-000001
-   */
-  static async generateSequenceNumber(tx: Prisma.TransactionClient): Promise<string> {
-    const sequenceId = 'INVOICE_SEQ';
-    let seq = await tx.sequence.findUnique({ where: { id: sequenceId } });
-    if (!seq) {
-      seq = await tx.sequence.create({ data: { id: sequenceId, value: 1 } });
-    } else {
-      seq = await tx.sequence.update({
-        where: { id: sequenceId },
-        data: { value: { increment: 1 } },
-      });
-    }
-    return `FBXI-${seq.value.toString().padStart(6, '0')}`;
-  }
+  // Removed custom generateSequenceNumber, using shared generator in createDraft
 
   /**
    * Recalculates totals. Called before saving invoice.
@@ -80,7 +66,7 @@ export class InvoicesService {
       }
 
       // 2. Generate Invoice Number
-      const invoiceNumber = await this.generateSequenceNumber(tx as Prisma.TransactionClient);
+      const invoiceNumber = await generateSequenceNumber(tx, 'INVOICE', 'FBXI');
 
       // 3. Create initial Draft
       const invoice = await tx.invoice.create({
@@ -138,6 +124,9 @@ export class InvoicesService {
       });
       await tx.invoiceStatusHistory.create({
         data: { invoiceId: invoice.id, status: InvoiceStatus.DRAFT, userId }
+      });
+      await tx.auditLog.create({
+        data: { userId, event: AuthEvent.INVOICE_CREATED, details: `Draft invoice ${invoiceNumber} created for repair ${repairOrder.repairNumber}` }
       });
 
       return updatedInvoice;
@@ -345,6 +334,9 @@ export class InvoicesService {
       });
       await tx.invoiceActivity.create({
         data: { invoiceId, userId, action: 'STATUS_CHANGED', details: 'Invoice Voided' }
+      });
+      await tx.auditLog.create({
+        data: { userId, event: AuthEvent.INVOICE_VOIDED, details: `Invoice ${invoice.invoiceNumber} voided` }
       });
 
       return updated;
