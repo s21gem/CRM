@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { PrismaClient, AuthEvent, LeadStatus, Prisma } from '@prisma/client';
+import { PrismaClient, AuthEvent, LeadStatus, Prisma, CustomerType } from '@prisma/client';
 import { ApiResponse } from '@fonebox/types';
+import { CustomersService } from '../customers/customers.service';
 
 const prisma = new PrismaClient();
 
@@ -258,16 +259,50 @@ export class CRMController {
         if (lead.customerId) {
           customer = await tx.customer.findUnique({ where: { id: lead.customerId } });
         } else {
-          let org = await tx.organization.findFirst();
-          if (!org) {
-             org = await tx.organization.create({ data: { name: 'Default Organization' } });
+          // Check if customer exists by email or phone
+          customer = await tx.customer.findFirst({
+            where: {
+              OR: [
+                { email: lead.email },
+                { phone: lead.phone }
+              ]
+            }
+          });
+        }
+
+        if (!customer) {
+          // Generate customer number inside the transaction by directly modifying the Sequence model
+          // to keep it atomic within this tx
+          const sequenceId = 'CUSTOMER_SEQ';
+          let seq = await tx.sequence.findUnique({ where: { id: sequenceId } });
+          if (!seq) {
+            seq = await tx.sequence.create({ data: { id: sequenceId, value: 1 } });
+          } else {
+            seq = await tx.sequence.update({
+              where: { id: sequenceId },
+              data: { value: { increment: 1 } }
+            });
           }
+          const customerNumber = `FBXC-${seq.value.toString().padStart(6, '0')}`;
+
           customer = await tx.customer.create({
             data: {
-              organizationId: org.id,
-              name: `${lead.firstName} ${lead.lastName}`,
+              customerNumber,
+              type: lead.type === 'BUSINESS_CONSULTATION' ? CustomerType.BUSINESS : CustomerType.INDIVIDUAL,
+              firstName: lead.firstName,
+              lastName: lead.lastName,
+              company: lead.company,
               email: lead.email,
               phone: lead.phone,
+            }
+          });
+
+          await tx.customerActivity.create({
+            data: {
+              customerId: customer.id,
+              userId: user?.userId,
+              action: 'CREATED',
+              description: 'Customer created from Lead conversion'
             }
           });
         }
