@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Repair Operations Module**: A full enterprise repair tracking system linking customers and devices.
+- **Repair Workspace**: `crm/repairs/[id]` features merged timelines, technical diagnosis tracking, configurable checklists, and financial estimates.
+- **Strict State Machines**: Backend validation strictly prevents invalid `RepairStatus` transitions (e.g. `NEW` directly to `DELIVERED`).
+- **Database Architecture**: Implemented `RepairOrder`, `Diagnosis`, `RepairChecklistItem`, `RepairActivity`, and `RepairStatusHistory`.
+- **Technician Dashboard**: Custom KPI metrics showing unassigned, waiting approval, and ready repairs.
+
+## [Prompt 5] - Customer & Device Management (Enterprise Domain Foundation)
+### Added
 - **Customers & Devices Module**: Implemented the core business domain representing clients and their hardware.
 - **Device Management Workspace**: Full 360-degree timeline view of a Customer and their registered Devices.
 - **Lead to Customer Conversion**: True transactional lead conversion handling FBXC ID generation.
