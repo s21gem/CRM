@@ -3,6 +3,7 @@
 ## 🟢 Completed Iterations
 - **Prompt 1**: Enterprise Foundation (Monorepo, Next.js, Express, Prisma, Tailwind, UI Library).
 - **Prompt 2**: Enterprise Authentication & Role-Based Access Control (RBAC).
+- **Prompt 3**: Customer-Facing Website & Lead Generation Platform.
 
 ## 🏛 Current Architecture
 - **Frameworks**: Next.js 15 (App Router), Express.js (REST API).
@@ -14,12 +15,13 @@
 
 ## 🔐 Implemented Modules
 - **Authentication**: Stateful login, session tracking, session revocation, token rotation.
-- **RBAC**: Multi-tier hierarchy (`SUPER_ADMIN`, `ADMIN`, `CRM_MANAGER`, `SALES`, `SUPPORT`, `ENGINEER`, `CUSTOMER`), permission-based routing, component-level guards.
+- **RBAC**: Multi-tier hierarchy, permission-based routing, component-level guards.
 - **Logging**: Comprehensive `AuditLog` for authentication events.
+- **Lead Capture**: Concurrency-safe Lead reference generator, standardized Lead submission APIs (`/quote`, `/repair`, `/business`).
+- **Marketing Frontend**: Data-driven Next.js marketing architecture, AI-generated assets, centralized analytics abstraction.
 
 ## 🚧 Pending Roadmap
-- **Prompt 3**: Customer-Facing Website
-- **Future Iterations**: Core CRM logic, Internal Portals, Admin Dashboards.
+- **Prompt 4**: CRM Pipeline & Operations
 
 ## ⚠️ Known Limitations
 - None. Enterprise Foundation and Authentication are production-locked.
