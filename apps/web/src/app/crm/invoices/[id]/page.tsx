@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { SectionCard } from '@/components/ui/SectionCard';
 import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
 
 export default function InvoiceDetail({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -191,13 +192,25 @@ export default function InvoiceDetail({ params }: { params: Promise<{ id: string
               </div>
               <div className="flex justify-between text-green-600">
                 <span>Paid</span>
-                <span>${invoice.paidAmount.toFixed(2)}</span>
+                <span>
+                  <Link href={`/crm/payments?invoiceId=${invoice.id}`} className="hover:underline">
+                    ${invoice.paidAmount.toFixed(2)}
+                  </Link>
+                </span>
               </div>
               <div className="flex justify-between text-red-600 font-bold">
                 <span>Balance Due</span>
                 <span>${invoice.balanceDue.toFixed(2)}</span>
               </div>
             </div>
+            
+            {invoice.status !== 'DRAFT' && invoice.status !== 'VOID' && (
+              <div className="mt-6">
+                <Link href={`/crm/payments?invoiceId=${invoice.id}`}>
+                  <Button className="w-full">Manage Payments</Button>
+                </Link>
+              </div>
+            )}
           </SectionCard>
 
           <SectionCard className="p-6">
