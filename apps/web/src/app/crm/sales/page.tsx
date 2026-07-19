@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { DndContext, closestCorners, useSensor, useSensors, PointerSensor, DragEndEvent } from '@dnd-kit/core';
-import { useDroppable } from '@dnd-kit/core';
-import { useDraggable } from '@dnd-kit/core';
+import { useDroppable, useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { LeadDetailSlideOver } from '@/components/crm/LeadDetailSlideOver';
+import { toast } from 'sonner';
 
 const COLUMNS = ['NEW', 'CONTACTED', 'IN_PROGRESS', 'CONVERTED', 'LOST'];
 
@@ -69,11 +69,13 @@ export default function SalesPipelinePage() {
   const fetchLeads = async () => {
     try {
       const res = await fetch('/api/v1/crm/sales-pipeline');
-      if (res.ok) {
-        setLeads(await res.json());
+      const json = await res.json();
+      if (json.success && json.data?.leads) {
+        setLeads(json.data.leads);
       }
     } catch (error) {
       console.error(error);
+      toast.error('Failed to load sales pipeline');
     }
   };
 
@@ -90,6 +92,7 @@ export default function SalesPipelinePage() {
     const lead = leads.find(l => l.id === leadId);
 
     if (lead && lead.status !== newStatus) {
+      const previousState = [...leads];
       // Optimistic update
       setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
 
@@ -99,13 +102,16 @@ export default function SalesPipelinePage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })
         });
-        if (!res.ok) {
+        const json = await res.json();
+        if (!json.success) {
           throw new Error('Failed to update status');
         }
+        toast.success(`Lead status updated to ${newStatus}`);
       } catch (error) {
-        // Revert on error
+        // Revert on error synchronously without network flicker
         console.error(error);
-        fetchLeads();
+        setLeads(previousState);
+        toast.error('Failed to update status, reverting change.');
       }
     }
   };

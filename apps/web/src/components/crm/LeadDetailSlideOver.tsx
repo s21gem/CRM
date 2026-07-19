@@ -43,8 +43,9 @@ export const LeadDetailSlideOver: React.FC<LeadDetailSlideOverProps> = ({ leadId
     setLoading(true);
     try {
       const res = await fetch(`/api/v1/crm/leads/${id}`);
-      if (res.ok) {
-        setLead(await res.json());
+      const json = await res.json();
+      if (json.success) {
+        setLead(json.data);
       }
     } catch (error) {
       console.error(error);
@@ -63,7 +64,8 @@ export const LeadDetailSlideOver: React.FC<LeadDetailSlideOverProps> = ({ leadId
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: newNote }),
       });
-      if (res.ok) {
+      const json = await res.json();
+      if (json.success) {
         setNewNote('');
         fetchLead(leadId);
         onUpdate?.();

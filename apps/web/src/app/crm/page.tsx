@@ -11,8 +11,10 @@ export default function CRMDashboardPage() {
   useEffect(() => {
     fetch('/api/v1/crm/dashboard')
       .then(res => res.json())
-      .then(data => {
-        if (!data.error) setMetrics(data);
+      .then(resData => {
+        if (resData.success) {
+          setMetrics(resData.data);
+        }
       })
       .catch(console.error);
   }, []);
