@@ -27,7 +27,18 @@
 - **CRM Operations**: Workflow-centric Sales Pipeline and Service Queue.
 
 ## 🚧 Pending Roadmap
+- **Prompt 7**: Inventory & Parts Management
 - Future Iterations (To be defined)
+
+## 🛡 Post-Prompt 6 Architecture Lock & QA
+The project underwent a rigorous stabilization phase before entering Prompt 7.
+- **Database Schema**: Hardened `onDelete` behaviors. `Customer.organizationId` and `Lead.customerId` use `SetNull` as a defensive safeguard. Deletion of a customer is NOT part of the standard business workflow (customers should be archived, not deleted). `Device.customerId` uses implicit `Restrict` because a device cannot logically exist without an owner, and we must never delete an owner with active devices.
+- **Soft Delete Strategy**: The CRM will rely on status flags (e.g., `status: 'ARCHIVED'`) for entity removal instead of hard deletion to preserve marketing attribution and historical data integrity.
+- **Transaction Atomicity**: All business transactions (e.g., Lead Conversion, Customer Creation, Repair Status changes) have been securely migrated to the Service Layer (`CrmService`, `CustomersService`, `RepairsService`).
+- **Repository Health**: 
+  - Verified no unused Prisma models exist in the current domain.
+  - Checked for unused components and cleaned up route RBAC middlewares.
+  - Verified atomic sequence generation.
 
 ## ⚠️ Known Limitations
 - None. Enterprise Foundation, Authentication, and CRM Pipelines are production-locked.

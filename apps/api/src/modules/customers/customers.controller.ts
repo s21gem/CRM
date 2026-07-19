@@ -127,37 +127,7 @@ export class CustomersController {
       const data = req.body;
       const user = (req as any).user;
 
-      const customerNumber = await CustomersService.generateSequenceNumber('CUSTOMER');
-
-      const result = await prisma.$transaction(async (tx) => {
-        const customer = await tx.customer.create({
-          data: {
-            ...data,
-            customerNumber
-          }
-        });
-
-        await tx.customerActivity.create({
-          data: {
-            customerId: customer.id,
-            userId: user?.userId,
-            action: 'CREATED',
-            description: 'Customer created manually'
-          }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: user?.userId,
-            event: AuthEvent.CUSTOMER_CREATED,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            details: `Customer ${customer.id} created`
-          }
-        });
-
-        return customer;
-      });
+      const result = await CustomersService.createCustomer(data, user?.userId, req.ip || '', req.headers['user-agent']);
 
       return res.status(201).json({ success: true, data: result } as ApiResponse);
     } catch (error: any) {
@@ -172,33 +142,7 @@ export class CustomersController {
       const data = req.body;
       const user = (req as any).user;
 
-      const result = await prisma.$transaction(async (tx) => {
-        const customer = await tx.customer.update({
-          where: { id },
-          data
-        });
-
-        await tx.customerActivity.create({
-          data: {
-            customerId: id,
-            userId: user?.userId,
-            action: 'UPDATED',
-            description: 'Customer details updated'
-          }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: user?.userId,
-            event: AuthEvent.CUSTOMER_UPDATED,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            details: `Customer ${id} updated`
-          }
-        });
-
-        return customer;
-      });
+      const result = await CustomersService.updateCustomer(id, data, user?.userId, req.ip || '', req.headers['user-agent']);
 
       return res.status(200).json({ success: true, data: result } as ApiResponse);
     } catch (error: any) {
@@ -213,38 +157,7 @@ export class CustomersController {
       const data = req.body;
       const user = (req as any).user;
 
-      const deviceNumber = await CustomersService.generateSequenceNumber('DEVICE');
-
-      const result = await prisma.$transaction(async (tx) => {
-        const device = await tx.device.create({
-          data: {
-            ...data,
-            deviceNumber,
-            customerId: id
-          }
-        });
-
-        await tx.customerActivity.create({
-          data: {
-            customerId: id,
-            userId: user?.userId,
-            action: 'DEVICE_REGISTERED',
-            description: `Device ${device.brand} ${device.model} registered`
-          }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: user?.userId,
-            event: AuthEvent.DEVICE_ADDED,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            details: `Device ${device.id} registered for Customer ${id}`
-          }
-        });
-
-        return device;
-      });
+      const result = await CustomersService.registerDevice(id, data, user?.userId, req.ip || '', req.headers['user-agent']);
 
       return res.status(201).json({ success: true, data: result } as ApiResponse);
     } catch (error: any) {
