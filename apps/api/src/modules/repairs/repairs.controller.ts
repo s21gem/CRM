@@ -19,47 +19,9 @@ export class RepairsController {
       });
 
       const data = schema.parse(req.body);
+      const user = (req as any).user;
       
-      const repair = await prisma.$transaction(async (tx) => {
-        const repairNumber = await RepairsService.generateRepairNumber();
-        
-        const newRepair = await tx.repairOrder.create({
-          data: {
-            ...data,
-            repairNumber,
-            status: 'NEW',
-            receivedByUserId: req.user?.id
-          }
-        });
-
-        await tx.repairActivity.create({
-          data: {
-            repairOrderId: newRepair.id,
-            userId: req.user?.id,
-            action: 'REPAIR_CREATED',
-            details: `Repair Order ${repairNumber} created.`
-          }
-        });
-
-        await tx.repairStatusHistory.create({
-          data: {
-            repairOrderId: newRepair.id,
-            status: 'NEW'
-          }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: req.user?.id,
-            event: AuthEvent.REPAIR_CREATED,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            details: `Created Repair Order: ${repairNumber}`
-          }
-        });
-
-        return newRepair;
-      });
+      const repair = await RepairsService.createRepair(data, user?.userId, req.ip || '', req.headers['user-agent']);
 
       return res.status(201).json({ success: true, data: repair, message: 'Repair order created successfully' });
     } catch (e: any) {
@@ -69,15 +31,25 @@ export class RepairsController {
 
   static async getRepairs(req: Request, res: Response) {
     try {
-      const repairs = await prisma.repairOrder.findMany({
-        include: {
-          customer: true,
-          device: true,
-          assignedTechnician: true
-        },
-        orderBy: { createdAt: 'desc' }
-      });
-      return res.json({ success: true, data: repairs });
+      const { page = '1', limit = '50' } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+      const take = Number(limit);
+
+      const [repairs, total] = await prisma.$transaction([
+        prisma.repairOrder.findMany({
+          include: {
+            customer: true,
+            device: true,
+            assignedTechnician: true
+          },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take,
+        }),
+        prisma.repairOrder.count()
+      ]);
+
+      return res.json({ success: true, data: { repairs, total, page: Number(page), limit: Number(limit) } });
     } catch (e: any) {
       return res.status(500).json({ success: false, message: e.message });
     }
@@ -88,10 +60,11 @@ export class RepairsController {
       const repairs = await prisma.repairOrder.findMany({
         select: { status: true, assignedTechnicianId: true, priority: true }
       });
+      const user = (req as any).user;
       
       const stats = {
         total: repairs.length,
-        myRepairs: repairs.filter(r => r.assignedTechnicianId === req.user?.id).length,
+        myRepairs: repairs.filter(r => r.assignedTechnicianId === user?.userId).length,
         waitingApproval: repairs.filter(r => r.status === 'WAITING_APPROVAL').length,
         waitingParts: repairs.filter(r => r.status === 'WAITING_PARTS').length,
         readyToday: repairs.filter(r => r.status === 'READY_FOR_PICKUP').length,
@@ -133,6 +106,7 @@ export class RepairsController {
       
       const { status } = schema.parse(req.body);
       const repairId = req.params.id;
+      const user = (req as any).user;
 
       const currentRepair = await prisma.repairOrder.findUnique({ where: { id: repairId } });
       if (!currentRepair) return res.status(404).json({ success: false, message: 'Not found' });
@@ -141,35 +115,7 @@ export class RepairsController {
         return res.status(400).json({ success: false, message: `Invalid status transition from ${currentRepair.status} to ${status}` });
       }
 
-      const updated = await prisma.$transaction(async (tx) => {
-        const rep = await tx.repairOrder.update({
-          where: { id: repairId },
-          data: { status }
-        });
-
-        await tx.repairActivity.create({
-          data: {
-            repairOrderId: rep.id,
-            userId: req.user?.id,
-            action: 'REPAIR_STATUS_CHANGED',
-            details: `Status changed to ${status}`
-          }
-        });
-
-        await tx.repairStatusHistory.create({
-          data: { repairOrderId: rep.id, status }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: req.user?.id,
-            event: AuthEvent.REPAIR_STATUS_CHANGED,
-            details: `Repair ${rep.repairNumber} status changed to ${status}`
-          }
-        });
-
-        return rep;
-      });
+      const updated = await RepairsService.updateStatus(repairId, status, user?.userId, req.ip || '', req.headers['user-agent']);
 
       return res.json({ success: true, data: updated });
     } catch (e: any) {
@@ -191,30 +137,9 @@ export class RepairsController {
 
       const data = schema.parse(req.body);
       const { estimatedCost, ...diagnosisData } = data;
+      const user = (req as any).user;
 
-      await prisma.$transaction(async (tx) => {
-        await tx.diagnosis.upsert({
-          where: { repairOrderId: req.params.id },
-          create: { repairOrderId: req.params.id, ...diagnosisData },
-          update: diagnosisData
-        });
-
-        if (estimatedCost !== undefined) {
-          await tx.repairOrder.update({
-            where: { id: req.params.id },
-            data: { estimatedCost }
-          });
-        }
-        
-        await tx.repairActivity.create({
-          data: {
-            repairOrderId: req.params.id,
-            userId: req.user?.id,
-            action: 'REPAIR_DIAGNOSED',
-            details: `Diagnosis updated`
-          }
-        });
-      });
+      await RepairsService.updateDiagnosis(req.params.id, diagnosisData, estimatedCost, user?.userId, req.ip || '', req.headers['user-agent']);
 
       return res.json({ success: true, message: 'Diagnosis updated' });
     } catch (e: any) {

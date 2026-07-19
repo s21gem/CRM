@@ -2,8 +2,8 @@ import { Router } from 'express';
 import authRoutes from './auth.route';
 import leadsRoutes from './leads.route';
 import crmRoutes from './crm.route';
-import { customersRoutes } from './customers.route';
-import { repairsRoutes } from './repairs.route';
+import customersRoutes from './customers.route';
+import repairsRoutes from './repairs.route';
 
 const router = Router();
 

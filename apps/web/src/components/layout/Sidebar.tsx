@@ -15,7 +15,7 @@ const navigation = [
   { name: 'Sales Pipeline', href: '/crm/sales', icon: KanbanSquare, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SALES] },
   { name: 'Service Queue', href: '/crm/service', icon: ListTodo, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT] },
   { name: 'Customers', href: '/crm/customers', icon: Users, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SALES, Role.SUPPORT] },
-  { name: 'Repairs', href: '/crm/repairs', icon: Wrench, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT, Role.TECHNICIAN] },
+  { name: 'Repairs', href: '/crm/repairs', icon: Wrench, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT, Role.ENGINEER] },
   { name: 'Projects', href: '/projects', icon: Briefcase, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.ENGINEER] },
   { name: 'Internal', href: '/internal', icon: Server, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.ENGINEER, Role.SUPPORT] },
   { name: 'Admin', href: '/admin', icon: Shield, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN] },

@@ -148,7 +148,7 @@ model User {
   lastName       String
   role           Role           @default(CUSTOMER)
   organizationId String?
-  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  organization   Organization?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   isActive       Boolean        @default(true)
   departmentId   String?
   department     Department?    @relation(fields: [departmentId], references: [id])
@@ -215,7 +215,7 @@ model Customer {
   updatedAt      DateTime     @updatedAt
 
   organizationId String?
-  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
 
   leads          Lead[]
   tickets        Ticket[]
@@ -226,7 +226,6 @@ model Customer {
 
   @@index([email])
   @@index([phone])
-  @@index([customerNumber])
   @@index([createdAt])
 }
 
@@ -266,7 +265,7 @@ model Lead {
   assignee        User?          @relation("AssignedLeads", fields: [assignedTo], references: [id], onDelete: SetNull)
   
   customerId      String?
-  customer        Customer?      @relation(fields: [customerId], references: [id])
+  customer        Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
   
   activities      LeadActivity[]
   notes           LeadNote[]
@@ -278,6 +277,9 @@ model Lead {
   @@index([type])
   @@index([status])
   @@index([priority])
+  @@index([email])
+  @@index([phone])
+  @@index([createdAt])
 }
 
 model Project {
@@ -429,7 +431,7 @@ model Device {
   id             String         @id @default(uuid())
   deviceNumber   String         @unique // FBXD-000001
   customerId     String
-  customer       Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer       Customer       @relation(fields: [customerId], references: [id])
   brand          String
   model          String
   category       DeviceCategory
@@ -448,7 +450,6 @@ model Device {
   @@index([customerId])
   @@index([imei])
   @@index([serialNumber])
-  @@index([deviceNumber])
 }
 
 model CustomerActivity {
@@ -491,9 +492,9 @@ model RepairOrder {
   lead                    Lead?         @relation(fields: [leadId], references: [id])
   
   assignedTechnicianId    String?
-  assignedTechnician      User?         @relation("AssignedRepairs", fields: [assignedTechnicianId], references: [id])
+  assignedTechnician      User?         @relation("AssignedRepairs", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
   receivedByUserId        String?
-  receivedByUser          User?         @relation("ReceivedRepairs", fields: [receivedByUserId], references: [id])
+  receivedByUser          User?         @relation("ReceivedRepairs", fields: [receivedByUserId], references: [id], onDelete: SetNull)
   
   status                  RepairStatus  @default(NEW)
   priority                RepairPriority @default(NORMAL)
@@ -520,7 +521,6 @@ model RepairOrder {
   statusHistory           RepairStatusHistory[]
   checklist               RepairChecklistItem[]
 
-  @@index([repairNumber])
   @@index([customerId])
   @@index([deviceId])
   @@index([status])

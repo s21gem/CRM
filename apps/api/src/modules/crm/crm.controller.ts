@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PrismaClient, AuthEvent, LeadStatus, Prisma, CustomerType } from '@prisma/client';
 import { ApiResponse } from '@fonebox/types';
 import { CustomersService } from '../customers/customers.service';
+import { CrmService } from './crm.service';
 
 const prisma = new PrismaClient();
 
@@ -168,33 +169,7 @@ export class CRMController {
         return res.status(400).json({ success: false, message: 'Invalid status' });
       }
 
-      const result = await prisma.$transaction(async (tx) => {
-        const lead = await tx.lead.update({
-          where: { id },
-          data: { status }
-        });
-
-        await tx.leadActivity.create({
-          data: {
-            leadId: id,
-            userId: user?.userId,
-            action: 'STATUS_CHANGED',
-            details: `Status changed to ${status}`
-          }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: user?.userId,
-            event: AuthEvent.LEAD_STATUS_CHANGED,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            details: `Lead ${id} status changed to ${status}`
-          }
-        });
-
-        return lead;
-      });
+      const result = await CrmService.changeLeadStatus(id, status as LeadStatus, user?.userId, req.ip || '', req.headers['user-agent']);
 
       const response: ApiResponse = { success: true, data: result };
       return res.status(200).json(response);
@@ -210,33 +185,7 @@ export class CRMController {
       const { assigneeId } = req.body;
       const user = (req as any).user;
 
-      const result = await prisma.$transaction(async (tx) => {
-        const lead = await tx.lead.update({
-          where: { id },
-          data: { assignedTo: assigneeId }
-        });
-
-        await tx.leadActivity.create({
-          data: {
-            leadId: id,
-            userId: user?.userId,
-            action: 'ASSIGNED',
-            details: `Assigned to user ${assigneeId}`
-          }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: user?.userId,
-            event: AuthEvent.LEAD_ASSIGNED,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            details: `Lead ${id} assigned to ${assigneeId}`
-          }
-        });
-
-        return lead;
-      });
+      const result = await CrmService.assignLead(id, assigneeId, user?.userId, req.ip || '', req.headers['user-agent']);
 
       const response: ApiResponse = { success: true, data: result };
       return res.status(200).json(response);
@@ -251,91 +200,7 @@ export class CRMController {
       const { id } = req.params;
       const user = (req as any).user;
 
-      const lead = await prisma.lead.findUnique({ where: { id } });
-      if (!lead) return res.status(404).json({ success: false, message: 'Lead not found' });
-
-      const result = await prisma.$transaction(async (tx) => {
-        let customer;
-        if (lead.customerId) {
-          customer = await tx.customer.findUnique({ where: { id: lead.customerId } });
-        } else {
-          // Check if customer exists by email or phone
-          customer = await tx.customer.findFirst({
-            where: {
-              OR: [
-                { email: lead.email },
-                { phone: lead.phone }
-              ]
-            }
-          });
-        }
-
-        if (!customer) {
-          // Generate customer number inside the transaction by directly modifying the Sequence model
-          // to keep it atomic within this tx
-          const sequenceId = 'CUSTOMER_SEQ';
-          let seq = await tx.sequence.findUnique({ where: { id: sequenceId } });
-          if (!seq) {
-            seq = await tx.sequence.create({ data: { id: sequenceId, value: 1 } });
-          } else {
-            seq = await tx.sequence.update({
-              where: { id: sequenceId },
-              data: { value: { increment: 1 } }
-            });
-          }
-          const customerNumber = `FBXC-${seq.value.toString().padStart(6, '0')}`;
-
-          customer = await tx.customer.create({
-            data: {
-              customerNumber,
-              type: lead.type === 'BUSINESS_CONSULTATION' ? CustomerType.BUSINESS : CustomerType.INDIVIDUAL,
-              firstName: lead.firstName,
-              lastName: lead.lastName,
-              company: lead.company,
-              email: lead.email,
-              phone: lead.phone,
-            }
-          });
-
-          await tx.customerActivity.create({
-            data: {
-              customerId: customer.id,
-              userId: user?.userId,
-              action: 'CREATED',
-              description: 'Customer created from Lead conversion'
-            }
-          });
-        }
-
-        const updatedLead = await tx.lead.update({
-          where: { id },
-          data: {
-            status: LeadStatus.CONVERTED,
-            customerId: customer?.id
-          }
-        });
-
-        await tx.leadActivity.create({
-          data: {
-            leadId: id,
-            userId: user?.userId,
-            action: 'CONVERTED',
-            details: `Lead converted to customer ${customer?.id}`
-          }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: user?.userId,
-            event: AuthEvent.LEAD_CONVERTED,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            details: `Lead ${id} converted to customer ${customer?.id}`
-          }
-        });
-
-        return updatedLead;
-      });
+      const result = await CrmService.convertLead(id, user?.userId, req.ip || '', req.headers['user-agent']);
 
       const response: ApiResponse = { success: true, data: result };
       return res.status(200).json(response);
@@ -354,35 +219,7 @@ export class CRMController {
       if (!content) return res.status(400).json({ success: false, message: 'Content is required' });
       if (!user?.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
 
-      const result = await prisma.$transaction(async (tx) => {
-        const note = await tx.leadNote.create({
-          data: {
-            leadId: id,
-            userId: user.userId,
-            content
-          }
-        });
-
-        await tx.leadActivity.create({
-          data: {
-            leadId: id,
-            userId: user.userId,
-            action: 'NOTE_ADDED',
-            details: `Note added`
-          }
-        });
-
-        await tx.auditLog.create({
-          data: {
-            userId: user.userId,
-            event: AuthEvent.LEAD_NOTE_ADDED,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            details: `Note added to lead ${id}`
-          }
-        });
-        return note;
-      });
+      const result = await CrmService.addLeadNote(id, content, user.userId, req.ip || '', req.headers['user-agent']);
 
       const response: ApiResponse = { success: true, data: result };
       return res.status(200).json(response);

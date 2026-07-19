@@ -9,9 +9,9 @@ const router = Router();
 router.use(authenticate);
 
 // View and Manage roles
-const viewerRoles = [Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT, Role.SALES, Role.TECHNICIAN];
+const viewerRoles = [Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT, Role.SALES, Role.ENGINEER];
 const managerRoles = [Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT];
-const technicianRoles = [Role.ADMIN, Role.CRM_MANAGER, Role.TECHNICIAN];
+const technicianRoles = [Role.ADMIN, Role.CRM_MANAGER, Role.ENGINEER];
 
 router.get('/dashboard', requireRole(technicianRoles), RepairsController.getRepairDashboard);
 router.get('/', requireRole(viewerRoles), RepairsController.getRepairs);
@@ -22,4 +22,4 @@ router.post('/', requireRole(managerRoles), RepairsController.createRepair);
 router.patch('/:id/status', requireRole(technicianRoles), RepairsController.updateStatus);
 router.patch('/:id/diagnosis', requireRole(technicianRoles), RepairsController.updateDiagnosis);
 
-export const repairsRoutes = router;
+export default router;

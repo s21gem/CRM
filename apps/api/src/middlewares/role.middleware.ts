@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { AuthRequest } from './auth.middleware';
-import { Role } from '@fonebox/types';
+import { Role } from '@prisma/client';
 
 export const requireRole = (roles: Role[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
