@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Briefcase, Server, Shield, Settings, Users2, PieChart, KanbanSquare, ListTodo, Wrench } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, Inbox, Settings, KanbanSquare, ListTodo, LogOut, Wrench, Package, Server, Briefcase, Shield, PieChart, Receipt } from 'lucide-react';
 import { classNames } from '@fonebox/utils';
 
 import { Role } from '@fonebox/types';
@@ -16,6 +16,8 @@ const navigation = [
   { name: 'Service Queue', href: '/crm/service', icon: ListTodo, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT] },
   { name: 'Customers', href: '/crm/customers', icon: Users, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SALES, Role.SUPPORT] },
   { name: 'Repairs', href: '/crm/repairs', icon: Wrench, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT, Role.ENGINEER] },
+  { name: 'Inventory', href: '/crm/inventory', icon: Package, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.ENGINEER] },
+  { name: 'Invoices', href: '/crm/invoices', icon: Receipt, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER] },
   { name: 'Projects', href: '/projects', icon: Briefcase, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.ENGINEER] },
   { name: 'Internal', href: '/internal', icon: Server, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN, Role.ENGINEER, Role.SUPPORT] },
   { name: 'Admin', href: '/admin', icon: Shield, requiredRoles: [Role.SUPER_ADMIN, Role.ADMIN] },
