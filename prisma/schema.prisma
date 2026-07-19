@@ -32,6 +32,11 @@ enum AuthEvent {
   LEAD_ASSIGNED
   LEAD_CONVERTED
   LEAD_NOTE_ADDED
+  CUSTOMER_CREATED
+  CUSTOMER_UPDATED
+  DEVICE_ADDED
+  DEVICE_UPDATED
+  CUSTOMER_NOTE_ADDED
 }
 
 enum LeadType {
@@ -78,6 +83,29 @@ enum InquiryCategory {
   OTHER
 }
 
+enum CustomerType {
+  INDIVIDUAL
+  BUSINESS
+}
+
+enum DeviceStatus {
+  ACTIVE
+  INACTIVE
+  IN_REPAIR
+  REPAIRED
+  RETURNED
+}
+
+enum DeviceCategory {
+  SMARTPHONE
+  TABLET
+  LAPTOP
+  DESKTOP
+  SMARTWATCH
+  ACCESSORY
+  OTHER
+}
+
 model User {
   id             String         @id @default(uuid())
   email          String         @unique
@@ -102,6 +130,8 @@ model User {
   leads          Lead[]         @relation("AssignedLeads")
   leadActivities LeadActivity[]
   leadNotes      LeadNote[]
+  customerActivities CustomerActivity[]
+  customerNotes      CustomerNote[]
 }
 
 model Permission {
@@ -128,15 +158,37 @@ model Organization {
 
 model Customer {
   id             String       @id @default(uuid())
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  name           String
+  customerNumber String       @unique // FBXC-000001
+  type           CustomerType @default(INDIVIDUAL)
+  firstName      String
+  lastName       String
+  company        String?
   email          String?      @unique
   phone          String?
-  leads          Lead[]
-  tickets        Ticket[]
+  alternatePhone String?
+  address        String?
+  city           String?
+  state          String?
+  postalCode     String?
+  country        String?
+  notes          String?
+  status         String       @default("ACTIVE")
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  leads          Lead[]
+  tickets        Ticket[]
+  devices        Device[]
+  activities     CustomerActivity[]
+  customerNotes  CustomerNote[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([customerNumber])
+  @@index([createdAt])
 }
 
 model Lead {
@@ -333,4 +385,56 @@ model LeadNote {
   @@index([userId])
 }
 
+model Device {
+  id             String         @id @default(uuid())
+  deviceNumber   String         @unique // FBXD-000001
+  customerId     String
+  customer       Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  brand          String
+  model          String
+  category       DeviceCategory
+  serialNumber   String?
+  imei           String?
+  color          String?
+  purchaseDate   DateTime?
+  warrantyExpiry DateTime?
+  condition      String?
+  notes          String?
+  status         DeviceStatus   @default(ACTIVE)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
+  @@index([customerId])
+  @@index([imei])
+  @@index([serialNumber])
+  @@index([deviceNumber])
+}
+
+model CustomerActivity {
+  id          String   @id @default(uuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action      String
+  description String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([customerId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model CustomerNote {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  note       String
+  createdAt  DateTime @default(now())
+
+  @@index([customerId])
+  @@index([userId])
+}

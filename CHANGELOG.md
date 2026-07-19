@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Customers & Devices Module**: Implemented the core business domain representing clients and their hardware.
+- **Device Management Workspace**: Full 360-degree timeline view of a Customer and their registered Devices.
+- **Lead to Customer Conversion**: True transactional lead conversion handling FBXC ID generation.
+- **Customer Database Models**: Added `CustomerActivity`, `CustomerNote`, and `Device` models with atomic sequence generators.
+- **Customer Roles**: Implemented RBAC checks for Customer view and management.
+- **Customer Pages**: `/crm/customers` (List and statistics) and `/crm/customers/[id]` (Tabbed 360-degree workspace).
+
+## [Prompt 4] - Enterprise CRM Workspace
+### Added
 - **CRM Operations Module**: Implemented a workflow-centric workspace mimicking enterprise CRMs.
 - **Sales Pipeline**: Added a drag-and-drop Kanban board (`@dnd-kit/core`) for tracking leads through custom stages (`NEW`, `CONTACTED`, `IN_PROGRESS`, `CONVERTED`, `LOST`).
 - **Service Queue**: Added a dedicated data table for `REPAIR_REQUEST` and `GENERAL_INQUIRY` tracking.
