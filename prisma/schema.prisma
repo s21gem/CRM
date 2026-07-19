@@ -37,6 +37,17 @@ enum AuthEvent {
   DEVICE_ADDED
   DEVICE_UPDATED
   CUSTOMER_NOTE_ADDED
+  // Repair Events
+  REPAIR_CREATED
+  REPAIR_ASSIGNED
+  REPAIR_DIAGNOSED
+  REPAIR_ESTIMATE_APPROVED
+  REPAIR_ESTIMATE_REJECTED
+  REPAIR_STATUS_CHANGED
+  REPAIR_QC_PASSED
+  REPAIR_DELIVERED
+  REPAIR_CLOSED
+  REPAIR_NOTE_ADDED
 }
 
 enum LeadType {
@@ -106,6 +117,29 @@ enum DeviceCategory {
   OTHER
 }
 
+enum RepairStatus {
+  NEW
+  INSPECTING
+  DIAGNOSING
+  WAITING_APPROVAL
+  APPROVED
+  WAITING_PARTS
+  IN_REPAIR
+  ON_HOLD
+  QUALITY_CHECK
+  READY_FOR_PICKUP
+  DELIVERED
+  CANCELLED
+  CLOSED
+}
+
+enum RepairPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
 model User {
   id             String         @id @default(uuid())
   email          String         @unique
@@ -132,6 +166,10 @@ model User {
   leadNotes      LeadNote[]
   customerActivities CustomerActivity[]
   customerNotes      CustomerNote[]
+  assignedRepairs    RepairOrder[]  @relation("AssignedRepairs")
+  repairActivities   RepairActivity[]
+  repairNotes        RepairNote[]
+  receivedRepairs    RepairOrder[]  @relation("ReceivedRepairs")
 }
 
 model Permission {
@@ -184,6 +222,7 @@ model Customer {
   devices        Device[]
   activities     CustomerActivity[]
   customerNotes  CustomerNote[]
+  repairs        RepairOrder[]
 
   @@index([email])
   @@index([phone])
@@ -231,6 +270,7 @@ model Lead {
   
   activities      LeadActivity[]
   notes           LeadNote[]
+  repairs         RepairOrder[]
 
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -403,6 +443,7 @@ model Device {
   status         DeviceStatus   @default(ACTIVE)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+  repairs        RepairOrder[]
 
   @@index([customerId])
   @@index([imei])
@@ -437,4 +478,130 @@ model CustomerNote {
 
   @@index([customerId])
   @@index([userId])
+}
+
+model RepairOrder {
+  id                      String        @id @default(uuid())
+  repairNumber            String        @unique // FBXR-000001
+  customerId              String
+  customer                Customer      @relation(fields: [customerId], references: [id])
+  deviceId                String
+  device                  Device        @relation(fields: [deviceId], references: [id])
+  leadId                  String?
+  lead                    Lead?         @relation(fields: [leadId], references: [id])
+  
+  assignedTechnicianId    String?
+  assignedTechnician      User?         @relation("AssignedRepairs", fields: [assignedTechnicianId], references: [id])
+  receivedByUserId        String?
+  receivedByUser          User?         @relation("ReceivedRepairs", fields: [receivedByUserId], references: [id])
+  
+  status                  RepairStatus  @default(NEW)
+  priority                RepairPriority @default(NORMAL)
+  
+  problemDescription      String
+  customerComplaint       String?
+  intakeCondition         String?
+  accessoriesReceived     String?
+  
+  estimatedCost           Float?
+  approvedCost            Float?
+  partsCost               Float?
+  finalCost               Float?
+  
+  estimatedCompletionDate DateTime?
+  completedAt             DateTime?
+  deliveredAt             DateTime?
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  activities              RepairActivity[]
+  notes                   RepairNote[]
+  diagnosis               Diagnosis?
+  statusHistory           RepairStatusHistory[]
+  checklist               RepairChecklistItem[]
+
+  @@index([repairNumber])
+  @@index([customerId])
+  @@index([deviceId])
+  @@index([status])
+  @@index([priority])
+  @@index([assignedTechnicianId])
+  @@index([createdAt])
+}
+
+model RepairActivity {
+  id            String       @id @default(uuid())
+  repairOrderId String
+  repairOrder   RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  userId        String?
+  user          User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action        String
+  details       String?
+  metadata      Json?
+  createdAt     DateTime     @default(now())
+
+  @@index([repairOrderId])
+  @@index([userId])
+}
+
+model RepairNote {
+  id            String       @id @default(uuid())
+  repairOrderId String
+  repairOrder   RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  userId        String?
+  user          User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  content       String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([repairOrderId])
+  @@index([userId])
+}
+
+model Diagnosis {
+  id               String       @id @default(uuid())
+  repairOrderId    String       @unique
+  repairOrder      RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  issueFound       String?
+  rootCause        String?
+  technicianNotes  String?
+  repairability    String?      // e.g. "Fixable", "Not Fixable", "Requires Board Replacement"
+  recommendedParts String?
+  estimatedTime    String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model ChecklistTemplate {
+  id            String   @id @default(uuid())
+  name          String
+  items         Json     // Array of string tasks
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model RepairChecklistItem {
+  id            String       @id @default(uuid())
+  repairOrderId String
+  repairOrder   RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  task          String
+  isCompleted   Boolean      @default(false)
+  completedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([repairOrderId])
+}
+
+model RepairStatusHistory {
+  id            String       @id @default(uuid())
+  repairOrderId String
+  repairOrder   RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  status        RepairStatus
+  notes         String?
+  createdAt     DateTime     @default(now())
+
+  @@index([repairOrderId])
+  @@index([createdAt])
 }
