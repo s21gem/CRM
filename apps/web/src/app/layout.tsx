@@ -4,6 +4,8 @@ import '@/styles/globals.css';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 
+import { Toaster } from 'sonner';
+
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono' });
 
@@ -27,9 +29,11 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <AuthProvider>
             {children}
+            <Toaster position="bottom-right" richColors />
           </AuthProvider>
         </ThemeProvider>
       </body>
+
     </html>
   );
 }

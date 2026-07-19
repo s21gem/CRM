@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient, AuthEvent, LeadStatus } from '@prisma/client';
-import { z } from 'zod';
+import { PrismaClient, AuthEvent, LeadStatus, Prisma } from '@prisma/client';
+import { ApiResponse } from '@fonebox/types';
 
 const prisma = new PrismaClient();
 
@@ -17,48 +17,112 @@ export class CRMController {
         _count: { source: true }
       });
 
-      res.json({ totalLeads, newLeads, convertedLeads, leadsBySource });
-    } catch (error) {
+      const response: ApiResponse = {
+        success: true,
+        data: { totalLeads, newLeads, convertedLeads, leadsBySource }
+      };
+      return res.status(200).json(response);
+    } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to fetch dashboard metrics' });
+      return res.status(500).json({ success: false, message: 'Failed to fetch dashboard metrics' });
     }
   }
 
   static async getSalesPipeline(req: Request, res: Response) {
     try {
-      const leads = await prisma.lead.findMany({
-        where: {
-          type: { in: ['QUOTE_REQUEST', 'BUSINESS_CONSULTATION'] }
-        },
-        include: {
-          assignee: { select: { id: true, firstName: true, lastName: true } },
-          customer: true,
-        },
-        orderBy: { createdAt: 'desc' }
-      });
-      res.json(leads);
-    } catch (error) {
+      const { page = '1', limit = '50', search, status } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+      const take = Number(limit);
+
+      const where: Prisma.LeadWhereInput = {
+        type: { in: ['QUOTE_REQUEST', 'BUSINESS_CONSULTATION'] },
+      };
+
+      if (status) {
+        where.status = status as LeadStatus;
+      }
+
+      if (search) {
+        const searchStr = String(search);
+        where.OR = [
+          { firstName: { contains: searchStr, mode: 'insensitive' } },
+          { lastName: { contains: searchStr, mode: 'insensitive' } },
+          { email: { contains: searchStr, mode: 'insensitive' } },
+          { referenceNumber: { contains: searchStr, mode: 'insensitive' } }
+        ];
+      }
+
+      const [leads, total] = await prisma.$transaction([
+        prisma.lead.findMany({
+          where,
+          include: {
+            assignee: { select: { id: true, firstName: true, lastName: true } },
+            customer: true,
+          },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take,
+        }),
+        prisma.lead.count({ where })
+      ]);
+
+      const response: ApiResponse = {
+        success: true,
+        data: { leads, total, page: Number(page), limit: Number(limit) }
+      };
+      return res.status(200).json(response);
+    } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to fetch sales pipeline' });
+      return res.status(500).json({ success: false, message: 'Failed to fetch sales pipeline' });
     }
   }
 
   static async getServiceQueue(req: Request, res: Response) {
     try {
-      const leads = await prisma.lead.findMany({
-        where: {
-          type: { in: ['REPAIR_REQUEST', 'GENERAL_INQUIRY'] }
-        },
-        include: {
-          assignee: { select: { id: true, firstName: true, lastName: true } },
-          customer: true,
-        },
-        orderBy: { createdAt: 'desc' }
-      });
-      res.json(leads);
-    } catch (error) {
+      const { page = '1', limit = '50', search, status } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+      const take = Number(limit);
+
+      const where: Prisma.LeadWhereInput = {
+        type: { in: ['REPAIR_REQUEST', 'GENERAL_INQUIRY'] },
+      };
+
+      if (status) {
+        where.status = status as LeadStatus;
+      }
+
+      if (search) {
+        const searchStr = String(search);
+        where.OR = [
+          { firstName: { contains: searchStr, mode: 'insensitive' } },
+          { lastName: { contains: searchStr, mode: 'insensitive' } },
+          { email: { contains: searchStr, mode: 'insensitive' } },
+          { referenceNumber: { contains: searchStr, mode: 'insensitive' } }
+        ];
+      }
+
+      const [leads, total] = await prisma.$transaction([
+        prisma.lead.findMany({
+          where,
+          include: {
+            assignee: { select: { id: true, firstName: true, lastName: true } },
+            customer: true,
+          },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take,
+        }),
+        prisma.lead.count({ where })
+      ]);
+
+      const response: ApiResponse = {
+        success: true,
+        data: { leads, total, page: Number(page), limit: Number(limit) }
+      };
+      return res.status(200).json(response);
+    } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to fetch service queue' });
+      return res.status(500).json({ success: false, message: 'Failed to fetch service queue' });
     }
   }
 
@@ -82,13 +146,14 @@ export class CRMController {
       });
       
       if (!lead) {
-        return res.status(404).json({ error: 'Lead not found' });
+        return res.status(404).json({ success: false, message: 'Lead not found' });
       }
       
-      res.json(lead);
-    } catch (error) {
+      const response: ApiResponse = { success: true, data: lead };
+      return res.status(200).json(response);
+    } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to fetch lead details' });
+      return res.status(500).json({ success: false, message: 'Failed to fetch lead details' });
     }
   }
 
@@ -99,37 +164,42 @@ export class CRMController {
       const user = (req as any).user;
 
       if (!Object.values(LeadStatus).includes(status)) {
-        return res.status(400).json({ error: 'Invalid status' });
+        return res.status(400).json({ success: false, message: 'Invalid status' });
       }
 
-      const lead = await prisma.lead.update({
-        where: { id },
-        data: { status }
+      const result = await prisma.$transaction(async (tx) => {
+        const lead = await tx.lead.update({
+          where: { id },
+          data: { status }
+        });
+
+        await tx.leadActivity.create({
+          data: {
+            leadId: id,
+            userId: user?.userId,
+            action: 'STATUS_CHANGED',
+            details: `Status changed to ${status}`
+          }
+        });
+
+        await tx.auditLog.create({
+          data: {
+            userId: user?.userId,
+            event: AuthEvent.LEAD_STATUS_CHANGED,
+            ipAddress: req.ip,
+            userAgent: req.headers['user-agent'],
+            details: `Lead ${id} status changed to ${status}`
+          }
+        });
+
+        return lead;
       });
 
-      await prisma.leadActivity.create({
-        data: {
-          leadId: id,
-          userId: user?.userId,
-          action: 'STATUS_CHANGED',
-          details: `Status changed to ${status}`
-        }
-      });
-
-      await prisma.auditLog.create({
-        data: {
-          userId: user?.userId,
-          event: AuthEvent.LEAD_STATUS_CHANGED,
-          ipAddress: req.ip,
-          userAgent: req.headers['user-agent'],
-          details: `Lead ${id} status changed to ${status}`
-        }
-      });
-
-      res.json(lead);
-    } catch (error) {
+      const response: ApiResponse = { success: true, data: result };
+      return res.status(200).json(response);
+    } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to change lead status' });
+      return res.status(500).json({ success: false, message: 'Failed to change lead status' });
     }
   }
 
@@ -139,34 +209,39 @@ export class CRMController {
       const { assigneeId } = req.body;
       const user = (req as any).user;
 
-      const lead = await prisma.lead.update({
-        where: { id },
-        data: { assignedTo: assigneeId }
+      const result = await prisma.$transaction(async (tx) => {
+        const lead = await tx.lead.update({
+          where: { id },
+          data: { assignedTo: assigneeId }
+        });
+
+        await tx.leadActivity.create({
+          data: {
+            leadId: id,
+            userId: user?.userId,
+            action: 'ASSIGNED',
+            details: `Assigned to user ${assigneeId}`
+          }
+        });
+
+        await tx.auditLog.create({
+          data: {
+            userId: user?.userId,
+            event: AuthEvent.LEAD_ASSIGNED,
+            ipAddress: req.ip,
+            userAgent: req.headers['user-agent'],
+            details: `Lead ${id} assigned to ${assigneeId}`
+          }
+        });
+
+        return lead;
       });
 
-      await prisma.leadActivity.create({
-        data: {
-          leadId: id,
-          userId: user?.userId,
-          action: 'ASSIGNED',
-          details: `Assigned to user ${assigneeId}`
-        }
-      });
-
-      await prisma.auditLog.create({
-        data: {
-          userId: user?.userId,
-          event: AuthEvent.LEAD_ASSIGNED,
-          ipAddress: req.ip,
-          userAgent: req.headers['user-agent'],
-          details: `Lead ${id} assigned to ${assigneeId}`
-        }
-      });
-
-      res.json(lead);
-    } catch (error) {
+      const response: ApiResponse = { success: true, data: result };
+      return res.status(200).json(response);
+    } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to assign lead' });
+      return res.status(500).json({ success: false, message: 'Failed to assign lead' });
     }
   }
 
@@ -176,16 +251,13 @@ export class CRMController {
       const user = (req as any).user;
 
       const lead = await prisma.lead.findUnique({ where: { id } });
-      if (!lead) return res.status(404).json({ error: 'Lead not found' });
+      if (!lead) return res.status(404).json({ success: false, message: 'Lead not found' });
 
-      // Transaction: create customer if it doesn't exist, update lead
       const result = await prisma.$transaction(async (tx) => {
         let customer;
         if (lead.customerId) {
           customer = await tx.customer.findUnique({ where: { id: lead.customerId } });
         } else {
-          // In a real app we might link to an organization, but for now we create a Customer with a dummy org
-          // Note: organization is required in schema for Customer, let's find or create a default organization.
           let org = await tx.organization.findFirst();
           if (!org) {
              org = await tx.organization.create({ data: { name: 'Default Organization' } });
@@ -230,10 +302,11 @@ export class CRMController {
         return updatedLead;
       });
 
-      res.json(result);
-    } catch (error) {
+      const response: ApiResponse = { success: true, data: result };
+      return res.status(200).json(response);
+    } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to convert lead' });
+      return res.status(500).json({ success: false, message: 'Failed to convert lead' });
     }
   }
 
@@ -243,40 +316,44 @@ export class CRMController {
       const { content } = req.body;
       const user = (req as any).user;
 
-      if (!content) return res.status(400).json({ error: 'Content is required' });
-      if (!user?.userId) return res.status(401).json({ error: 'Unauthorized' });
+      if (!content) return res.status(400).json({ success: false, message: 'Content is required' });
+      if (!user?.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
 
-      const note = await prisma.leadNote.create({
-        data: {
-          leadId: id,
-          userId: user.userId,
-          content
-        }
+      const result = await prisma.$transaction(async (tx) => {
+        const note = await tx.leadNote.create({
+          data: {
+            leadId: id,
+            userId: user.userId,
+            content
+          }
+        });
+
+        await tx.leadActivity.create({
+          data: {
+            leadId: id,
+            userId: user.userId,
+            action: 'NOTE_ADDED',
+            details: `Note added`
+          }
+        });
+
+        await tx.auditLog.create({
+          data: {
+            userId: user.userId,
+            event: AuthEvent.LEAD_NOTE_ADDED,
+            ipAddress: req.ip,
+            userAgent: req.headers['user-agent'],
+            details: `Note added to lead ${id}`
+          }
+        });
+        return note;
       });
 
-      await prisma.leadActivity.create({
-        data: {
-          leadId: id,
-          userId: user.userId,
-          action: 'NOTE_ADDED',
-          details: `Note added`
-        }
-      });
-
-      await prisma.auditLog.create({
-        data: {
-          userId: user.userId,
-          event: AuthEvent.LEAD_NOTE_ADDED,
-          ipAddress: req.ip,
-          userAgent: req.headers['user-agent'],
-          details: `Note added to lead ${id}`
-        }
-      });
-
-      res.json(note);
-    } catch (error) {
+      const response: ApiResponse = { success: true, data: result };
+      return res.status(200).json(response);
+    } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to add note' });
+      return res.status(500).json({ success: false, message: 'Failed to add note' });
     }
   }
 }

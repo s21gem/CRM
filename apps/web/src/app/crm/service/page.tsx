@@ -5,6 +5,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { SectionCard } from '@/components/ui/SectionCard';
 import { LeadDetailSlideOver } from '@/components/crm/LeadDetailSlideOver';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 export default function ServiceQueuePage() {
   const [leads, setLeads] = useState<any[]>([]);
@@ -13,11 +14,13 @@ export default function ServiceQueuePage() {
   const fetchLeads = async () => {
     try {
       const res = await fetch('/api/v1/crm/service-queue');
-      if (res.ok) {
-        setLeads(await res.json());
+      const json = await res.json();
+      if (json.success && json.data?.leads) {
+        setLeads(json.data.leads);
       }
     } catch (error) {
       console.error(error);
+      toast.error('Failed to load service queue');
     }
   };
 

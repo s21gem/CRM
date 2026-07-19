@@ -6,22 +6,26 @@ import { Role } from '@prisma/client';
 
 const router = Router();
 
-// Protect all CRM routes
+// Protect all CRM routes with authentication
 router.use(authenticate);
-router.use(requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SALES, Role.SUPPORT]));
 
-// Dashboard
-router.get('/dashboard', CRMController.getDashboardMetrics);
+// Granular RBAC definitions
+const anyCrmRole = requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SALES, Role.SUPPORT]);
+const salesRole = requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SALES]);
+const supportRole = requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.CRM_MANAGER, Role.SUPPORT]);
+
+// Dashboard (Available to any CRM user)
+router.get('/dashboard', anyCrmRole, CRMController.getDashboardMetrics);
 
 // Workflows
-router.get('/sales-pipeline', CRMController.getSalesPipeline);
-router.get('/service-queue', CRMController.getServiceQueue);
+router.get('/sales-pipeline', salesRole, CRMController.getSalesPipeline);
+router.get('/service-queue', supportRole, CRMController.getServiceQueue);
 
 // Lead Operations
-router.get('/leads/:id', CRMController.getLeadDetails);
-router.patch('/leads/:id/status', CRMController.changeLeadStatus);
-router.patch('/leads/:id/assign', CRMController.assignLead);
-router.post('/leads/:id/convert', CRMController.convertLead);
-router.post('/leads/:id/notes', CRMController.addLeadNote);
+router.get('/leads/:id', anyCrmRole, CRMController.getLeadDetails);
+router.patch('/leads/:id/status', anyCrmRole, CRMController.changeLeadStatus);
+router.patch('/leads/:id/assign', anyCrmRole, CRMController.assignLead);
+router.post('/leads/:id/convert', salesRole, CRMController.convertLead);
+router.post('/leads/:id/notes', anyCrmRole, CRMController.addLeadNote);
 
 export default router;
