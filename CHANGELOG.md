@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- **Repair Operations Module**: A full enterprise repair tracking system linking customers and devices.
-- **Repair Workspace**: `crm/repairs/[id]` features merged timelines, technical diagnosis tracking, configurable checklists, and financial estimates.
-- **Strict State Machines**: Backend validation strictly prevents invalid `RepairStatus` transitions (e.g. `NEW` directly to `DELIVERED`).
-- **Database Architecture**: Implemented `RepairOrder`, `Diagnosis`, `RepairChecklistItem`, `RepairActivity`, and `RepairStatusHistory`.
-- **Technician Dashboard**: Custom KPI metrics showing unassigned, waiting approval, and ready repairs.
+- **Payment Processing System**: Modules for handling billing and invoicing (Prompt 9 pending).
+
+## [1.0.0-prompt-8]
+### Added
+- **Billing & Invoice Management System**: Added core financial billing features decoupled from active inventory.
+- **Immutable Snapshotting**: Added logic for preserving invoice line items at time of issuance.
+- **Strict State Machines**: Added workflow validation (`DRAFT`, `PENDING_REVIEW`, `APPROVED`, `ISSUED`, `VOID`).
+- **Service Layer**: Implemented transactional boundaries for financial operations.
+- **Billing Integration**: Integrated Billing tab directly within the Repair Workspace.
 
 ## [Prompt 5] - Customer & Device Management (Enterprise Domain Foundation)
 ### Added

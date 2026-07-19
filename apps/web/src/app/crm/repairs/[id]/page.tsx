@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { SectionCard } from '@/components/ui/SectionCard';
-import { Wrench, CheckCircle, Clock, AlertTriangle, ArrowLeft, User, Smartphone, Settings, History, ClipboardList, DollarSign } from 'lucide-react';
+import { Wrench, CheckCircle, Clock, AlertTriangle, ArrowLeft, User, Smartphone, Settings, History, ClipboardList, DollarSign, Package, Receipt } from 'lucide-react';
 import { toast } from 'sonner';
 
-type TabType = 'overview' | 'diagnosis' | 'checklist' | 'timeline' | 'costs';
+type TabType = 'overview' | 'diagnosis' | 'checklist' | 'timeline' | 'costs' | 'parts' | 'billing';
 
 export default function RepairWorkspacePage() {
   const params = useParams();
@@ -83,8 +83,10 @@ export default function RepairWorkspacePage() {
         <TabButton id="overview" icon={Settings} label="Overview" activeTab={activeTab} setActive={setActiveTab} />
         <TabButton id="diagnosis" icon={Wrench} label="Diagnosis" activeTab={activeTab} setActive={setActiveTab} />
         <TabButton id="checklist" icon={ClipboardList} label="Checklist" activeTab={activeTab} setActive={setActiveTab} />
+        <TabButton id="parts" icon={Settings} label="Parts & Inventory" activeTab={activeTab} setActive={setActiveTab} />
         <TabButton id="timeline" icon={History} label="Merged Timeline" activeTab={activeTab} setActive={setActiveTab} />
-        <TabButton id="costs" icon={DollarSign} label="Costs & Parts" activeTab={activeTab} setActive={setActiveTab} />
+        <TabButton id="costs" icon={DollarSign} label="Costs" activeTab={activeTab} setActive={setActiveTab} />
+        <TabButton id="billing" icon={Receipt} label="Billing" activeTab={activeTab} setActive={setActiveTab} />
       </div>
 
       <div className="mt-6">
@@ -206,6 +208,110 @@ export default function RepairWorkspacePage() {
                 <p className="text-3xl font-bold text-green-700">${repair.finalCost?.toFixed(2) || '0.00'}</p>
               </div>
             </div>
+          </SectionCard>
+        )}
+
+        {activeTab === 'parts' && (
+          <SectionCard className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold">Reserved Parts</h3>
+              <button className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90">
+                Reserve Part
+              </button>
+            </div>
+            {repair.reservations?.length === 0 || !repair.reservations ? (
+              <div className="text-center py-8 text-muted-foreground bg-muted/20 border border-dashed rounded-lg">
+                <Package className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>No parts have been reserved for this repair yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-muted/50 text-muted-foreground">
+                    <tr>
+                      <th className="px-4 py-3 font-medium">Part Details</th>
+                      <th className="px-4 py-3 font-medium">Qty</th>
+                      <th className="px-4 py-3 font-medium">Status</th>
+                      <th className="px-4 py-3 font-medium">Cost</th>
+                      <th className="px-4 py-3 font-medium text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {repair.reservations.map((res: any) => (
+                      <tr key={res.id}>
+                        <td className="px-4 py-3 font-medium">{res.item?.name}</td>
+                        <td className="px-4 py-3">{res.quantity}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-1 rounded text-xs font-semibold ${res.status === 'ACTIVE' ? 'bg-warning/20 text-warning' : (res.status === 'CONSUMED' ? 'bg-success/20 text-success' : 'bg-muted text-muted-foreground')}`}>
+                            {res.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">${(res.unitPriceSnapshot * res.quantity).toFixed(2)}</td>
+                        <td className="px-4 py-3 text-right">
+                          {res.status === 'ACTIVE' && (
+                            <div className="flex justify-end gap-2">
+                              <button className="text-success hover:underline text-xs font-semibold">Consume</button>
+                              <button className="text-destructive hover:underline text-xs font-semibold">Release</button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </SectionCard>
+        )}
+
+        {activeTab === 'billing' && (
+          <SectionCard className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold">Invoices</h3>
+              <button 
+                onClick={async () => {
+                  try {
+                    const res = await fetch('/api/v1/invoices/draft', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                      },
+                      body: JSON.stringify({ repairOrderId: repair.id })
+                    });
+                    if (res.ok) {
+                      const data = await res.json();
+                      window.location.href = `/crm/invoices/${data.data.id}`;
+                    } else {
+                      alert('Failed to generate draft or invoice already exists.');
+                    }
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }}
+                className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90"
+              >
+                Generate Draft Invoice
+              </button>
+            </div>
+            
+            {repair.invoices?.length > 0 ? (
+              <div className="space-y-4">
+                {repair.invoices.map((inv: any) => (
+                  <div key={inv.id} className="p-4 border rounded-lg flex justify-between items-center hover:bg-muted/10">
+                    <div>
+                      <p className="font-semibold">{inv.invoiceNumber}</p>
+                      <p className="text-sm text-muted-foreground">{inv.status} - ${inv.grandTotal?.toFixed(2)}</p>
+                    </div>
+                    <a href={`/crm/invoices/${inv.id}`} className="text-blue-600 hover:underline text-sm">
+                      View Invoice
+                    </a>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-8">No invoices generated for this repair.</p>
+            )}
           </SectionCard>
         )}
 
