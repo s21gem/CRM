@@ -25,21 +25,25 @@
 - **Lead Capture**: Concurrency-safe Lead reference generator, standardized Lead submission APIs (`/quote`, `/repair`, `/business`).
 - **Marketing Frontend**: Data-driven Next.js marketing architecture, AI-generated assets, centralized analytics abstraction.
 - **CRM Operations**: Workflow-centric Sales Pipeline and Service Queue.
+- **Payment Processing**: Stripe integration, Payment intent handling, Webhook verification, Receipt generation.
 
 ## 🚧 Pending Roadmap
-- **Prompt 9**: Payment Processing System
 - Future Iterations (To be defined)
 
-## 🛡 Post-Prompt 8 Architecture Lock & QA
+## 🛡 Post-Prompt 9 Architecture Lock & QA
 ## Project State
-- Prompts Completed: 1, 2, 3, 4, 5, 6, 7, 8
+- Prompts Completed: 1, 2, 3, 4, 5, 6, 7, 8, 9
 - Modules Implemented: 
   - Core CRM (Auth, Roles, Leads, Customers)
   - Hardware Ecosystem (Devices)
   - Operations (Repair Orders, Checklists)
   - Inventory & Parts Management (Stock, Reservations, Movements)
   - Billing & Invoices (Financial State, Immutable Snapshots)
-- Current Target: Prompt 9 (Payment Processing System)
+  - Payment Processing (Stripe Integration, Receivables)
+- **Next Steps**:
+  - Validate Prompt 9 Payment flows and Receipt generation.
+  - Proceed to Prompt 10: Settings & Configurations or final integration.
+
 The project underwent a rigorous stabilization phase before entering Prompt 7.
 - **Database Schema**: Hardened `onDelete` behaviors. `Customer.organizationId` and `Lead.customerId` use `SetNull` as a defensive safeguard. Deletion of a customer is NOT part of the standard business workflow (customers should be archived, not deleted). `Device.customerId` uses implicit `Restrict` because a device cannot logically exist without an owner, and we must never delete an owner with active devices.
 - **Soft Delete Strategy**: The CRM will rely on status flags (e.g., `status: 'ARCHIVED'`) for entity removal instead of hard deletion to preserve marketing attribution and historical data integrity.

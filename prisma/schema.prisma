@@ -48,6 +48,14 @@ enum AuthEvent {
   REPAIR_DELIVERED
   REPAIR_CLOSED
   REPAIR_NOTE_ADDED
+  
+  // Payment Events
+  PAYMENT_RECEIVED
+  PAYMENT_CONFIRMED
+  PAYMENT_ALLOCATED
+  PAYMENT_CANCELLED
+  PAYMENT_REFUNDED
+  PAYMENT_RECEIPT_GENERATED
 }
 
 enum LeadType {
@@ -212,53 +220,59 @@ enum SourceType {
 }
 
 model User {
-  id             String         @id @default(uuid())
-  email          String         @unique
-  passwordHash   String
-  firstName      String
-  lastName       String
-  role           Role           @default(CUSTOMER)
-  organizationId String?
-  organization   Organization?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  isActive       Boolean        @default(true)
-  departmentId   String?
-  department     Department?    @relation(fields: [departmentId], references: [id])
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  permissions    Permission[]   @relation("UserPermissions")
-  activities     ActivityLog[]
-  tasks          Task[]         @relation("AssignedTasks")
-  sessions       Session[]
-  refreshTokens  RefreshToken[]
-  loginHistories LoginHistory[]
-  auditLogs      AuditLog[]
-  leads          Lead[]         @relation("AssignedLeads")
-  leadActivities LeadActivity[]
-  leadNotes      LeadNote[]
+  id                 String             @id @default(uuid())
+  email              String             @unique
+  passwordHash       String
+  firstName          String
+  lastName           String
+  role               Role               @default(CUSTOMER)
+  organizationId     String?
+  organization       Organization?      @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  isActive           Boolean            @default(true)
+  departmentId       String?
+  department         Department?        @relation(fields: [departmentId], references: [id])
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  permissions        Permission[]       @relation("UserPermissions")
+  activities         ActivityLog[]
+  tasks              Task[]             @relation("AssignedTasks")
+  sessions           Session[]
+  refreshTokens      RefreshToken[]
+  loginHistories     LoginHistory[]
+  auditLogs          AuditLog[]
+  leads              Lead[]             @relation("AssignedLeads")
+  leadActivities     LeadActivity[]
+  leadNotes          LeadNote[]
   customerActivities CustomerActivity[]
   customerNotes      CustomerNote[]
-  assignedRepairs    RepairOrder[]  @relation("AssignedRepairs")
+  assignedRepairs    RepairOrder[]      @relation("AssignedRepairs")
   repairActivities   RepairActivity[]
   repairNotes        RepairNote[]
-  receivedRepairs    RepairOrder[]  @relation("ReceivedRepairs")
+  receivedRepairs    RepairOrder[]      @relation("ReceivedRepairs")
 
   // Inventory Integration
-  inventoryMovements InventoryMovement[]
+  inventoryMovements   InventoryMovement[]
   inventoryAdjustments InventoryAdjustment[] @relation("AdjustmentApprover")
   createdAdjustments   InventoryAdjustment[] @relation("AdjustmentCreator")
 
   // Invoice Integration
-  createdInvoices      Invoice[]             @relation("InvoiceCreator")
-  approvedInvoices     Invoice[]             @relation("InvoiceApprover")
+  createdInvoices      Invoice[]              @relation("InvoiceCreator")
+  approvedInvoices     Invoice[]              @relation("InvoiceApprover")
   invoiceNotes         InvoiceNote[]
   invoiceActivities    InvoiceActivity[]
   invoiceStatusHistory InvoiceStatusHistory[]
+
+  // Payment Integration
+  paymentsReceived      Payment[]              @relation("PaymentReceiver")
+  paymentReceiptsIssued PaymentReceipt[]       @relation("ReceiptIssuer")
+  paymentActivities     PaymentActivity[]
+  paymentStatusHistory  PaymentStatusHistory[]
 }
 
 model Permission {
   id          String   @id @default(uuid())
-  action      String   // e.g., 'CREATE', 'READ', 'UPDATE', 'DELETE'
-  resource    String   // e.g., 'users', 'projects'
+  action      String // e.g., 'CREATE', 'READ', 'UPDATE', 'DELETE'
+  resource    String // e.g., 'users', 'projects'
   description String?
   users       User[]   @relation("UserPermissions")
   createdAt   DateTime @default(now())
@@ -266,15 +280,15 @@ model Permission {
 }
 
 model Organization {
-  id          String     @id @default(uuid())
-  name        String
-  domain      String?    @unique
-  industry    String?
-  customers   Customer[]
-  users       User[]
-  projects    Project[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id        String     @id @default(uuid())
+  name      String
+  domain    String?    @unique
+  industry  String?
+  customers Customer[]
+  users     User[]
+  projects  Project[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Customer {
@@ -300,13 +314,14 @@ model Customer {
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
 
-  leads          Lead[]
-  tickets        Ticket[]
-  devices        Device[]
-  activities     CustomerActivity[]
-  customerNotes  CustomerNote[]
-  repairs        RepairOrder[]
-  invoices       Invoice[]
+  leads         Lead[]
+  tickets       Ticket[]
+  devices       Device[]
+  activities    CustomerActivity[]
+  customerNotes CustomerNote[]
+  repairs       RepairOrder[]
+  invoices      Invoice[]
+  payments      Payment[]
 
   @@index([email])
   @@index([phone])
@@ -314,49 +329,49 @@ model Customer {
 }
 
 model Lead {
-  id              String         @id @default(uuid())
-  referenceNumber String         @unique // FBX-YYYY-000001
+  id              String          @id @default(uuid())
+  referenceNumber String          @unique // FBX-YYYY-000001
   type            LeadType
-  priority        LeadPriority   @default(NORMAL)
+  priority        LeadPriority    @default(NORMAL)
   category        InquiryCategory @default(OTHER)
-  
-  firstName       String
-  lastName        String
-  company         String?
-  phone           String
-  email           String
-  
-  deviceType      String?
+
+  firstName String
+  lastName  String
+  company   String?
+  phone     String
+  email     String
+
+  deviceType       String?
   serviceRequested String?
-  message         String?
-  
-  source          LeadSource     @default(WEBSITE)
-  status          LeadStatus     @default(NEW)
-  
+  message          String?
+
+  source LeadSource @default(WEBSITE)
+  status LeadStatus @default(NEW)
+
   consentAccepted   Boolean   @default(false)
   consentAcceptedAt DateTime?
 
   // Marketing Attribution
-  utmSource       String?
-  utmMedium       String?
-  utmCampaign     String?
-  utmContent      String?
-  utmTerm         String?
-  landingPage     String?
-  referrer        String?
-  
-  assignedTo      String?
-  assignee        User?          @relation("AssignedLeads", fields: [assignedTo], references: [id], onDelete: SetNull)
-  
-  customerId      String?
-  customer        Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  
-  activities      LeadActivity[]
-  notes           LeadNote[]
-  repairs         RepairOrder[]
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  landingPage String?
+  referrer    String?
 
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  assignedTo String?
+  assignee   User?   @relation("AssignedLeads", fields: [assignedTo], references: [id], onDelete: SetNull)
+
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  activities LeadActivity[]
+  notes      LeadNote[]
+  repairs    RepairOrder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([type])
   @@index([status])
@@ -379,17 +394,17 @@ model Project {
 }
 
 model Task {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
   projectId   String
-  project     Project  @relation(fields: [projectId], references: [id])
+  project     Project   @relation(fields: [projectId], references: [id])
   assigneeId  String?
-  assignee    User?    @relation("AssignedTasks", fields: [assigneeId], references: [id])
+  assignee    User?     @relation("AssignedTasks", fields: [assigneeId], references: [id])
   status      String
   dueDate     DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Ticket {
@@ -463,7 +478,7 @@ model LoginHistory {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   ipAddress String?
   userAgent String?
-  status    String   // "SUCCESS" or "FAILED"
+  status    String // "SUCCESS" or "FAILED"
   createdAt DateTime @default(now())
 }
 
@@ -566,51 +581,51 @@ model CustomerNote {
 }
 
 model RepairOrder {
-  id                      String        @id @default(uuid())
-  repairNumber            String        @unique // FBXR-000001
-  customerId              String
-  customer                Customer      @relation(fields: [customerId], references: [id])
-  deviceId                String
-  device                  Device        @relation(fields: [deviceId], references: [id])
-  leadId                  String?
-  lead                    Lead?         @relation(fields: [leadId], references: [id])
-  
-  assignedTechnicianId    String?
-  assignedTechnician      User?         @relation("AssignedRepairs", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
-  receivedByUserId        String?
-  receivedByUser          User?         @relation("ReceivedRepairs", fields: [receivedByUserId], references: [id], onDelete: SetNull)
-  
-  status                  RepairStatus  @default(NEW)
-  priority                RepairPriority @default(NORMAL)
-  
-  problemDescription      String
-  customerComplaint       String?
-  intakeCondition         String?
-  accessoriesReceived     String?
-  
-  estimatedCost           Float?
-  approvedCost            Float?
-  partsCost               Float?
-  finalCost               Float?
-  
+  id           String   @id @default(uuid())
+  repairNumber String   @unique // FBXR-000001
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id])
+  deviceId     String
+  device       Device   @relation(fields: [deviceId], references: [id])
+  leadId       String?
+  lead         Lead?    @relation(fields: [leadId], references: [id])
+
+  assignedTechnicianId String?
+  assignedTechnician   User?   @relation("AssignedRepairs", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
+  receivedByUserId     String?
+  receivedByUser       User?   @relation("ReceivedRepairs", fields: [receivedByUserId], references: [id], onDelete: SetNull)
+
+  status   RepairStatus   @default(NEW)
+  priority RepairPriority @default(NORMAL)
+
+  problemDescription  String
+  customerComplaint   String?
+  intakeCondition     String?
+  accessoriesReceived String?
+
+  estimatedCost Float?
+  approvedCost  Float?
+  partsCost     Float?
+  finalCost     Float?
+
   estimatedCompletionDate DateTime?
   completedAt             DateTime?
   deliveredAt             DateTime?
-  createdAt               DateTime      @default(now())
-  updatedAt               DateTime      @updatedAt
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 
-  activities              RepairActivity[]
-  notes                   RepairNote[]
-  diagnosis               Diagnosis?
-  statusHistory           RepairStatusHistory[]
-  checklist               RepairChecklistItem[]
-  
+  activities    RepairActivity[]
+  notes         RepairNote[]
+  diagnosis     Diagnosis?
+  statusHistory RepairStatusHistory[]
+  checklist     RepairChecklistItem[]
+
   // Inventory Integration
-  reservations            InventoryReservation[]
-  inventoryMovements      InventoryMovement[]
+  reservations       InventoryReservation[]
+  inventoryMovements InventoryMovement[]
 
   // Billing Integration
-  invoices                Invoice[]
+  invoices Invoice[]
 
   @@index([customerId])
   @@index([deviceId])
@@ -621,66 +636,66 @@ model RepairOrder {
 }
 
 model RepairActivity {
-  id            String       @id @default(uuid())
+  id            String      @id @default(uuid())
   repairOrderId String
-  repairOrder   RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  repairOrder   RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
   userId        String?
-  user          User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   action        String
   details       String?
   metadata      Json?
-  createdAt     DateTime     @default(now())
+  createdAt     DateTime    @default(now())
 
   @@index([repairOrderId])
   @@index([userId])
 }
 
 model RepairNote {
-  id            String       @id @default(uuid())
+  id            String      @id @default(uuid())
   repairOrderId String
-  repairOrder   RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  repairOrder   RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
   userId        String?
-  user          User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   content       String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([repairOrderId])
   @@index([userId])
 }
 
 model Diagnosis {
-  id               String       @id @default(uuid())
-  repairOrderId    String       @unique
-  repairOrder      RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  id               String      @id @default(uuid())
+  repairOrderId    String      @unique
+  repairOrder      RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
   issueFound       String?
   rootCause        String?
   technicianNotes  String?
-  repairability    String?      // e.g. "Fixable", "Not Fixable", "Requires Board Replacement"
+  repairability    String? // e.g. "Fixable", "Not Fixable", "Requires Board Replacement"
   recommendedParts String?
   estimatedTime    String?
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 }
 
 model ChecklistTemplate {
-  id            String   @id @default(uuid())
-  name          String
-  items         Json     // Array of string tasks
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(uuid())
+  name      String
+  items     Json // Array of string tasks
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model RepairChecklistItem {
-  id            String       @id @default(uuid())
+  id            String      @id @default(uuid())
   repairOrderId String
-  repairOrder   RepairOrder  @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+  repairOrder   RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
   task          String
-  isCompleted   Boolean      @default(false)
+  isCompleted   Boolean     @default(false)
   completedAt   DateTime?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([repairOrderId])
 }
@@ -710,7 +725,7 @@ model Supplier {
   status      String   @default("ACTIVE")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   // Reserved for Purchase Module
 }
 
@@ -721,47 +736,47 @@ model InventoryCategory {
   parentId    String?
   parent      InventoryCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
   children    InventoryCategory[] @relation("CategoryHierarchy")
-  
-  items       InventoryItem[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  items InventoryItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([parentId])
 }
 
 model InventoryItem {
-  id             String              @id @default(uuid())
-  partNumber     String              @unique
-  sku            String              @unique
-  barcode        String?             @unique
-  name           String
-  description    String?
-  
-  categoryId     String
-  category       InventoryCategory   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  
-  defaultCost    Float               @default(0)
-  defaultPrice   Float               @default(0)
-  
-  minimumStock   Int                 @default(0)
-  reorderLevel   Int                 @default(0)
-  
-  currentStock   Int                 @default(0)
-  reservedStock  Int                 @default(0)
-  
-  unit           Unit                @default(PIECE)
-  brand          String?
-  manufacturer   String?
-  
-  status         InventoryItemStatus @default(ACTIVE)
-  
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  
-  movements      InventoryMovement[]
-  reservations   InventoryReservation[]
-  adjustments    InventoryAdjustment[]
+  id          String  @id @default(uuid())
+  partNumber  String  @unique
+  sku         String  @unique
+  barcode     String? @unique
+  name        String
+  description String?
+
+  categoryId String
+  category   InventoryCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  defaultCost  Float @default(0)
+  defaultPrice Float @default(0)
+
+  minimumStock Int @default(0)
+  reorderLevel Int @default(0)
+
+  currentStock  Int @default(0)
+  reservedStock Int @default(0)
+
+  unit         Unit    @default(PIECE)
+  brand        String?
+  manufacturer String?
+
+  status InventoryItemStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  movements    InventoryMovement[]
+  reservations InventoryReservation[]
+  adjustments  InventoryAdjustment[]
 
   @@index([partNumber])
   @@index([sku])
@@ -781,74 +796,74 @@ model StockLocation {
 }
 
 model InventoryMovement {
-  id               String                  @id @default(uuid())
-  inventoryItemId  String
-  item             InventoryItem           @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
-  
-  repairOrderId    String?
-  repairOrder      RepairOrder?            @relation(fields: [repairOrderId], references: [id], onDelete: SetNull)
-  
-  reservationId    String?                 // Nullable reference to a reservation
-  adjustmentId     String?                 // Nullable reference to an adjustment
-  
-  quantity         Int
-  previousStock    Int
-  newStock         Int
-  
-  movementType     InventoryMovementType
-  reason           InventoryMovementReason
-  notes            String?
-  
-  createdById      String?
-  createdBy        User?                   @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  
-  createdAt        DateTime                @default(now())
-  
+  id              String        @id @default(uuid())
+  inventoryItemId String
+  item            InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+
+  repairOrderId String?
+  repairOrder   RepairOrder? @relation(fields: [repairOrderId], references: [id], onDelete: SetNull)
+
+  reservationId String? // Nullable reference to a reservation
+  adjustmentId  String? // Nullable reference to an adjustment
+
+  quantity      Int
+  previousStock Int
+  newStock      Int
+
+  movementType InventoryMovementType
+  reason       InventoryMovementReason
+  notes        String?
+
+  createdById String?
+  createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
   @@index([inventoryItemId])
   @@index([repairOrderId])
   @@index([createdAt])
 }
 
 model InventoryReservation {
-  id                String            @id @default(uuid())
-  repairOrderId     String
-  repairOrder       RepairOrder       @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
-  
-  inventoryItemId   String
-  item              InventoryItem     @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
-  
-  quantity          Int
-  status            ReservationStatus @default(ACTIVE)
-  
-  unitCostSnapshot  Float             @default(0)
-  unitPriceSnapshot Float             @default(0)
-  
-  reservedAt        DateTime          @default(now())
-  releasedAt        DateTime?
-  consumedAt        DateTime?
-  
+  id            String      @id @default(uuid())
+  repairOrderId String
+  repairOrder   RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+
+  inventoryItemId String
+  item            InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+
+  quantity Int
+  status   ReservationStatus @default(ACTIVE)
+
+  unitCostSnapshot  Float @default(0)
+  unitPriceSnapshot Float @default(0)
+
+  reservedAt DateTime  @default(now())
+  releasedAt DateTime?
+  consumedAt DateTime?
+
   @@unique([repairOrderId, inventoryItemId, status], name: "active_reservation_unique") // Helps Option B: merging logic
   @@index([repairOrderId])
   @@index([inventoryItemId])
 }
 
 model InventoryAdjustment {
-  id               String          @id @default(uuid())
-  inventoryItemId  String
-  item             InventoryItem   @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
-  
-  oldQuantity      Int
-  newQuantity      Int
-  reason           String
-  
-  approvedById     String?
-  approvedBy       User?           @relation("AdjustmentApprover", fields: [approvedById], references: [id], onDelete: SetNull)
-  
-  createdById      String?
-  createdBy        User?           @relation("AdjustmentCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  
-  createdAt        DateTime        @default(now())
-  
+  id              String        @id @default(uuid())
+  inventoryItemId String
+  item            InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+
+  oldQuantity Int
+  newQuantity Int
+  reason      String
+
+  approvedById String?
+  approvedBy   User?   @relation("AdjustmentApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+
+  createdById String?
+  createdBy   User?   @relation("AdjustmentCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
   @@index([inventoryItemId])
 }
 
@@ -857,50 +872,51 @@ model InventoryAdjustment {
 // ==============================================================================
 
 model Invoice {
-  id             String          @id @default(uuid())
-  invoiceNumber  String          @unique // FBXI-000001
-  
-  repairOrderId  String
-  repairOrder    RepairOrder     @relation(fields: [repairOrderId], references: [id], onDelete: Restrict)
-  
-  customerId     String
-  customer       Customer        @relation(fields: [customerId], references: [id], onDelete: Restrict)
-  
-  status         InvoiceStatus   @default(DRAFT)
-  currency       Currency        @default(USD)
-  
-  issueDate      DateTime?
-  dueDate        DateTime?
-  
+  id            String @id @default(uuid())
+  invoiceNumber String @unique // FBXI-000001
+
+  repairOrderId String
+  repairOrder   RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Restrict)
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  status   InvoiceStatus @default(DRAFT)
+  currency Currency      @default(USD)
+
+  issueDate DateTime?
+  dueDate   DateTime?
+
   // Financial Totals (Calculated in Service)
-  subtotal       Float           @default(0)
-  laborTotal     Float           @default(0)
-  partsTotal     Float           @default(0)
-  discountTotal  Float           @default(0)
-  taxTotal       Float           @default(0)
-  grandTotal     Float           @default(0)
-  
+  subtotal      Float @default(0)
+  laborTotal    Float @default(0)
+  partsTotal    Float @default(0)
+  discountTotal Float @default(0)
+  taxTotal      Float @default(0)
+  grandTotal    Float @default(0)
+
   // Payment Tracking
-  paidAmount     Float           @default(0)
-  balanceDue     Float           @default(0)
-  
-  notes          String?
-  
-  createdById    String?
-  createdBy      User?           @relation("InvoiceCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  
-  approvedById   String?
-  approvedBy     User?           @relation("InvoiceApprover", fields: [approvedById], references: [id], onDelete: SetNull)
-  approvedAt     DateTime?
-  
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  
-  items          InvoiceItem[]
-  invoiceNotes   InvoiceNote[]
-  statusHistory  InvoiceStatusHistory[]
-  activities     InvoiceActivity[]
-  
+  paidAmount Float @default(0)
+  balanceDue Float @default(0)
+
+  notes String?
+
+  createdById String?
+  createdBy   User?   @relation("InvoiceCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  approvedById String?
+  approvedBy   User?     @relation("InvoiceApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items         InvoiceItem[]
+  invoiceNotes  InvoiceNote[]
+  statusHistory InvoiceStatusHistory[]
+  activities    InvoiceActivity[]
+  allocations   PaymentAllocation[]
+
   @@index([invoiceNumber])
   @@index([customerId])
   @@index([repairOrderId])
@@ -909,75 +925,207 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id                 String          @id @default(uuid())
-  invoiceId          String
-  invoice            Invoice         @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  
-  type               InvoiceItemType
-  
+  id        String  @id @default(uuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  type InvoiceItemType
+
   // Source Traceability
-  sourceType         SourceType
-  sourceId           String?         // Nullable reference ID (e.g., InventoryReservation ID, Labor task ID)
-  
-  description        String
-  quantity           Int             @default(1)
-  unitPrice          Float           @default(0)
-  
+  sourceType SourceType
+  sourceId   String? // Nullable reference ID (e.g., InventoryReservation ID, Labor task ID)
+
+  description String
+  quantity    Int    @default(1)
+  unitPrice   Float  @default(0)
+
   // Snapshots for Immutability
   partNumberSnapshot String?
   skuSnapshot        String?
   itemNameSnapshot   String?
-  unitSnapshot       String?         // Using string to capture unit at the time of invoicing
-  
+  unitSnapshot       String? // Using string to capture unit at the time of invoicing
+
   // Tax & Discount Support
-  discountAmount     Float           @default(0)
-  taxAmount          Float           @default(0)
-  
-  lineTotal          Float           @default(0)
-  
-  displayOrder       Int             @default(0)
-  
+  discountAmount Float @default(0)
+  taxAmount      Float @default(0)
+
+  lineTotal Float @default(0)
+
+  displayOrder Int @default(0)
+
   @@index([invoiceId])
 }
 
 model InvoiceNote {
-  id         String   @id @default(uuid())
-  invoiceId  String
-  invoice    Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  content    String
-  createdAt  DateTime @default(now())
-  
+  id        String   @id @default(uuid())
+  invoiceId String
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  content   String
+  createdAt DateTime @default(now())
+
   @@index([invoiceId])
   @@index([userId])
 }
 
 model InvoiceStatusHistory {
-  id         String        @id @default(uuid())
-  invoiceId  String
-  invoice    Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  status     InvoiceStatus
-  notes      String?
-  userId     String?
-  user       User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
-  createdAt  DateTime      @default(now())
-  
+  id        String        @id @default(uuid())
+  invoiceId String
+  invoice   Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  status    InvoiceStatus
+  notes     String?
+  userId    String?
+  user      User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime      @default(now())
+
   @@index([invoiceId])
   @@index([createdAt])
 }
 
 model InvoiceActivity {
-  id         String   @id @default(uuid())
-  invoiceId  String
-  invoice    Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  action     String
-  details    String?
-  metadata   Json?
-  createdAt  DateTime @default(now())
-  
+  id        String   @id @default(uuid())
+  invoiceId String
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  details   String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
   @@index([invoiceId])
+  @@index([userId])
+}
+
+// ==============================================================================
+// PAYMENT PROCESSING & RECEIVABLES
+// ==============================================================================
+
+enum PaymentStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  BANK_TRANSFER
+  MOBILE_BANKING
+  CHEQUE
+  OTHER
+}
+
+model Payment {
+  id            String @id @default(uuid())
+  paymentNumber String @unique // FBXP-000001
+
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  status   PaymentStatus @default(PENDING)
+  method   PaymentMethod
+  currency Currency      @default(USD)
+
+  amountReceived    Float
+  amountAllocated   Float @default(0)
+  unallocatedAmount Float // Initialized as amountReceived
+
+  referenceNumber String? // Check number, reference code, etc.
+  transactionId   String? // Gateway transaction ID
+  methodMetadata  Json? // Additional details based on method
+
+  paymentDate DateTime @default(now())
+
+  receivedById String?
+  receivedBy   User?   @relation("PaymentReceiver", fields: [receivedById], references: [id], onDelete: SetNull)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  allocations   PaymentAllocation[]
+  receipts      PaymentReceipt[]
+  statusHistory PaymentStatusHistory[]
+  activities    PaymentActivity[]
+
+  @@index([paymentNumber])
+  @@index([customerId])
+  @@index([status])
+  @@index([paymentDate])
+  @@index([transactionId])
+}
+
+model PaymentAllocation {
+  id String @id @default(uuid())
+
+  paymentId String
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+
+  allocatedAmount Float
+
+  createdAt DateTime @default(now())
+
+  @@index([paymentId])
+  @@index([invoiceId])
+}
+
+model PaymentReceipt {
+  id            String @id @default(uuid())
+  receiptNumber String @unique // FBXR-000001
+
+  paymentId String
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+
+  // Immutable snapshots
+  customerNameSnapshot   String
+  invoiceNumbersSnapshot String // Comma-separated list of affected invoices
+  amountSnapshot         Float
+  currencySnapshot       String
+  paymentMethodSnapshot  String
+
+  issuedAt   DateTime @default(now())
+  issuedById String?
+  issuedBy   User?    @relation("ReceiptIssuer", fields: [issuedById], references: [id], onDelete: SetNull)
+
+  remarks String?
+
+  @@index([receiptNumber])
+  @@index([paymentId])
+}
+
+model PaymentStatusHistory {
+  id        String        @id @default(uuid())
+  paymentId String
+  payment   Payment       @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  status    PaymentStatus
+  notes     String?
+  userId    String?
+  user      User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime      @default(now())
+
+  @@index([paymentId])
+  @@index([createdAt])
+}
+
+model PaymentActivity {
+  id        String   @id @default(uuid())
+  paymentId String
+  payment   Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  details   String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([paymentId])
   @@index([userId])
 }
