@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- **CRM Operations Module**: Implemented a workflow-centric workspace mimicking enterprise CRMs.
+- **Sales Pipeline**: Added a drag-and-drop Kanban board (`@dnd-kit/core`) for tracking leads through custom stages (`NEW`, `CONTACTED`, `IN_PROGRESS`, `CONVERTED`, `LOST`).
+- **Service Queue**: Added a dedicated data table for `REPAIR_REQUEST` and `GENERAL_INQUIRY` tracking.
+- **CRM Dashboard**: Added KPI metrics showing Total Leads, New Leads, and Conversion Rates.
+- **Lead Slide-Over**: Built a comprehensive 360-degree view component for lead contact information, activity history, and notes.
+- **LeadActivity Model**: Implemented granular event tracking specifically for CRM records.
+- **LeadNote Model**: Added ability for users to append timestamped notes to leads.
+- **CRM Controller**: Created specialized backend endpoints for assigning, converting, and updating lead states.
+- **Audit Logging**: Ensured all mutating CRM operations append to both `LeadActivity` and global `AuditLog`.
+
 ## [Pre-Prompt 4] - Quality Gate & Documentation
 ### Added
 - Comprehensive architecture documentation (`SYSTEM_ARCHITECTURE.md`, `ROADMAP.md`, `MODULES.md`, `API.md`, `DATABASE.md`, `PROJECT_STRUCTURE.md`, `COMPONENTS.md`).

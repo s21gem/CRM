@@ -25,6 +25,13 @@ enum AuthEvent {
   PASSWORD_CHANGED
   SESSION_REVOKED
   UNAUTHORIZED_ACCESS
+  // CRM Events
+  LEAD_CREATED
+  LEAD_UPDATED
+  LEAD_STATUS_CHANGED
+  LEAD_ASSIGNED
+  LEAD_CONVERTED
+  LEAD_NOTE_ADDED
 }
 
 enum LeadType {
@@ -93,6 +100,8 @@ model User {
   loginHistories LoginHistory[]
   auditLogs      AuditLog[]
   leads          Lead[]         @relation("AssignedLeads")
+  leadActivities LeadActivity[]
+  leadNotes      LeadNote[]
 }
 
 model Permission {
@@ -168,6 +177,9 @@ model Lead {
   customerId      String?
   customer        Customer?      @relation(fields: [customerId], references: [id])
   
+  activities      LeadActivity[]
+  notes           LeadNote[]
+
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 }
@@ -287,6 +299,28 @@ model AuditLog {
 model Sequence {
   id    String @id
   value Int    @default(0)
+}
+
+model LeadActivity {
+  id        String   @id @default(uuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  details   String?
+  createdAt DateTime @default(now())
+}
+
+model LeadNote {
+  id        String   @id @default(uuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
