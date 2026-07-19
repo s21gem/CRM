@@ -4,6 +4,7 @@
 - **Prompt 1**: Enterprise Foundation (Monorepo, Next.js, Express, Prisma, Tailwind, UI Library).
 - **Prompt 2**: Enterprise Authentication & Role-Based Access Control (RBAC).
 - **Prompt 3**: Customer-Facing Website & Lead Generation Platform.
+- **Pre-Prompt 4**: Architecture, Documentation, and Quality Gate.
 
 ## 🏛 Current Architecture
 - **Frameworks**: Next.js 15 (App Router), Express.js (REST API).
@@ -19,6 +20,7 @@
 - **Logging**: Comprehensive `AuditLog` for authentication events.
 - **Lead Capture**: Concurrency-safe Lead reference generator, standardized Lead submission APIs (`/quote`, `/repair`, `/business`).
 - **Marketing Frontend**: Data-driven Next.js marketing architecture, AI-generated assets, centralized analytics abstraction.
+- **Documentation**: Comprehensive architectural blueprints, performance, and security reviews.
 
 ## 🚧 Pending Roadmap
 - **Prompt 4**: CRM Pipeline & Operations

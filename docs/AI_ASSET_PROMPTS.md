@@ -16,6 +16,8 @@ This document stores the production-quality image prompts used for AI generation
 - **Aspect Ratio:** 16:9.
 - **Resolution:** 4K.
 - **Negative Prompt:** Cartoon, messy, cluttered, low quality, stock watermark, people.
+- **Purpose**: Primary visual anchor for the landing page hero section.
+- **Version**: 1.0.0
 
 ## Phone Repair Service
 **Image:** `/images/services/phone-repair-v1.png`
@@ -31,6 +33,8 @@ This document stores the production-quality image prompts used for AI generation
 - **Aspect Ratio:** 16:9.
 - **Resolution:** High.
 - **Negative Prompt:** People, messy, dirty, cartoon, 3d render.
+- **Purpose**: Visual asset for the hardware repair services page.
+- **Version**: 1.0.0
 
 ## Corporate Support
 **Image:** `/images/business/corporate-support-v1.png`
@@ -46,3 +50,5 @@ This document stores the production-quality image prompts used for AI generation
 - **Aspect Ratio:** 16:9.
 - **Resolution:** High.
 - **Negative Prompt:** Wires tangled, messy, people, cartoon.
+- **Purpose**: Visual asset for the enterprise business solutions page.
+- **Version**: 1.0.0

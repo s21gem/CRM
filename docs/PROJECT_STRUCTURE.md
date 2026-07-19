@@ -1,55 +1,27 @@
 # Project Structure
 
-The FoneBox Enterprise CRM is organized as a scalable monorepo using npm workspaces.
+The repository is built as a Turborepo Monorepo to ensure seamless code sharing and independent deployment pipelines.
 
-```mermaid
-graph TD
-    Root[fonebox-enterprise-crm]
-    Apps[apps]
-    Packages[packages]
-    Prisma[prisma]
-    Docs[docs]
+## Root Directory
+- `/apps`: Contains executable applications.
+- `/packages`: Contains shared configuration (`@fonebox/config`, `@fonebox/utils`, `@fonebox/types`).
+- `/docs`: Contains all architectural and engineering guidelines.
+- `/prisma`: Contains the shared Database Schema and migration history.
 
-    Root --> Apps
-    Root --> Packages
-    Root --> Prisma
-    Root --> Docs
+## Frontend (`apps/web`)
+- `src/app`: Next.js App Router root.
+  - `(public)`: Marketing website routes (`/about`, `/contact`, `/pricing`, etc.).
+  - `(auth)`: Application routes (Login, Dashboard, CRM).
+- `src/components/ui`: Highly reusable Tailwind primitives (Button, Input, Cards).
+- `src/content`: Data-driven constants for marketing text (Services, FAQs).
+- `src/lib`: Frontend utilities, including the `Analytics` abstract layer.
 
-    Apps --> Web[web: Next.js 15]
-    Apps --> API[api: Express.js]
-
-    Packages --> UI[@fonebox/ui]
-    Packages --> Types[@fonebox/types]
-    Packages --> Utils[@fonebox/utils]
-    Packages --> Config[@fonebox/config]
-```
-
-## Directory Details
-
-### `/apps/web`
-The frontend application built with Next.js App Router.
-- `src/app`: Page components and routing skeletons.
-- `src/components`: Reusable UI components.
-  - `ui/`: shadcn/ui components.
-  - `layout/`: Navbar, Sidebar, AppLayout.
-  - `guards/`: Route access guards.
-- `src/contexts`: React contexts (e.g., AuthContext).
-
-### `/apps/api`
-The backend Express application.
-- `src/controllers`: Request handlers.
-- `src/services`: Business logic.
-- `src/repositories`: Data access layer (Prisma calls).
-- `src/middlewares`: Express middlewares (auth, errors).
-- `src/routes`: API endpoint definitions.
-
-### `/packages/*`
-Shared internal libraries.
-- `@fonebox/types`: Shared TypeScript interfaces and enums.
-- `@fonebox/ui`: Shared React components (if decoupled from Next.js).
-- `@fonebox/utils`: Shared helper functions.
-- `@fonebox/config`: Shared configurations.
-
-### `/prisma`
-Database configuration.
-- `schema.prisma`: The single source of truth for the database schema.
+## Backend (`apps/api`)
+- `src/config`: Environment and static configurations.
+- `src/middlewares`: Global and route-specific logic (Error Handler, `authorize`, `validate`).
+- `src/modules`: Domain-driven feature clusters (e.g. `auth/`, `leads/`). Each contains:
+  - `*.controller.ts`: Handles request/response mapping.
+  - `*.service.ts`: Handles core business logic.
+- `src/routes/v1`: Route definitions mapping HTTP methods to Controllers.
+- `src/scripts`: Database seeders (`seed-roles`, `seed-users`).
+- `src/utils`: Helpers like API Response formatters.
