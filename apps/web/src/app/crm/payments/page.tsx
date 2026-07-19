@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SectionCard } from '@/components/ui/SectionCard';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { CreditCard } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function PaymentsDashboard() {
@@ -40,15 +42,20 @@ export default function PaymentsDashboard() {
   }, []);
 
   if (loading) {
-    return <div className="p-8">Loading payments dashboard...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center space-y-3 h-64">
+        <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+        <p className="text-sm text-muted-foreground">Loading collections...</p>
+      </div>
+    );
   }
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Payments</h1>
-          <p className="text-gray-500 mt-1">Manage receivables, allocations, and receipts.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Payments</h1>
+          <p className="text-muted-foreground mt-1">Manage receivables, allocations, and receipts.</p>
         </div>
       </div>
 
@@ -104,37 +111,37 @@ export default function PaymentsDashboard() {
         <div>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead>
-                <tr className="border-b">
-                  <th className="pb-2 font-medium">Payment No.</th>
-                  <th className="pb-2 font-medium">Customer</th>
-                  <th className="pb-2 font-medium">Date</th>
-                  <th className="pb-2 font-medium">Method</th>
-                  <th className="pb-2 font-medium">Status</th>
-                  <th className="pb-2 font-medium text-right">Amount</th>
-                  <th className="pb-2 font-medium text-right">Action</th>
+              <thead className="bg-muted/50 text-muted-foreground">
+                <tr className="border-b border-border">
+                  <th className="px-4 py-3 text-sm font-medium">Payment No.</th>
+                  <th className="px-4 py-3 text-sm font-medium">Customer</th>
+                  <th className="px-4 py-3 text-sm font-medium">Date</th>
+                  <th className="px-4 py-3 text-sm font-medium">Method</th>
+                  <th className="px-4 py-3 text-sm font-medium">Status</th>
+                  <th className="px-4 py-3 text-sm font-medium text-right">Amount</th>
+                  <th className="px-4 py-3 text-sm font-medium text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-border">
                 {payments.map(payment => (
-                  <tr key={payment.id} className="hover:bg-gray-50">
-                    <td className="py-3 font-medium">{payment.paymentNumber}</td>
-                    <td className="py-3">{payment.customer?.firstName} {payment.customer?.lastName}</td>
-                    <td className="py-3">{formatDistanceToNow(new Date(payment.paymentDate), { addSuffix: true })}</td>
-                    <td className="py-3">{payment.method}</td>
-                    <td className="py-3">
+                  <tr key={payment.id} className="hover:bg-muted/30 transition-colors group">
+                    <td className="px-4 py-3 font-medium">{payment.paymentNumber}</td>
+                    <td className="px-4 py-3">{payment.customer?.firstName} {payment.customer?.lastName}</td>
+                    <td className="px-4 py-3 text-muted-foreground text-sm">{formatDistanceToNow(new Date(payment.paymentDate), { addSuffix: true })}</td>
+                    <td className="px-4 py-3">{payment.method}</td>
+                    <td className="px-4 py-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        payment.status === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
-                        payment.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                        payment.status === 'CONFIRMED' ? 'bg-success/10 text-success' :
+                        payment.status === 'PENDING' ? 'bg-warning/20 text-warning-foreground' :
                         payment.status === 'REFUNDED' ? 'bg-purple-100 text-purple-800' :
-                        'bg-gray-100 text-gray-800'
+                        'bg-muted text-muted-foreground'
                       }`}>
                         {payment.status}
                       </span>
                     </td>
-                    <td className="py-3 text-right font-medium">${payment.amountReceived.toFixed(2)}</td>
-                    <td className="py-3 text-right">
-                      <Link href={`/crm/payments/${payment.id}`} className="text-blue-600 hover:underline text-sm font-medium">
+                    <td className="px-4 py-3 text-right font-medium">${payment.amountReceived.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-right">
+                      <Link href={`/crm/payments/${payment.id}`} className="text-primary hover:underline text-sm font-medium">
                         View
                       </Link>
                     </td>
@@ -142,7 +149,13 @@ export default function PaymentsDashboard() {
                 ))}
                 {payments.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="text-center py-8 text-gray-500">No payments found.</td>
+                    <td colSpan={7} className="p-8">
+                      <EmptyState 
+                        icon={CreditCard} 
+                        title="No payments collected" 
+                        description="There are no recorded receivables matching your criteria." 
+                      />
+                    </td>
                   </tr>
                 )}
               </tbody>

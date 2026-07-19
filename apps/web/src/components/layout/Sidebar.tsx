@@ -63,7 +63,7 @@ export const Sidebar = () => {
             
             return (
               <div key={group.name} className="space-y-1">
-                <h3 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                <h3 className="px-3 text-[11px] font-bold text-sidebar-foreground/50 uppercase tracking-wider mb-3 mt-4">
                   {group.name}
                 </h3>
                 {group.items.map((item) => {
@@ -78,14 +78,14 @@ export const Sidebar = () => {
                       href={item.href}
                       className={classNames(
                         isActive
-                          ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                          : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
-                        'group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors'
+                          ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm'
+                          : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground',
+                        'group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-all'
                       )}
                     >
                       <item.icon
                         className={classNames(
-                          isActive ? 'text-sidebar-accent-foreground' : 'text-muted-foreground group-hover:text-accent-foreground',
+                          isActive ? 'text-sidebar-accent-foreground' : 'text-sidebar-foreground/70 group-hover:text-sidebar-foreground',
                           'mr-3 h-5 w-5 flex-shrink-0'
                         )}
                         aria-hidden="true"

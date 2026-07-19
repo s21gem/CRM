@@ -15,10 +15,10 @@ export const StatCard = ({
   trend?: { value: number; isPositive: boolean };
 }) => {
   return (
-    <div className="rounded-lg border bg-card p-6 shadow-sm">
+    <div className="rounded-lg border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-border/80">
       <div className="flex items-center justify-between space-y-0 pb-2">
-        <h3 className="tracking-tight text-sm font-medium text-muted-foreground">{title}</h3>
-        {icon && <div className="h-4 w-4 text-muted-foreground">{icon}</div>}
+        <h3 className="tracking-tight text-sm font-semibold text-muted-foreground">{title}</h3>
+        {icon && <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-muted-foreground">{icon}</div>}
       </div>
       <div className="flex flex-col">
         <div className="text-2xl font-bold">{value}</div>

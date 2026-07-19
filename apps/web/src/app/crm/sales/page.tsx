@@ -15,12 +15,20 @@ function DroppableColumn({ id, title, leads, onLeadClick }: { id: string; title:
   const { setNodeRef } = useDroppable({ id });
 
   return (
-    <div ref={setNodeRef} className="flex-1 bg-muted/50 rounded-lg p-4 min-w-[300px] flex flex-col h-[calc(100vh-200px)]">
-      <h3 className="font-semibold mb-4 text-sm text-muted-foreground uppercase tracking-wider">{title} ({leads.length})</h3>
-      <div className="flex-1 overflow-y-auto space-y-3">
+    <div ref={setNodeRef} className="flex-1 bg-muted/30 border border-border/50 rounded-xl p-4 min-w-[320px] flex flex-col h-[calc(100vh-200px)]">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-semibold text-sm text-foreground uppercase tracking-wider">{title}</h3>
+        <span className="bg-muted text-muted-foreground text-xs font-medium px-2 py-0.5 rounded-full">{leads.length}</span>
+      </div>
+      <div className="flex-1 overflow-y-auto space-y-3 pr-1">
         {leads.map(lead => (
           <DraggableCard key={lead.id} lead={lead} onClick={() => onLeadClick(lead.id)} />
         ))}
+        {leads.length === 0 && (
+          <div className="h-24 border-2 border-dashed border-border rounded-lg flex items-center justify-center text-sm text-muted-foreground">
+            Drop here
+          </div>
+        )}
       </div>
     </div>
   );
@@ -42,14 +50,14 @@ function DraggableCard({ lead, onClick }: { lead: any; onClick: () => void }) {
       style={style}
       {...listeners}
       {...attributes}
-      className="bg-background p-4 rounded-md shadow-sm border cursor-grab active:cursor-grabbing hover:border-primary transition-colors"
+      className="bg-card p-4 rounded-lg shadow-sm border border-border cursor-grab active:cursor-grabbing hover:border-primary/50 hover:shadow-md transition-all group"
       onClick={onClick}
     >
-      <div className="flex justify-between items-start mb-2">
+      <div className="flex justify-between items-start mb-3">
         <span className="text-xs font-semibold text-primary">{lead.referenceNumber}</span>
-        <span className="text-xs bg-muted px-2 py-0.5 rounded text-muted-foreground">{lead.priority}</span>
+        <span className="text-[10px] uppercase font-bold bg-muted px-2 py-1 rounded-sm text-muted-foreground">{lead.priority}</span>
       </div>
-      <p className="font-medium text-sm">{lead.firstName} {lead.lastName}</p>
+      <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">{lead.firstName} {lead.lastName}</p>
       <p className="text-xs text-muted-foreground mt-1 truncate">{lead.company || lead.type}</p>
     </div>
   );
@@ -58,6 +66,7 @@ function DraggableCard({ lead, onClick }: { lead: any; onClick: () => void }) {
 export default function SalesPipelinePage() {
   const [leads, setLeads] = useState<any[]>([]);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -77,6 +86,8 @@ export default function SalesPipelinePage() {
     } catch (error) {
       console.error(error);
       toast.error('Failed to load sales pipeline');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,19 +137,27 @@ export default function SalesPipelinePage() {
         </div>
 
         <div className="flex-1 overflow-x-auto pb-4">
-          <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+          {loading ? (
             <div className="flex gap-4 h-full">
-              {COLUMNS.map(col => (
-                <DroppableColumn
-                  key={col}
-                  id={col}
-                  title={LEAD_STATUS_LABELS[col] || col}
-                  leads={leads.filter(l => l.status === col)}
-                  onLeadClick={setSelectedLeadId}
-                />
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex-1 bg-muted/20 border border-border/30 rounded-xl p-4 min-w-[320px] animate-pulse h-[600px]"></div>
               ))}
             </div>
-          </DndContext>
+          ) : (
+            <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+              <div className="flex gap-4 h-full">
+                {COLUMNS.map(col => (
+                  <DroppableColumn
+                    key={col}
+                    id={col}
+                    title={LEAD_STATUS_LABELS[col] || col}
+                    leads={leads.filter(l => l.status === col)}
+                    onLeadClick={setSelectedLeadId}
+                  />
+                ))}
+              </div>
+            </DndContext>
+          )}
         </div>
       </div>
 

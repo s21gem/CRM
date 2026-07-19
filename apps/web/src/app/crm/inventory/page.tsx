@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { StatCard } from '@/components/ui/StatCard';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { Package, AlertCircle, ShoppingCart, Activity, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { classNames } from '@fonebox/utils';
@@ -94,7 +95,7 @@ export default function InventoryDashboardPage() {
                 </thead>
                 <tbody className="divide-y">
                   {items.map((item) => (
-                    <tr key={item.id} className="hover:bg-muted/50 transition-colors">
+                    <tr key={item.id} className="hover:bg-muted/50 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="font-medium text-foreground">{item.name}</div>
                         <div className="text-xs text-muted-foreground">{item.sku}</div>
@@ -116,8 +117,27 @@ export default function InventoryDashboardPage() {
                   ))}
                   {items.length === 0 && !loading && (
                     <tr>
-                      <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
-                        No inventory items found.
+                      <td colSpan={5} className="p-8">
+                        <EmptyState 
+                          icon={Package} 
+                          title="No inventory items" 
+                          description="Get started by adding your first hardware or software asset to the ledger." 
+                          action={
+                            <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
+                              Add Item
+                            </button>
+                          }
+                        />
+                      </td>
+                    </tr>
+                  )}
+                  {loading && (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12">
+                        <div className="flex flex-col items-center justify-center space-y-3">
+                          <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                          <p className="text-sm text-muted-foreground">Loading ledger...</p>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -132,7 +152,11 @@ export default function InventoryDashboardPage() {
             </div>
             <div className="p-4 flex flex-col gap-4">
               {metrics.recentMovements.length === 0 ? (
-                <div className="text-sm text-muted-foreground text-center py-4">No recent movements</div>
+                <EmptyState 
+                  icon={Activity} 
+                  title="No recent movements" 
+                  description="Transactions will appear here once inventory is adjusted or consumed." 
+                />
               ) : (
                 metrics.recentMovements.map((movement: any) => (
                   <div key={movement.id} className="flex items-start justify-between pb-4 border-b last:border-0 last:pb-0">

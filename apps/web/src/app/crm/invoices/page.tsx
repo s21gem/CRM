@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SectionCard } from '@/components/ui/SectionCard';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { FileText } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function InvoicesDashboard() {
@@ -104,45 +106,57 @@ export default function InvoicesDashboard() {
         <div>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead>
-                <tr className="border-b">
-                  <th className="pb-3 text-sm font-medium text-gray-500">Invoice #</th>
-                  <th className="pb-3 text-sm font-medium text-gray-500">Customer</th>
-                  <th className="pb-3 text-sm font-medium text-gray-500">Status</th>
-                  <th className="pb-3 text-sm font-medium text-gray-500">Total</th>
-                  <th className="pb-3 text-sm font-medium text-gray-500">Balance</th>
-                  <th className="pb-3 text-sm font-medium text-gray-500">Created</th>
-                  <th className="pb-3 text-sm font-medium text-gray-500"></th>
+              <thead className="bg-muted/50 text-muted-foreground">
+                <tr className="border-b border-border">
+                  <th className="px-4 py-3 text-sm font-medium">Invoice #</th>
+                  <th className="px-4 py-3 text-sm font-medium">Customer</th>
+                  <th className="px-4 py-3 text-sm font-medium">Status</th>
+                  <th className="px-4 py-3 text-sm font-medium">Total</th>
+                  <th className="px-4 py-3 text-sm font-medium">Balance</th>
+                  <th className="px-4 py-3 text-sm font-medium">Created</th>
+                  <th className="px-4 py-3 text-sm font-medium text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
-                {invoices.map((invoice) => (
-                  <tr key={invoice.id} className="hover:bg-gray-50">
-                    <td className="py-3 font-medium">{invoice.invoiceNumber}</td>
-                    <td className="py-3">
-                      {invoice.customer.firstName} {invoice.customer.lastName}
-                    </td>
-                    <td className="py-3">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        invoice.status === 'PAID' ? 'bg-green-100 text-green-800' :
-                        invoice.status === 'DRAFT' ? 'bg-gray-100 text-gray-800' :
-                        'bg-blue-100 text-blue-800'
-                      }`}>
-                        {invoice.status}
-                      </span>
-                    </td>
-                    <td className="py-3">${invoice.grandTotal.toFixed(2)}</td>
-                    <td className="py-3">${invoice.balanceDue.toFixed(2)}</td>
-                    <td className="py-3 text-sm text-gray-500">
-                      {formatDistanceToNow(new Date(invoice.createdAt), { addSuffix: true })}
-                    </td>
-                    <td className="py-3 text-right">
-                      <Link href={`/crm/invoices/${invoice.id}`} className="text-blue-600 hover:underline">
-                        View
-                      </Link>
+              <tbody className="divide-y divide-border">
+                {invoices.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-8">
+                      <EmptyState 
+                        icon={FileText} 
+                        title="No invoices found" 
+                        description="There are no draft or issued invoices available in the billing engine." 
+                      />
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  invoices.map((invoice) => (
+                    <tr key={invoice.id} className="hover:bg-muted/30 transition-colors group">
+                      <td className="py-3 px-4 font-medium">{invoice.invoiceNumber}</td>
+                      <td className="py-3 px-4">
+                        {invoice.customer.firstName} {invoice.customer.lastName}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                          invoice.status === 'PAID' ? 'bg-success/10 text-success' :
+                          invoice.status === 'DRAFT' ? 'bg-muted text-muted-foreground' :
+                          'bg-primary/10 text-primary'
+                        }`}>
+                          {invoice.status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">${invoice.grandTotal.toFixed(2)}</td>
+                      <td className="py-3 px-4">${invoice.balanceDue.toFixed(2)}</td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                        {formatDistanceToNow(new Date(invoice.createdAt), { addSuffix: true })}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <Link href={`/crm/invoices/${invoice.id}`} className="text-primary hover:underline font-medium text-sm">
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

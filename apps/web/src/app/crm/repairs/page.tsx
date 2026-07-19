@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SectionCard } from '@/components/ui/SectionCard';
-import { Wrench, CheckCircle, Clock, AlertTriangle, PlayCircle } from 'lucide-react';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { Wrench, CheckCircle, Clock, AlertTriangle, PlayCircle, HardDrive } from 'lucide-react';
 import { toast } from 'sonner';
 import { PROJECT_STATUS_LABELS } from '@/lib/constants';
 
@@ -34,7 +35,12 @@ export default function RepairsDashboardPage() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading workspace...</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center space-y-3 h-64">
+      <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+      <p className="text-sm text-muted-foreground">Loading operations workspace...</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
@@ -74,10 +80,23 @@ export default function RepairsDashboardPage() {
             </thead>
             <tbody>
               {repairs.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-muted-foreground border-b">No repairs found</td></tr>
+                <tr>
+                  <td colSpan={7} className="p-8">
+                    <EmptyState 
+                      icon={HardDrive} 
+                      title="No projects found" 
+                      description="There are currently no active enterprise implementations." 
+                      action={
+                        <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
+                          Initialize Project
+                        </button>
+                      }
+                    />
+                  </td>
+                </tr>
               ) : (
                 repairs.map((r) => (
-                  <tr key={r.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                  <tr key={r.id} className="border-b border-border hover:bg-muted/30 transition-colors group">
                     <td className="px-4 py-3 font-mono font-medium">{r.repairNumber}</td>
                     <td className="px-4 py-3">{r.customer?.firstName} {r.customer?.lastName}</td>
                     <td className="px-4 py-3">{r.device?.brand} {r.device?.model}</td>

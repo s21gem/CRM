@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SectionCard } from '@/components/ui/SectionCard';
-import { Search, Plus, Filter, FileText, Smartphone } from 'lucide-react';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { Search, Plus, Filter, FileText, Smartphone, Users } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Customer {
@@ -114,19 +115,31 @@ export default function CustomersPage() {
             <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">
-                    Loading customers...
+                  <td colSpan={6} className="px-6 py-12">
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                      <p className="text-sm text-muted-foreground">Loading clients...</p>
+                    </div>
                   </td>
                 </tr>
               ) : customers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">
-                    No customers found matching your search.
+                  <td colSpan={6} className="p-8">
+                    <EmptyState 
+                      icon={Users} 
+                      title="No clients found" 
+                      description={search ? "No clients match your search criteria. Try a different term." : "Get started by adding your first enterprise client."} 
+                      action={
+                        <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors">
+                          Add Client
+                        </button>
+                      }
+                    />
                   </td>
                 </tr>
               ) : (
                 customers.map(customer => (
-                  <tr key={customer.id} className="hover:bg-muted/20 transition-colors">
+                  <tr key={customer.id} className="hover:bg-muted/30 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="font-medium text-foreground">{customer.firstName} {customer.lastName}</div>
                       <div className="text-xs text-muted-foreground">{customer.customerNumber}</div>

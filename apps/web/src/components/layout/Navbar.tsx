@@ -43,13 +43,13 @@ export const Navbar = () => {
         {user && (
           <div className="flex items-center space-x-4 border-l pl-4">
             <div className="hidden sm:flex flex-col text-right">
-              <span className="text-sm font-medium">{user.firstName} {user.lastName}</span>
-              <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded-full inline-block mt-0.5">{user.role}</span>
+              <span className="text-sm font-semibold">{user.firstName} {user.lastName}</span>
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted px-2 py-0.5 rounded text-center inline-block mt-0.5 font-bold">{user.role.replace(/_/g, ' ')}</span>
             </div>
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+            <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-sm">
               {user.firstName[0]}{user.lastName[0]}
             </div>
-            <Button variant="ghost" size="icon" onClick={logout} title="Log out">
+            <Button variant="ghost" size="icon" onClick={logout} title="Log out" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
               <LogOut className="h-5 w-5" />
             </Button>
           </div>
