@@ -35,3 +35,49 @@ Every future iteration (Prompt 3 onward) MUST automatically undergo the followin
 - [ ] Create a Git commit using the format: `feat(prompt-X): <iteration summary>`
 - [ ] Create a Git tag: `prompt-X` (where X is the prompt number)
 - [ ] Push commits and tags to the remote if an authenticated remote exists (`git push origin`, `git push origin --tags`)
+
+## 5. Definition of Done (Project Governance)
+
+A prompt is NOT considered complete until ALL of the following conditions are satisfied:
+
+### Development
+- [ ] Feature implemented
+- [ ] No TODO
+- [ ] No placeholder business logic
+- [ ] No duplicate code
+- [ ] Reusable architecture
+
+### Code Quality
+- [ ] ESLint passes
+- [ ] TypeScript passes
+- [ ] Build passes
+- [ ] No unused imports
+- [ ] No dead code
+- [ ] No duplicate components
+
+### Documentation
+- [ ] CHANGELOG updated
+- [ ] PROJECT_STATUS updated
+- [ ] Relevant docs updated
+
+### Release
+- [ ] Git commit
+- [ ] Git tag
+- [ ] Push to origin (if authenticated)
+
+### Regression
+- [ ] Prompt 1 intact
+- [ ] Prompt 2 intact
+- [ ] Prompt 3 intact
+- [ ] Previous APIs remain functional
+- [ ] Existing routes remain functional
+
+### Final Report
+Always include:
+1. Summary
+2. Files Created
+3. Files Modified
+4. Verification
+5. Commit Hash
+6. Git Tag
+7. Push Status
