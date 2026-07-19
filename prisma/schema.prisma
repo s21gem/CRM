@@ -27,6 +27,50 @@ enum AuthEvent {
   UNAUTHORIZED_ACCESS
 }
 
+enum LeadType {
+  GENERAL_INQUIRY
+  QUOTE_REQUEST
+  REPAIR_REQUEST
+  BUSINESS_CONSULTATION
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  CONVERTED
+  LOST
+}
+
+enum LeadSource {
+  WEBSITE
+  PHONE
+  EMAIL
+  WHATSAPP
+  FACEBOOK
+  INSTAGRAM
+  GOOGLE_ADS
+  ORGANIC
+  REFERRAL
+  MANUAL
+}
+
+enum LeadPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum InquiryCategory {
+  SALES
+  SUPPORT
+  REPAIR
+  CORPORATE
+  BILLING
+  OTHER
+}
+
 model User {
   id             String         @id @default(uuid())
   email          String         @unique
@@ -48,6 +92,7 @@ model User {
   refreshTokens  RefreshToken[]
   loginHistories LoginHistory[]
   auditLogs      AuditLog[]
+  leads          Lead[]         @relation("AssignedLeads")
 }
 
 model Permission {
@@ -86,13 +131,45 @@ model Customer {
 }
 
 model Lead {
-  id          String   @id @default(uuid())
-  customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id])
-  status      String
-  source      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String         @id @default(uuid())
+  referenceNumber String         @unique // FBX-YYYY-000001
+  type            LeadType
+  priority        LeadPriority   @default(NORMAL)
+  category        InquiryCategory @default(OTHER)
+  
+  firstName       String
+  lastName        String
+  company         String?
+  phone           String
+  email           String
+  
+  deviceType      String?
+  serviceRequested String?
+  message         String?
+  
+  source          LeadSource     @default(WEBSITE)
+  status          LeadStatus     @default(NEW)
+  
+  consentAccepted   Boolean   @default(false)
+  consentAcceptedAt DateTime?
+
+  // Marketing Attribution
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
+  utmContent      String?
+  utmTerm         String?
+  landingPage     String?
+  referrer        String?
+  
+  assignedTo      String?
+  assignee        User?          @relation("AssignedLeads", fields: [assignedTo], references: [id], onDelete: SetNull)
+  
+  customerId      String?
+  customer        Customer?      @relation(fields: [customerId], references: [id])
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
 
 model Project {
@@ -206,3 +283,10 @@ model AuditLog {
   details   String?
   createdAt DateTime  @default(now())
 }
+
+model Sequence {
+  id    String @id
+  value Int    @default(0)
+}
+
+

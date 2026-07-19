@@ -1,40 +1,82 @@
-import Link from 'next/link';
-import { ShieldCheck } from 'lucide-react';
+import { Hero } from '@/components/ui/Hero';
+import { QuickQuoteForm } from '@/components/ui/forms/QuickQuoteForm';
+import { FeatureGrid } from '@/components/ui/FeatureGrid';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { ServiceCard } from '@/components/ui/ServiceCard';
+import { CTABanner } from '@/components/ui/CTABanner';
+import { SERVICES } from '@/content';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-6">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <Link
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="/"
-          >
-            <ShieldCheck className="h-8 w-8 text-primary" />
-            <span className="font-sans text-2xl font-bold tracking-tight text-secondary dark:text-white">FoneBox CRM</span>
-          </Link>
+    <main className="flex min-h-screen flex-col bg-background">
+      {/* Hero Section */}
+      <Hero 
+        title="Enterprise-Grade Device Operations"
+        subtitle="Secure, scalable, and professional repair operations platform for FinTech, Cyber Security, and Enterprise ICT fleets."
+        primaryCta={{ text: 'Explore Solutions', href: '/business' }}
+        secondaryCta={{ text: 'Partner with Us', href: '/contact' }}
+        imageUrl="/images/hero/hero-v1.png"
+      >
+        <div className="w-full max-w-md">
+          <QuickQuoteForm />
         </div>
-      </div>
+      </Hero>
 
-      <div className="flex flex-col items-center justify-center text-center mt-24">
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-foreground">
-          Enterprise Client Management
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-          Secure, scalable, and professional operations platform for FinTech, Cyber Security, and Enterprise ICT solutions.
-        </p>
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Link
-            href="/login"
-            className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link href="/dashboard" className="text-sm font-semibold leading-6 text-foreground hover:text-primary transition-colors">
-            Go to Dashboard <span aria-hidden="true">→</span>
-          </Link>
+      {/* Services Grid */}
+      <section className="py-20 px-6 max-w-7xl mx-auto w-full">
+        <SectionHeader 
+          title="Professional Services" 
+          subtitle="Precision repairs backed by enterprise SLAs and dedicated account management." 
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+          {SERVICES.map(service => (
+            <ServiceCard 
+              key={service.id}
+              id={service.id}
+              title={service.title}
+              description={service.description}
+              href={service.href}
+            />
+          ))}
         </div>
-      </div>
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="py-20 px-6 max-w-7xl mx-auto w-full bg-zinc-50 dark:bg-zinc-900/30 rounded-3xl mb-20 border border-border">
+        <FeatureGrid 
+          title="Why Choose FoneBox"
+          subtitle="We don't just repair devices. We manage your entire hardware lifecycle."
+          features={[
+            {
+              title: 'Data Privacy First',
+              description: 'ISO 27001 compliant workflows ensuring your sensitive corporate data never leaves our secure facility.',
+              icon: <span className="text-3xl">🔒</span>
+            },
+            {
+              title: 'Rapid Turnaround',
+              description: 'SLA-backed repairs ensuring your workforce minimizes downtime. Express service available.',
+              icon: <span className="text-3xl">⚡</span>
+            },
+            {
+              title: 'OEM Certified',
+              description: 'Genuine components and certified technicians for uncompromising reliability.',
+              icon: <span className="text-3xl">🏅</span>
+            }
+          ]}
+        />
+      </section>
+
+      {/* CTA Banner */}
+      <section className="px-6 pb-20 max-w-7xl mx-auto w-full">
+        <CTABanner 
+          title="Ready to transform your hardware management?"
+          description="Join 500+ enterprises who trust FoneBox with their critical device infrastructure."
+          ctaText="Contact Sales"
+          href="/contact"
+          secondaryCtaText="View Pricing"
+          secondaryHref="/pricing"
+        />
+      </section>
     </main>
   );
 }
