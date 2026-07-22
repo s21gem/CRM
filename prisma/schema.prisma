@@ -1,0 +1,324 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  password   String
+  role       Role      @default(CUSTOMER)
+  name       String?
+  department String?
+  clearance  String?
+  status     String    @default("Active")
+  lastLogin  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model ConsultationRequest {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  org       String?
+  tier      String
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model SupportCase {
+  id          String   @id @default(uuid())
+  title       String
+  orgName     String
+  severity    String
+  status      String
+  description String?
+  assignedTo  String
+  category    String
+  createdDate String
+  updatedDate String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  CRM_ADMIN
+  INTERNAL_STAFF
+  CUSTOMER
+  SALES_EXEC
+  OPERATIONS_OFFICER
+  CORPORATE_CLIENT
+}
+
+model Organization {
+  id                String   @id @default(uuid())
+  name              String
+  sector            String
+  country           String
+  purpose           String?
+  securityClearance String
+  status            String
+  assignedManager   String
+  contactCount      Int
+  totalDealValue    Float
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Contact {
+  id             String   @id @default(uuid())
+  name           String
+  title          String
+  organizationId String
+  orgName        String
+  email          String
+  phone          String
+  clearanceLevel String
+  status         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Lead {
+  id            String   @id @default(uuid())
+  companyName   String
+  sector        String
+  country       String
+  contactPerson String
+  email         String
+  value         Float
+  status        String
+  confidence    Float
+  source        String
+  createdDate   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+}
+
+model Opportunity {
+  id          String   @id @default(uuid())
+  title       String
+  orgId       String
+  orgName     String
+  value       Float
+  stage       String
+  probability Float
+  closeDate   String
+  leadSource  String
+  lastUpdated String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([stage])
+  @@index([orgId])
+}
+
+model Meeting {
+  id        String   @id @default(uuid())
+  title     String
+  date      String
+  time      String
+  orgName   String
+  location  String
+  status    String
+  attendees String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id                   String   @id @default(uuid())
+  name                 String
+  orgId                String
+  orgName              String
+  category             String
+  status               String
+  budget               Float
+  spent                Float
+  startDate            String
+  targetDate           String
+  completionPercentage Float
+  securityLevel        String
+  milestones           String // Stored as JSON string
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Invoice {
+  id              String   @id @default(uuid())
+  orgName         String
+  projectName     String
+  amount          Float
+  issuedDate      String
+  dueDate         String
+  status          String
+  paymentMethod   String?
+  transactionHash String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ApiKey {
+  id           String   @id @default(uuid())
+  name         String
+  tokenPreview String
+  role         String
+  status       String
+  createdDate  String
+  expiryDate   String
+  callsCount   Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model SystemAuditLog {
+  id        String   @id @default(uuid())
+  timestamp String
+  actor     String
+  action    String
+  status    String
+  payload   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([action])
+  @@index([timestamp])
+}
+
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String
+  date      String
+  category  String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model KnowledgeBaseArticle {
+  id        String   @id @default(uuid())
+  title     String
+  category  String
+  rating    Float
+  views     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSettings {
+  id         String   @id @default(uuid())
+  logoUrl    String?
+  faviconUrl String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ServiceCard {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  author    String
+  role      String
+  quote     String
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FeaturedSolution {
+  id          String   @id @default(uuid())
+  title       String
+  category    String
+  desc        String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model EnterpriseSolution {
+  id          String   @id @default(uuid())
+  title       String
+  category    String
+  desc        String
+  useCases    String // Stored as JSON string array
+  benefits    String // Stored as JSON string array
+  industries  String // Stored as JSON string array
+  flow        String // Stored as JSON string array of objects {title, desc}
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  status    String   @default("SUBSCRIBED")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DemoRequest {
+  id        String   @id @default(uuid())
+  email     String?
+  solution  String
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SecurityVettingRequest {
+  id        String   @id @default(uuid())
+  company   String?
+  email     String?
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JobApplication {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  role      String
+  resumeUrl String
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PaymentGatewaySettings {
+  id            String   @id @default(uuid())
+  provider      String
+  publicKey     String
+  secretKey     String
+  webhookSecret String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SystemSettings {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Exclude private CRM and portals
+Disallow: /admin
+Disallow: /crm
+Disallow: /client
+Disallow: /ops
+
+# Exclude backend APIs
+Disallow: /api/

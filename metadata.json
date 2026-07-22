@@ -1,0 +1,6 @@
+{
+  "name": "FoneBox Enterprise ICT Solutions Platform",
+  "description": "An interactive, production-grade Solution Architecture and Design Hub for FoneBox USA, showcasing government-grade identity personalization, secure payment fintech, and cyber security system designs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
