@@ -36,6 +36,7 @@ The platform is designed with a **Role-Based Access Control (RBAC)** architectur
 - **Support Helpdesk:** Process and resolve incoming support cases with severity tagging and SLA tracking.
 
 ### 5. Client Self-Service Portal (`/client`)
+![Client Self-Service Portal](docs/images/client_portal.png)
 - **Project Tracking:** Corporate clients can log in to securely track their ongoing ICT deployments and milestones.
 - **Invoice & Payments:** View outstanding invoices, download them, and process secure payments through integrated gateways.
 - **Support Ticketing:** Clients can open direct support cases with the Operations team.
