@@ -11,22 +11,26 @@ Engineered from the ground up to support national-level infrastructure, border c
 The platform is designed with a **Role-Based Access Control (RBAC)** architecture. It offers distinct, highly-secured portals for different user tiers. Below are the facilities and capabilities available through the system:
 
 ### 1. Public Corporate Portal
+![Public Corporate Portal](docs/images/public_portal.png)
 - **Dynamic CMS Pages:** Beautiful, high-performance landing pages detailing Services, Enterprise Solutions, Industries, and Corporate Security protocols.
 - **Lead Capture & Consultations:** Secure contact forms and enterprise consultation requests routed directly to the internal CRM.
 - **Dark/Light Mode:** Full user-preference support with a sleek, premium UI utilizing Tailwind CSS and Framer Motion.
 
 ### 2. Super Admin Command Center (`/admin`)
+![Super Admin Dashboard](docs/images/super_admin.png)
 - **API Key Management:** Dynamically generate, revoke, and monitor high-security API keys for external endpoints.
 - **System Audit Logs:** Immutable tracking of all sensitive actions across the platform (logins, CMS edits, security changes).
 - **Payment Gateway Configuration:** Safely configure active payment gateways (Stripe, etc.) for client invoicing directly from the UI.
 - **Content Management System (CMS):** Edit site-wide branding (logos, favicons), testimonials, enterprise solutions, and system environment variables dynamically.
 
 ### 3. CRM Portal (Sales Executives) (`/crm`)
+![CRM Sales Portal](docs/images/crm.png)
 - **Lead & Opportunity Tracking:** Manage the complete sales pipeline from initial contact to closed-won opportunities.
 - **Organization Management:** Maintain deep records of national and corporate clients, including their active security clearance levels and key contacts.
 - **Consultation Routing:** Respond to consultation requests generated from the public website.
 
 ### 4. Operations Portal (Officers) (`/ops`)
+![Operations Command Center](docs/images/operations.png)
 - **Project Management:** Track high-stakes enterprise projects, budget utilization, and milestone completion percentages.
 - **Meeting Command:** Schedule and manage physical and virtual meetings with stakeholders.
 - **Support Helpdesk:** Process and resolve incoming support cases with severity tagging and SLA tracking.
