@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Mail, ArrowRight, Shield, Globe, Cpu, Database, ChevronRight, Lock, MapPin, CheckCircle, Linkedin, Twitter, MessageSquare, Loader2 } from 'lucide-react';
+import { Mail, ArrowRight, Shield, Globe, Cpu, Database, ChevronRight, Lock, MapPin, CheckCircle, Linkedin, Twitter, MessageSquare, Loader2, ArrowUp, X } from 'lucide-react';
 
 interface FooterProps {
   isDarkMode: boolean;
