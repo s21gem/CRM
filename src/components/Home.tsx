@@ -159,48 +159,48 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
   ];
 
   return (
-    <div className="space-y-32 xl:space-y-48 pb-12">
+    <div className="space-y-24 pb-12">
       <SEOMeta 
         title="Enterprise ICT Solutions & High Security Architecture" 
         description="Global leaders in sovereign identity, secure e-passports, FinTech payment solutions, and multi-modal biometrics infrastructure." 
       />
       
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center pt-32 xl:pt-48 overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center justify-center pt-24 overflow-hidden">
         {/* Ambient Cosmic Background */}
         <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="absolute top-1/4 left-1/4 w-96 lg:w-[500px] xl:w-[600px] h-96 lg:h-[500px] xl:h-[600px] bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-1/4 right-1/4 w-[420px] h-[420px] bg-indigo-500/5 rounded-full blur-3xl animate-pulse" />
           {/* Subtle Grid Dot Matrix overlay */}
           <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#000000_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]" />
         </div>
 
-        <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-16 xl:gap-24 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Hero Left Content */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-400 text-sm lg:text-base font-mono font-bold tracking-widest uppercase">
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-400 text-xs font-mono font-bold tracking-widest uppercase">
               <Shield className="w-3.5 h-3.5 animate-pulse" /> Sovereign High-Security Tech
             </div>
             
-            <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-7xl xl:text-[5.5rem] tracking-tight leading-tight text-slate-900 dark:text-white">
+            <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-tight text-slate-900 dark:text-white">
               Secure Digital Identity & <br className="hidden sm:block" /><span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-slate-900 dark:from-blue-400 dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">FinTech Personalization</span>
             </h1>
 
-            <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg lg:text-xl xl:text-2xl leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto lg:mx-0">
               FoneBox Global engineers and delivers defense-grade electronic passport chips, multi-application national citizen cards, high-security EMV card personalizations, and military-level Zero Trust PKI structures for governments, interior ministries, and premier financial institutions worldwide.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
               <button
                 onClick={onOpenConsultation}
-                className="px-8 py-4 lg:px-10 lg:py-5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white text-sm lg:text-base font-bold uppercase tracking-wider transition-all duration-300 shadow-lg shadow-blue-500/25 cursor-pointer flex items-center justify-center gap-2"
+                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-lg shadow-blue-500/25 cursor-pointer flex items-center justify-center gap-2"
               >
                 Request Sovereign Consultation <ArrowRight className="w-4 h-4" />
               </button>
               <button
                 onClick={() => handleNavClick('solutions')}
-                className="px-8 py-4 lg:px-10 lg:py-5 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white text-sm lg:text-base font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center gap-1.5"
+                className="px-6 py-3.5 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center gap-1.5"
               >
                 Explore Solutions
               </button>
@@ -210,10 +210,10 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
             <div className="pt-8 border-t border-slate-200 dark:border-slate-800/40 space-y-3">
               <p className="text-[10px] font-mono tracking-widest uppercase text-slate-500">Trusted By Strategic Authorities</p>
               <div className="flex flex-wrap gap-x-6 gap-y-3 items-center justify-center lg:justify-start opacity-40 grayscale hover:opacity-75 transition-opacity">
-                <span className="text-sm lg:text-base font-semibold tracking-wider font-display text-slate-900 dark:text-white">INTERPOL HQ</span>
-                <span className="text-sm lg:text-base font-semibold tracking-wider font-display text-slate-900 dark:text-white">MINISTRY OF HOME AFFAIRS</span>
-                <span className="text-sm lg:text-base font-semibold tracking-wider font-display text-slate-900 dark:text-white">WORLD TECH BANK</span>
-                <span className="text-sm lg:text-base font-semibold tracking-wider font-display text-slate-900 dark:text-white">ICT DIVISION</span>
+                <span className="text-xs font-semibold tracking-wider font-display text-slate-900 dark:text-white">INTERPOL HQ</span>
+                <span className="text-xs font-semibold tracking-wider font-display text-slate-900 dark:text-white">MINISTRY OF HOME AFFAIRS</span>
+                <span className="text-xs font-semibold tracking-wider font-display text-slate-900 dark:text-white">WORLD TECH BANK</span>
+                <span className="text-xs font-semibold tracking-wider font-display text-slate-900 dark:text-white">ICT DIVISION</span>
               </div>
             </div>
 
@@ -221,7 +221,7 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
 
           {/* Hero Right Interactive Illustration */}
           <div className="lg:col-span-5 flex justify-center relative">
-            <div className="relative w-80 h-80 lg:w-[450px] lg:h-[450px] xl:w-[550px] xl:h-[550px] sm:w-96 lg:w-[500px] xl:w-[600px] sm:h-96 lg:h-[500px] xl:h-[600px] rounded-full bg-gradient-to-br from-blue-600/5 dark:from-blue-600/10 to-indigo-500/10 dark:to-indigo-950/40 border border-blue-500/10 dark:border-blue-500/20 flex items-center justify-center shadow-2xl">
+            <div className="relative w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-gradient-to-br from-blue-600/5 dark:from-blue-600/10 to-indigo-500/10 dark:to-indigo-950/40 border border-blue-500/10 dark:border-blue-500/20 flex items-center justify-center shadow-2xl">
               
               {/* Spinning Ring */}
               <div className="absolute inset-4 rounded-full border border-dashed border-indigo-500/30 animate-spin" style={{ animationDuration: '40s' }} />
@@ -245,11 +245,11 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
               </div>
 
               {/* Floating tech badges */}
-              <div className="absolute -top-4 -left-4 p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-sm lg:text-base font-mono flex items-center gap-2 shadow-lg">
+              <div className="absolute -top-4 -left-4 p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-xs font-mono flex items-center gap-2 shadow-lg">
                 <Globe className="w-4 h-4 text-blue-500 dark:text-blue-400" />
                 <span>ICAO DOC 9303</span>
               </div>
-              <div className="absolute bottom-6 -right-6 p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-sm lg:text-base font-mono flex items-center gap-2 shadow-lg">
+              <div className="absolute bottom-6 -right-6 p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-xs font-mono flex items-center gap-2 shadow-lg">
                 <Cpu className="w-4 h-4 text-indigo-500 dark:text-indigo-400 animate-spin" style={{ animationDuration: '5s' }} />
                 <span>EMV PERSONALIZED</span>
               </div>
@@ -261,10 +261,10 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
       </section>
 
       {/* Core Services Section */}
-      <section className="tour-services max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="tour-services max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <span className="text-[10px] font-mono tracking-widest uppercase text-blue-500 font-bold">Comprehensive Capabilities</span>
-          <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl text-slate-900 dark:text-white">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-slate-900 dark:text-white">
             Sovereign Technology Core Services
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
@@ -287,13 +287,13 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
                   <h3 className="font-display font-bold text-base text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm lg:text-base leading-relaxed">
+                  <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
                     {service.desc}
                   </p>
                 </div>
                 <button
                   onClick={() => handleNavClick('services')}
-                  className="mt-6 flex items-center gap-1.5 text-sm lg:text-base font-mono text-blue-400 group-hover:text-blue-300 cursor-pointer text-left"
+                  className="mt-6 flex items-center gap-1.5 text-xs font-mono text-blue-400 group-hover:text-blue-300 cursor-pointer text-left"
                 >
                   Learn Core Capabilities <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                 </button>
@@ -304,7 +304,7 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
       </section>
 
       {/* Featured Solutions (Interactive Premium Cards) */}
-      <section className="tour-solutions max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="tour-solutions max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200 dark:border-slate-800/40 pb-6">
           <div>
             <span className="text-[10px] font-mono tracking-widest uppercase text-blue-500 font-bold">Featured Products</span>
@@ -312,13 +312,13 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
           </div>
           <button
             onClick={() => handleNavClick('solutions')}
-            className="flex items-center gap-1.5 text-sm lg:text-base font-mono text-blue-400 hover:text-blue-300 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-mono text-blue-400 hover:text-blue-300 transition-colors"
           >
             Browse Solutions Catalog <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 xl:gap-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredSolutions.map((sol, i) => (
             <div
               key={i}
@@ -341,13 +341,13 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
                   <h3 className="font-display font-bold text-base text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                     {sol.title}
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm lg:text-base leading-relaxed">
+                  <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
                     {sol.desc}
                   </p>
                 </div>
                 <button
                   onClick={() => handleNavClick('solutions')}
-                  className="pt-4 flex items-center gap-1 text-sm lg:text-base font-mono text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer text-left"
+                  className="pt-4 flex items-center gap-1 text-xs font-mono text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer text-left"
                 >
                   Request Technical Spec <ArrowRight className="w-3.5 h-3.5" />
                 </button>
@@ -359,7 +359,7 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
 
       {/* Dynamic Testimonials Section */}
       {dynamicTestimonials.length > 0 && (
-        <section className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="text-center space-y-4">
             <span className="text-[10px] font-mono tracking-widest uppercase text-blue-500 font-bold">Client Success</span>
             <h2 className="font-display font-bold text-3xl text-slate-900 dark:text-white">Trusted Globally</h2>
@@ -375,7 +375,7 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
                 <p className="text-slate-600 dark:text-slate-400 text-sm italic">"{testi.quote}"</p>
                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
                   <h4 className="font-bold text-sm text-slate-900 dark:text-white">{testi.author}</h4>
-                  <span className="text-sm lg:text-base text-slate-500">{testi.role}</span>
+                  <span className="text-xs text-slate-500">{testi.role}</span>
                 </div>
               </div>
             ))}
@@ -384,21 +384,21 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
       )}
 
       {/* Contact CTA */}
-      <section className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-blue-500/5 dark:from-blue-900/40 via-indigo-500/5 dark:via-indigo-950/30 to-blue-500/5 dark:to-blue-900/40 border border-blue-500/10 dark:border-blue-500/20 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 p-8 opacity-5">
             <Shield className="w-64 h-64 text-blue-500 animate-pulse" />
           </div>
           <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-            <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 dark:text-white">
+            <h2 className="font-display font-bold text-2xl sm:text-3xl text-slate-900 dark:text-white">
               Ready to Design a Sovereign Secure Solution?
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-sm lg:text-base sm:text-sm leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed">
               Contact our executive team of cyber defense engineers, PKI cryptographers, and smartcard personalization architects. Let's build the future together.
             </p>
             <button
               onClick={onOpenConsultation}
-              className="px-8 py-4 lg:px-10 lg:py-5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white text-sm lg:text-base font-bold uppercase tracking-wider transition-all duration-300 shadow-md shadow-blue-500/10 cursor-pointer"
+              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md shadow-blue-500/10 cursor-pointer"
             >
               Request Sovereign Consultation
             </button>
