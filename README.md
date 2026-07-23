@@ -63,6 +63,8 @@ For SOC Analysts and Operations Officers managing physical and digital infrastru
 - **Invoice Vault:** Secure viewing and downloading of outstanding invoices.
 - **End-to-End Ticketing:** Direct communication line to the SOC and Operations teams.
 
+![Client Self-Service Portal](docs/client_portal.png)
+
 ---
 
 ## 🛡️ Tech Stack
