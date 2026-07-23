@@ -158,8 +158,6 @@ export default function Security() {
         </div>
       </section>
 
-      </section>
-
       {/* Vetting Request Modal */}
       {isVettingModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 md:p-20 flex justify-center items-center">
