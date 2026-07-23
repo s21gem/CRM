@@ -344,15 +344,40 @@ app.post('/api/crm/subscribe', async (req, res) => {
 
 app.post('/api/crm/demo-request', async (req, res) => {
   try {
-    const { email, solution } = req.body;
+    const { email, solution, name, org } = req.body;
     const demo = await (prisma as any).demoRequest.create({ data: { email: email || 'unknown', solution } });
     
+    // Convert demo request into a sales lead
+    await prisma.lead.create({
+      data: {
+        companyName: org || 'Demo Requester',
+        sector: solution,
+        country: 'Global',
+        contactPerson: name || 'Pending',
+        email: email,
+        value: 0,
+        status: 'New'
+      }
+    });
+
     // Send email notification
-    await sendEmail(
-      email,
-      'FoneBox Demo Request Confirmation',
-      `Thank you for requesting a demo of ${solution}. Our engineering team will contact you shortly.`
-    );
+    try {
+      await sendEmail(
+        email,
+        'FoneBox Demo Request Confirmation',
+        `Thank you for requesting a demo of ${solution}. Our engineering team will contact you shortly.`,
+        `<div style="font-family: sans-serif; color: #1e293b;">
+          <h2>Demo Request Confirmation</h2>
+          <p>Dear ${name || 'Valued Client'},</p>
+          <p>Thank you for requesting a technical demo of <strong>${solution}</strong>.</p>
+          <p>Our executive engineering board has received your request. A regional solutions architect will establish contact with you shortly via this secure email channel to schedule the session.</p>
+          <br/>
+          <p>Best regards,<br/>Fonebox Engineering Team</p>
+        </div>`
+      );
+    } catch (emailErr) {
+      console.error('Failed to send demo email:', emailErr);
+    }
     
     res.json(demo);
   } catch (e) { res.status(500).json({ error: 'Demo request failed' }); }

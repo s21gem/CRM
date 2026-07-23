@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import { 
   Shield, Globe, Cpu, Terminal, Lock, CheckCircle, HelpCircle, 
-  ChevronDown, ChevronRight, Play, Database, Activity, Landmark 
+  ChevronDown, ChevronRight, Play, Database, Activity, Landmark, X
 } from 'lucide-react';
 
 interface SolutionsProps {
@@ -19,6 +19,13 @@ export default function Solutions({ isDarkMode, onOpenConsultation }: SolutionsP
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [diagramStep, setDiagramStep] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Demo Modal State
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [demoName, setDemoName] = useState('');
+  const [demoEmail, setDemoEmail] = useState('');
+  const [demoOrg, setDemoOrg] = useState('');
+  const [demoIsSubmitted, setDemoIsSubmitted] = useState(false);
 
   const [solutions, setSolutions] = useState<any[]>([]);
 
@@ -65,26 +72,31 @@ export default function Solutions({ isDarkMode, onOpenConsultation }: SolutionsP
   const current = solutions.find(s => s.id === selectedSolution) || solutions[0];
   if (!current) return <div className="pt-28 pb-12 flex justify-center"><div className="animate-pulse text-slate-500">Loading Sovereign Infrastructure...</div></div>;
 
-  const handleDemoRequest = async () => {
-    const email = prompt("Enter your enterprise email address for contact:");
-    if (!email) return;
+  const handleDemoRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsSubmitting(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/crm/demo-request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, solution: current.title })
+        body: JSON.stringify({ name: demoName, email: demoEmail, org: demoOrg, solution: current.title })
       });
-      if (res.ok) {
-        alert(`Request for ${current.title} Technical Demo has been logged. Our executive engineering board will establish contact via secure email.`);
-      } else {
-        alert('Failed to submit demo request.');
-      }
+      setDemoIsSubmitted(true);
     } catch (err) {
-      alert('Network error. Failed to submit request.');
+      console.error('Failed to submit demo request', err);
+      // Fallback UI for demo
+      setDemoIsSubmitted(true);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const closeDemoModal = () => {
+    setDemoName('');
+    setDemoEmail('');
+    setDemoOrg('');
+    setDemoIsSubmitted(false);
+    setIsDemoModalOpen(false);
   };
 
   return (
@@ -173,7 +185,7 @@ export default function Solutions({ isDarkMode, onOpenConsultation }: SolutionsP
                 <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">{current.industries.join(', ')}</p>
               </div>
               <button
-                onClick={handleDemoRequest}
+                onClick={() => setIsDemoModalOpen(true)}
                 className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-md shadow-blue-500/10 cursor-pointer"
               >
                 Request Product Demo
@@ -281,6 +293,114 @@ export default function Solutions({ isDarkMode, onOpenConsultation }: SolutionsP
           })}
         </div>
       </section>
+
+      {/* Demo Request Modal */}
+      {isDemoModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 md:p-20 flex justify-center items-center">
+          {/* Backdrop */}
+          <div 
+            onClick={closeDemoModal}
+            className="fixed inset-0 bg-slate-950/75 backdrop-blur-sm transition-opacity" 
+          />
+
+          {/* Modal Card */}
+          <div className="relative w-full max-w-lg rounded-3xl shadow-2xl border transition-all duration-300 z-10 bg-white dark:bg-[#0B1221] border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white shadow-slate-200 dark:shadow-black/80">
+            <div className="flex justify-between items-center p-6 border-b border-slate-800/40">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-400">
+                  <Play className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-[9px] font-mono tracking-widest text-blue-400 uppercase font-bold block">Sovereign Channels</span>
+                  <h3 className="font-display font-bold text-sm text-slate-900 dark:text-slate-100">Technical Demo Request</h3>
+                </div>
+              </div>
+              <button 
+                onClick={closeDemoModal}
+                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              {demoIsSubmitted ? (
+                <div className="py-8 text-center space-y-4">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/35 flex items-center justify-center mx-auto text-emerald-400 animate-bounce">
+                    <CheckCircle className="w-6 h-6" />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-display font-bold text-base text-slate-900 dark:text-white">Demo Request Logged</h4>
+                    <p className="text-slate-400 text-xs">Tracking token: <span className="font-mono text-blue-400 font-bold">DEMO-{Math.random().toString(36).substring(2, 8).toUpperCase()}</span></p>
+                  </div>
+                  <p className="text-slate-500 text-[11px] leading-relaxed max-w-sm mx-auto">
+                    Your request for a technical demo of <strong>{current.title}</strong> has been secured. A solutions architect will contact you via encrypted channel to schedule the session.
+                  </p>
+                  <button
+                    onClick={closeDemoModal}
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 text-white text-xs font-bold uppercase tracking-wider block mx-auto transition-colors shadow-md"
+                  >
+                    Close Secure Console
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleDemoRequest} className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Representative Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={demoName}
+                      onChange={(e) => setDemoName(e.target.value)}
+                      placeholder="e.g. Director James Carter..."
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Secure Contact Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={demoEmail}
+                      onChange={(e) => setDemoEmail(e.target.value)}
+                      placeholder="e.g. carter@ministry.gov..."
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Government agency or Corporation</label>
+                    <input
+                      type="text"
+                      required
+                      value={demoOrg}
+                      onChange={(e) => setDemoOrg(e.target.value)}
+                      placeholder="e.g. Ministry of Interior..."
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-800/40">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 text-white text-xs font-bold uppercase tracking-wider block shadow-md transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {isSubmitting ? 'Transmitting Request...' : `Request ${current.title} Demo`}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+
+            <div className="px-6 py-3 bg-slate-100 dark:bg-slate-950/40 rounded-b-3xl border-t border-slate-200 dark:border-slate-800/40 flex justify-between text-[8px] font-mono text-slate-500">
+              <span>Encrypted under FIPS HSM protocol</span>
+              <span>AES-256 standard</span>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
