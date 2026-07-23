@@ -18,6 +18,7 @@ export default function Careers() {
   const [applicantNote, setApplicantNote] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const openPositions = [
     {
@@ -81,8 +82,9 @@ export default function Careers() {
 
   const handleApplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
     if (!resumeFile) {
-      alert('Please upload a resume file (PDF or DOCX).');
+      setErrorMsg('Please upload a resume file (PDF or DOCX).');
       return;
     }
     
@@ -101,10 +103,10 @@ export default function Careers() {
       if (res.ok) {
         setIsSubmitted(true);
       } else {
-        alert('Application failed to submit. Please try again.');
+        setErrorMsg('Application failed to submit. Please try again.');
       }
     } catch (err) {
-      alert('Network error during application submission.');
+      setErrorMsg('Network error during application submission.');
     } finally {
       setIsApplying(false);
     }
@@ -187,6 +189,7 @@ export default function Careers() {
                 onClick={() => {
                   setSelectedJob(job.id);
                   setIsSubmitted(false);
+                  setErrorMsg(null);
                 }}
                 className={`w-full text-left p-6 rounded-2xl border transition-all duration-300 flex flex-col justify-between items-start gap-3 cursor-pointer ${
                   selectedJob === job.id
@@ -262,6 +265,12 @@ export default function Careers() {
                   </div>
                 ) : (
                   <form onSubmit={handleApplySubmit} className="space-y-4">
+                    
+                    {errorMsg && (
+                      <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-[11px] text-red-600 dark:text-red-400 font-medium">
+                        {errorMsg}
+                      </div>
+                    )}
                     
                     {/* Name */}
                     <div className="space-y-1">

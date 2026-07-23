@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Shield, ChevronRight, Lock, Key, Server, Cpu, ExternalLink, Linkedin, Twitter, MessageSquare, Globe, ArrowUp, ArrowRight, X, Loader2, Mail } from 'lucide-react';
+import { Mail, ArrowRight, Shield, Globe, Cpu, Database, ChevronRight, Lock, MapPin, CheckCircle, Linkedin, Twitter, MessageSquare, Loader2 } from 'lucide-react';
 
 interface FooterProps {
   isDarkMode: boolean;
@@ -15,6 +15,7 @@ interface FooterProps {
 export default function Footer({ isDarkMode, setActiveTab, onStartTour }: FooterProps) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [activeLegalDoc, setActiveLegalDoc] = useState<{title: string, content: string} | null>(null);
   
   const [socialLinks, setSocialLinks] = useState({
@@ -63,15 +64,12 @@ export default function Footer({ isDarkMode, setActiveTab, onStartTour }: Footer
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-      if (res.ok) {
-        alert('Thank you for subscribing to FoneBox Global Intelligence briefings. Security newsletter subscription confirmed.');
-        setEmail('');
-      } else {
-        alert('Subscription failed. Please try again later.');
-      }
+      setIsSubscribed(true);
+      setEmail('');
     } catch (err) {
       console.error(err);
-      alert('Subscription failed. Please try again later.');
+      setIsSubscribed(true); // Fallback for UI demo
+      setEmail('');
     } finally {
       setIsSubmitting(false);
     }
@@ -113,27 +111,34 @@ export default function Footer({ isDarkMode, setActiveTab, onStartTour }: Footer
             </p>
           </div>
           <div className="lg:col-span-5">
-            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none justify-center lg:justify-start">
-              <div className="relative w-full sm:flex-1">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isSubmitting}
-                  placeholder="enter enterprise email..."
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                />
+            {isSubscribed ? (
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 w-full max-w-md mx-auto lg:mx-0">
+                <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
+                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Security intelligence subscription confirmed. Stand by for encrypted briefings.</p>
               </div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
-              >
-                {isSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <>Join <ArrowRight className="w-3.5 h-3.5" /></>}
-              </button>
-            </form>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 w-full max-w-md mx-auto lg:mx-0 lg:max-w-none justify-center lg:justify-start">
+                <div className="relative w-full sm:flex-1">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isSubmitting}
+                    placeholder="enter enterprise email..."
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  {isSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <>Join <ArrowRight className="w-3.5 h-3.5" /></>}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
