@@ -47,7 +47,7 @@ export default function LiveChatsTab({ onDataRefresh }: LiveChatsTabProps) {
 
   useEffect(() => {
     fetchSessions();
-    const newSocket = io('http://localhost:5000');
+    const newSocket = io((import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')));
     setSocket(newSocket);
 
     newSocket.emit('join_ops_room');
@@ -85,7 +85,7 @@ export default function LiveChatsTab({ onDataRefresh }: LiveChatsTabProps) {
 
   const fetchSessions = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/chat/sessions', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/chat/sessions`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('crm_token')}` }
       });
       const data = await res.json();
@@ -101,7 +101,7 @@ export default function LiveChatsTab({ onDataRefresh }: LiveChatsTabProps) {
       socket.emit('join_session', sessionId);
     }
     try {
-      const res = await fetch(`http://localhost:5000/api/chat/${sessionId}/messages`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/chat/${sessionId}/messages`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('crm_token')}` }
       });
       const data = await res.json();
@@ -136,7 +136,7 @@ export default function LiveChatsTab({ onDataRefresh }: LiveChatsTabProps) {
     e.preventDefault();
     if (!activeSessionId) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/chat/${activeSessionId}/ticket`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/chat/${activeSessionId}/ticket`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${localStorage.getItem('crm_token')}`,
@@ -163,7 +163,7 @@ export default function LiveChatsTab({ onDataRefresh }: LiveChatsTabProps) {
     e.stopPropagation();
     if (!confirm('Are you sure you want to delete this chat session?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/chat/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/chat/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('crm_token')}` }
       });

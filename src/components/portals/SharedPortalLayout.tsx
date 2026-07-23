@@ -28,7 +28,7 @@ export default function SharedPortalLayout({
 
   const handleExit = async () => {
     try {
-      await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
+      await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/auth/logout`, { method: 'POST', credentials: 'include' });
     } catch(e) {}
     localStorage.removeItem('crm_role');
     navigate('/');

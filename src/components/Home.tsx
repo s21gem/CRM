@@ -23,7 +23,7 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/cms/testimonials');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/testimonials`);
         if (res.ok) {
           setDynamicTestimonials(await res.json());
         }
@@ -95,13 +95,13 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
   useEffect(() => {
     const fetchFeaturedSolutions = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/cms/featured-solutions');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/featured-solutions`);
         if (res.ok) {
           const data = await res.json();
           // Map backend field names (imageUrl, desc) to what the UI expects (img, desc)
           const mapped = data.map((d: any) => ({
             ...d,
-            img: d.imageUrl?.startsWith('/uploads') ? `http://localhost:5000${d.imageUrl}` : d.imageUrl
+            img: d.imageUrl?.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${d.imageUrl}` : d.imageUrl
           }));
           setFeaturedSolutions(mapped);
         }

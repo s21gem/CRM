@@ -21,7 +21,7 @@ export default function Services({ isDarkMode, onOpenConsultation }: ServicesPro
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/cms/services');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/services`);
         if (res.ok) {
           setDynamicServices(await res.json());
         }
@@ -223,7 +223,7 @@ export default function Services({ isDarkMode, onOpenConsultation }: ServicesPro
               <div key={service.id} className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm flex flex-col group">
                 <div className="h-48 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900 mb-4 flex items-center justify-center">
                   {service.imageUrl ? (
-                    <img src={`http://localhost:5000${service.imageUrl}`} alt={service.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${service.imageUrl}`} alt={service.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
                     <ImageIcon className="w-12 h-12 text-slate-300 dark:text-slate-700" />
                   )}

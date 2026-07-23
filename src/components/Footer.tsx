@@ -27,7 +27,7 @@ export default function Footer({ isDarkMode, setActiveTab, onStartTour }: Footer
   useEffect(() => {
     const fetchSocialLinks = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/cms/system-settings');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/system-settings`);
         if (res.ok) {
           const data = await res.json();
           setSocialLinks({
@@ -58,7 +58,7 @@ export default function Footer({ isDarkMode, setActiveTab, onStartTour }: Footer
     if (!email) return;
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:5000/api/crm/subscribe', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/crm/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

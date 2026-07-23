@@ -1,5 +1,5 @@
 export const apiClient = async (endpoint: string, options: RequestInit = {}) => {
-  const baseUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
+  const baseUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')));
   const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`;
   
   const headers = new Headers(options.headers || {});

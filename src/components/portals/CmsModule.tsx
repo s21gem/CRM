@@ -45,8 +45,8 @@ export default function CmsModule() {
       const res = await apiClient('/api/cms/settings');
       if (res.ok) {
         const data = await res.json();
-        if (data.logoUrl) setLogoPreview(`http://localhost:5000${data.logoUrl}`);
-        if (data.faviconUrl) setFaviconPreview(`http://localhost:5000${data.faviconUrl}`);
+        if (data.logoUrl) setLogoPreview(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${data.logoUrl}`);
+        if (data.faviconUrl) setFaviconPreview(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${data.faviconUrl}`);
       }
     } catch (e) {}
   };
@@ -167,7 +167,7 @@ export default function CmsModule() {
         }))
       };
 
-      const url = editingEnterpriseId ? `http://localhost:5000/api/cms/enterprise-solutions/${editingEnterpriseId}` : 'http://localhost:5000/api/cms/enterprise-solutions';
+      const url = editingEnterpriseId ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/enterprise-solutions/${editingEnterpriseId}` : `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/enterprise-solutions`;
       const method = editingEnterpriseId ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -213,7 +213,7 @@ export default function CmsModule() {
     if (newFeatured.image) formData.append('image', newFeatured.image);
 
     try {
-      const url = editingFeaturedId ? `http://localhost:5000/api/cms/featured-solutions/${editingFeaturedId}` : 'http://localhost:5000/api/cms/featured-solutions';
+      const url = editingFeaturedId ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/featured-solutions/${editingFeaturedId}` : `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/featured-solutions`;
       const method = editingFeaturedId ? 'PUT' : 'POST';
       const res = await fetch(url, { method, body: formData });
       if (res.ok) {
@@ -228,7 +228,7 @@ export default function CmsModule() {
   const handleEditFeatured = (item: any) => {
     setEditingFeaturedId(item.id);
     setNewFeatured({ title: item.title, category: item.category, desc: item.desc, image: null });
-    setFeaturedPreview(item.imageUrl ? (item.imageUrl.startsWith('/uploads') ? `http://localhost:5000${item.imageUrl}` : item.imageUrl) : '');
+    setFeaturedPreview(item.imageUrl ? (item.imageUrl.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${item.imageUrl}` : item.imageUrl) : '');
   };
 
   const handleDeleteFeatured = async (id: string) => {
@@ -248,7 +248,7 @@ export default function CmsModule() {
     if (newService.image) formData.append('image', newService.image);
 
     try {
-      const url = editingServiceId ? `http://localhost:5000/api/cms/services/${editingServiceId}` : 'http://localhost:5000/api/cms/services';
+      const url = editingServiceId ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/services/${editingServiceId}` : `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/services`;
       const method = editingServiceId ? 'PUT' : 'POST';
       const res = await fetch(url, { method, body: formData });
       if (res.ok) {
@@ -263,7 +263,7 @@ export default function CmsModule() {
   const handleEditService = (item: any) => {
     setEditingServiceId(item.id);
     setNewService({ title: item.title, description: item.description, image: null });
-    setServicePreview(item.imageUrl ? (item.imageUrl.startsWith('/uploads') ? `http://localhost:5000${item.imageUrl}` : item.imageUrl) : '');
+    setServicePreview(item.imageUrl ? (item.imageUrl.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${item.imageUrl}` : item.imageUrl) : '');
   };
 
   const handleDeleteService = async (id: string) => {
@@ -278,7 +278,7 @@ export default function CmsModule() {
   const handleAddTestimonial = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const url = editingTestimonialId ? `http://localhost:5000/api/cms/testimonials/${editingTestimonialId}` : 'http://localhost:5000/api/cms/testimonials';
+      const url = editingTestimonialId ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/testimonials/${editingTestimonialId}` : `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/testimonials`;
       const method = editingTestimonialId ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,
@@ -434,7 +434,7 @@ export default function CmsModule() {
               <div key={s.id} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-2 relative">
                 <button onClick={() => handleDeleteService(s.id)} className="absolute top-2 right-2 text-red-500 hover:text-red-400"><Trash2 className="w-4 h-4"/></button>
                 <div className="h-32 bg-slate-100 dark:bg-slate-950 rounded-lg overflow-hidden relative">
-                  {s.imageUrl ? <img src={s.imageUrl.startsWith('/uploads') ? `http://localhost:5000${s.imageUrl}` : s.imageUrl} alt={s.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-300"><ImageIcon className="w-8 h-8"/></div>}
+                  {s.imageUrl ? <img src={s.imageUrl.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${s.imageUrl}` : s.imageUrl} alt={s.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-300"><ImageIcon className="w-8 h-8"/></div>}
                 </div>
                 <h5 className="font-bold text-sm text-slate-900 dark:text-slate-100">{s.title}</h5>
                 <p className="text-xs text-slate-500 dark:text-slate-400">{s.description}</p>
@@ -564,7 +564,7 @@ export default function CmsModule() {
             {featuredSolutions.map(f => (
               <div key={f.id} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex flex-col gap-3">
                 <div className="h-32 bg-slate-100 dark:bg-slate-950 rounded-lg overflow-hidden relative">
-                  {f.imageUrl ? <img src={f.imageUrl.startsWith('/uploads') ? `http://localhost:5000${f.imageUrl}` : f.imageUrl} alt={f.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-300"><ImageIcon className="w-8 h-8"/></div>}
+                  {f.imageUrl ? <img src={f.imageUrl.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${f.imageUrl}` : f.imageUrl} alt={f.title} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-slate-300"><ImageIcon className="w-8 h-8"/></div>}
                   <span className="absolute bottom-2 left-2 text-[8px] font-mono bg-blue-500/80 text-white px-1.5 py-0.5 rounded uppercase">{f.category}</span>
                 </div>
                 <div>

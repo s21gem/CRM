@@ -59,10 +59,10 @@ function PublicApp() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/cms/settings');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/settings`);
         if (res.ok) {
           const data = await res.json();
-          if (data.logoUrl) setLogoUrl(`http://localhost:5000${data.logoUrl}`);
+          if (data.logoUrl) setLogoUrl(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${data.logoUrl}`);
           if (data.faviconUrl) {
             let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
             if (!link) {
@@ -70,7 +70,7 @@ function PublicApp() {
               link.rel = 'icon';
               document.head.appendChild(link);
             }
-            link.href = `http://localhost:5000${data.faviconUrl}`;
+            link.href = `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${data.faviconUrl}`;
           }
         }
       } catch (err) {
@@ -92,7 +92,7 @@ function PublicApp() {
   const handleConsultSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch('http://localhost:5000/api/crm/consultations', {
+      await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/crm/consultations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: consultName, email: consultEmail, org: consultOrg, tier: consultTier }),

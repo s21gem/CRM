@@ -55,7 +55,7 @@ export default function Security() {
     if (!company || !email) return;
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:5000/api/crm/security-vetting', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/crm/security-vetting`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ company, email })

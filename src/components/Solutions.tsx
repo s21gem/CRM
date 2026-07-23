@@ -25,7 +25,7 @@ export default function Solutions({ isDarkMode, onOpenConsultation }: SolutionsP
   useEffect(() => {
     const fetchEnterpriseSolutions = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/cms/enterprise-solutions');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/enterprise-solutions`);
         if (res.ok) {
           const data = await res.json();
           const parsed = data.map((d: any) => ({
@@ -70,7 +70,7 @@ export default function Solutions({ isDarkMode, onOpenConsultation }: SolutionsP
     if (!email) return;
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:5000/api/crm/demo-request', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/crm/demo-request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, solution: current.title })

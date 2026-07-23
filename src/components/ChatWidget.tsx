@@ -50,7 +50,7 @@ export default function ChatWidget() {
   useEffect(() => {
     let newSocket: Socket | null = null;
     if (isOpen && !socket) {
-      newSocket = io('http://localhost:5000');
+      newSocket = io((import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')));
       setSocket(newSocket);
 
       newSocket.on('receive_message', (message: ChatMessage) => {
@@ -81,7 +81,7 @@ export default function ChatWidget() {
     if (!guestName) return;
 
     try {
-      const res = await fetch('http://localhost:5000/api/chat/session', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/chat/session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ guestName, email })
@@ -137,7 +137,7 @@ export default function ChatWidget() {
   const submitRating = async (rating: number) => {
     if (!sessionId) return;
     try {
-      await fetch(`http://localhost:5000/api/chat/${sessionId}/rate`, {
+      await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/chat/${sessionId}/rate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating })
@@ -161,7 +161,7 @@ export default function ChatWidget() {
     if (!trackTicketId.trim()) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/chat/ticket/${trackTicketId.trim()}`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/chat/ticket/${trackTicketId.trim()}`);
       if (!res.ok) {
         setTrackError('Ticket not found.');
         return;
