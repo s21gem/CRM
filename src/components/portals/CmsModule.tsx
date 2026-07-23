@@ -372,19 +372,19 @@ export default function CmsModule() {
           <form onSubmit={handleSaveSocialLinks} className="space-y-6 max-w-xl">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-800 pb-2">Social & External Links</h3>
             <div className="space-y-4">
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">LinkedIn URL</label>
                 <input type="url" value={socialLinks.linkedin} onChange={e => setSocialLinks({...socialLinks, linkedin: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" placeholder="https://linkedin.com/company/fonebox" />
               </div>
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">Twitter (X) URL</label>
                 <input type="url" value={socialLinks.twitter} onChange={e => setSocialLinks({...socialLinks, twitter: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" placeholder="https://twitter.com/fonebox" />
               </div>
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">Website URL</label>
                 <input type="url" value={socialLinks.website} onChange={e => setSocialLinks({...socialLinks, website: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" placeholder="https://fonebox.com" />
               </div>
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">Contact Email</label>
                 <input type="email" value={socialLinks.email} onChange={e => setSocialLinks({...socialLinks, email: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" placeholder="contact@fonebox.com" />
               </div>
@@ -402,15 +402,15 @@ export default function CmsModule() {
           {/* Add Form */}
           <form onSubmit={handleAddService} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-4">
             <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">Add New Service Card</h4>
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500 dark:text-slate-400">Title (Max 50 chars)</label>
               <input type="text" maxLength={50} required value={newService.title} onChange={e => setNewService({...newService, title: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" />
             </div>
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500 dark:text-slate-400">Description (Max 150 chars)</label>
               <textarea maxLength={150} required value={newService.description} onChange={e => setNewService({...newService, description: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white h-20" />
             </div>
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500 dark:text-slate-400">Service Image</label>
               <p className="text-[10px] text-slate-600 dark:text-slate-500 mb-1">Optimal size 400x300px (4:3 ratio), Max 2MB.</p>
               <input type="file" accept="image/*" onChange={e => {
@@ -455,36 +455,36 @@ export default function CmsModule() {
           
           <form onSubmit={handleAddEnterprise} className="space-y-4 p-4 bg-white dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 rounded-xl">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">Title</label>
                 <input type="text" required value={newEnterprise.title} onChange={e => setNewEnterprise({...newEnterprise, title: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" />
               </div>
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">Category Tag</label>
                 <input type="text" required value={newEnterprise.category} onChange={e => setNewEnterprise({...newEnterprise, category: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" />
               </div>
             </div>
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500">Description</label>
               <textarea required value={newEnterprise.desc} onChange={e => setNewEnterprise({...newEnterprise, desc: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white h-16" />
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">Use Cases (1 per line)</label>
                 <textarea required value={newEnterprise.useCases} onChange={e => setNewEnterprise({...newEnterprise, useCases: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white h-24" />
               </div>
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">Benefits (1 per line)</label>
                 <textarea required value={newEnterprise.benefits} onChange={e => setNewEnterprise({...newEnterprise, benefits: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white h-24" />
               </div>
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500">Industries (1 per line)</label>
                 <textarea required value={newEnterprise.industries} onChange={e => setNewEnterprise({...newEnterprise, industries: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white h-24" />
               </div>
             </div>
 
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500">Flowchart Steps (Format: Title | Description, 1 step per line)</label>
               <textarea required value={newEnterprise.flow} onChange={e => setNewEnterprise({...newEnterprise, flow: e.target.value})} placeholder="Biometric Enrollment | Face & fingerprints captured via ISO/IEC scanners." className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white h-24" />
             </div>
@@ -525,20 +525,20 @@ export default function CmsModule() {
           
           <form onSubmit={handleAddFeatured} className="space-y-4 p-4 bg-white dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 rounded-xl">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500 dark:text-slate-400">Product Title</label>
                 <input type="text" required value={newFeatured.title} onChange={e => setNewFeatured({...newFeatured, title: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" />
               </div>
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500 dark:text-slate-400">Category Tag (e.g. FINTECH & BANKING)</label>
                 <input type="text" required value={newFeatured.category} onChange={e => setNewFeatured({...newFeatured, category: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" />
               </div>
             </div>
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500 dark:text-slate-400">Description (Max 150 chars)</label>
               <textarea maxLength={150} required value={newFeatured.desc} onChange={e => setNewFeatured({...newFeatured, desc: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white h-20" />
             </div>
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500 dark:text-slate-400">Thumbnail Image</label>
               <div className="flex items-center gap-4">
                 <label className="px-4 py-2 rounded border border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 cursor-pointer flex items-center gap-2">
@@ -587,20 +587,20 @@ export default function CmsModule() {
           <form onSubmit={handleAddTestimonial} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-4">
             <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">Add Testimonial</h4>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500 dark:text-slate-400">Author (Max 30 chars)</label>
                 <input type="text" maxLength={30} required value={newTestimonial.author} onChange={e => setNewTestimonial({...newTestimonial, author: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" />
               </div>
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-xs text-slate-500 dark:text-slate-400">Role/Company (Max 50 chars)</label>
                 <input type="text" maxLength={50} required value={newTestimonial.role} onChange={e => setNewTestimonial({...newTestimonial, role: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" />
               </div>
             </div>
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500 dark:text-slate-400">Quote (Max 200 chars)</label>
               <textarea maxLength={200} required value={newTestimonial.quote} onChange={e => setNewTestimonial({...newTestimonial, quote: e.target.value})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white h-20" />
             </div>
-            <div className="space-y-1">
+            <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
               <label className="text-xs text-slate-500 dark:text-slate-400">Rating (1-5)</label>
               <input type="number" min="1" max="5" required value={newTestimonial.rating} onChange={e => setNewTestimonial({...newTestimonial, rating: parseInt(e.target.value)})} className="w-full px-3 py-2 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white" />
             </div>
@@ -613,7 +613,7 @@ export default function CmsModule() {
           <div className="space-y-2">
             {testimonials.map(t => (
               <div key={t.id} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex justify-between items-center">
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <div className="text-xs font-bold text-slate-900 dark:text-slate-100">{t.author} - <span className="text-slate-500 dark:text-slate-400 font-normal">{t.role}</span></div>
                   <div className="text-xs text-slate-700 dark:text-slate-300 italic">"{t.quote}"</div>
                   <div className="text-[10px] text-yellow-500">{'★'.repeat(t.rating)}</div>

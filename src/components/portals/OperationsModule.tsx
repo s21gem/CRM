@@ -157,14 +157,14 @@ export default function OperationsModule({ isDarkMode, currentUserRole }: Operat
       <form onSubmit={handleSaveProject} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-4">
         <h3 className="text-sm font-bold flex items-center gap-2 text-slate-900 dark:text-white"><FolderKanban className="w-4 h-4 text-blue-500"/> {editingId ? 'Edit Project' : 'New Project'}</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="space-y-1"><label className="text-xs text-slate-500">Project Name</label><input required value={projectForm.name} onChange={e=>setProjectForm({...projectForm, name: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
-          <div className="space-y-1"><label className="text-xs text-slate-500">Organization</label><input required value={projectForm.orgName} onChange={e=>setProjectForm({...projectForm, orgName: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
-          <div className="space-y-1"><label className="text-xs text-slate-500">Category</label><select value={projectForm.category} onChange={e=>setProjectForm({...projectForm, category: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800"><option>Infrastructure</option><option>Software</option><option>Security</option></select></div>
-          <div className="space-y-1"><label className="text-xs text-slate-500">Status</label><select value={projectForm.status} onChange={e=>setProjectForm({...projectForm, status: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800"><option>Planning</option><option>In Progress</option><option>On Hold</option><option>Completed</option></select></div>
-          <div className="space-y-1"><label className="text-xs text-slate-500">Budget (USD)</label><input type="number" required value={projectForm.budget} onChange={e=>setProjectForm({...projectForm, budget: Number(e.target.value)})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
-          <div className="space-y-1"><label className="text-xs text-slate-500">Spent (USD)</label><input type="number" required value={projectForm.spent} onChange={e=>setProjectForm({...projectForm, spent: Number(e.target.value)})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
-          <div className="space-y-1"><label className="text-xs text-slate-500">Start Date</label><input type="date" required value={projectForm.startDate} onChange={e=>setProjectForm({...projectForm, startDate: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
-          <div className="space-y-1"><label className="text-xs text-slate-500">Progress (%)</label><input type="number" min="0" max="100" required value={projectForm.completionPercentage} onChange={e=>setProjectForm({...projectForm, completionPercentage: Number(e.target.value)})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
+          <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar"><label className="text-xs text-slate-500">Project Name</label><input required value={projectForm.name} onChange={e=>setProjectForm({...projectForm, name: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
+          <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar"><label className="text-xs text-slate-500">Organization</label><input required value={projectForm.orgName} onChange={e=>setProjectForm({...projectForm, orgName: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
+          <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar"><label className="text-xs text-slate-500">Category</label><select value={projectForm.category} onChange={e=>setProjectForm({...projectForm, category: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800"><option>Infrastructure</option><option>Software</option><option>Security</option></select></div>
+          <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar"><label className="text-xs text-slate-500">Status</label><select value={projectForm.status} onChange={e=>setProjectForm({...projectForm, status: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800"><option>Planning</option><option>In Progress</option><option>On Hold</option><option>Completed</option></select></div>
+          <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar"><label className="text-xs text-slate-500">Budget (USD)</label><input type="number" required value={projectForm.budget} onChange={e=>setProjectForm({...projectForm, budget: Number(e.target.value)})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
+          <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar"><label className="text-xs text-slate-500">Spent (USD)</label><input type="number" required value={projectForm.spent} onChange={e=>setProjectForm({...projectForm, spent: Number(e.target.value)})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
+          <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar"><label className="text-xs text-slate-500">Start Date</label><input type="date" required value={projectForm.startDate} onChange={e=>setProjectForm({...projectForm, startDate: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
+          <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar"><label className="text-xs text-slate-500">Progress (%)</label><input type="number" min="0" max="100" required value={projectForm.completionPercentage} onChange={e=>setProjectForm({...projectForm, completionPercentage: Number(e.target.value)})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
         </div>
         <div className="flex gap-2">
           <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded flex items-center gap-1">{editingId ? <><Save className="w-4 h-4"/> Update</> : <><Plus className="w-4 h-4"/> Add Project</>}</button>
@@ -289,18 +289,18 @@ export default function OperationsModule({ isDarkMode, currentUserRole }: Operat
   };
 
   return (
-    <div className="flex h-full min-h-[80vh] overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/20">
+    <div className="flex flex-col md:flex-row h-full min-h-[80vh] overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/20">
       {/* Sidebar */}
-      <div className="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-4">
+      <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-4">
         <h2 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 px-2">Operations</h2>
-        <div className="space-y-1">
+        <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
           {navItems.map(item => {
             const Icon = item.icon;
             return (
               <button
                 key={item.id}
                 onClick={() => { setActiveTab(item.id); setEditingId(null); }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${
+                className={`whitespace-nowrap flex-shrink-0 md:w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${
                   activeTab === item.id 
                     ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400' 
                     : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/50'
@@ -315,7 +315,7 @@ export default function OperationsModule({ isDarkMode, currentUserRole }: Operat
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-6 overflow-y-auto">
         {activeTab === 'dashboard' && renderDashboard()}
         {activeTab === 'projects' && renderProjects()}
         {activeTab === 'orgs' && renderOrgs()}

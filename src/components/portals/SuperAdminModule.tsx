@@ -795,7 +795,7 @@ export default function SuperAdminModule({
             <h3 className="font-display font-bold text-lg text-slate-900 dark:text-white mb-4">Payment Gateway Configuration</h3>
             <form onSubmit={handleSavePaymentSettings} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-bold">Provider</label>
                   <select 
                     value={paymentSettings.provider}
@@ -807,7 +807,7 @@ export default function SuperAdminModule({
                     <option value="b2b_wire">B2B Wire Transfer / Manual</option>
                   </select>
                 </div>
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-bold">Public Key</label>
                   <input
                     type="text"
@@ -817,7 +817,7 @@ export default function SuperAdminModule({
                     placeholder="pk_live_..."
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-bold">Secret Key</label>
                   <input
                     type="password"
@@ -827,7 +827,7 @@ export default function SuperAdminModule({
                     placeholder="sk_live_..."
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-bold">Webhook Secret</label>
                   <input
                     type="password"
@@ -869,7 +869,7 @@ export default function SuperAdminModule({
             </h3>
 
             <form onSubmit={handleGenerateApiKey} className="space-y-4">
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
                   Token Label Name
                 </label>
@@ -883,7 +883,7 @@ export default function SuperAdminModule({
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                 <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
                   Subnet Scope Authorization Role
                 </label>
@@ -943,7 +943,7 @@ export default function SuperAdminModule({
 
             <form onSubmit={handleCreateUser} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
                     Full Name
                   </label>
@@ -955,7 +955,7 @@ export default function SuperAdminModule({
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-blue-500"
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
                     Email Address
                   </label>
@@ -970,7 +970,7 @@ export default function SuperAdminModule({
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
                     System Password
                   </label>
@@ -982,7 +982,7 @@ export default function SuperAdminModule({
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-blue-500"
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
                     Department / Organization Link
                   </label>
@@ -998,7 +998,7 @@ export default function SuperAdminModule({
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
                     Assigned Role
                   </label>
@@ -1015,7 +1015,7 @@ export default function SuperAdminModule({
                     <option value="CUSTOMER">CUSTOMER</option>
                   </select>
                 </div>
-                <div className="space-y-1">
+                <div className="flex md:block overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-1 pb-2 md:pb-0 hide-scrollbar">
                   <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
                     Security Clearance
                   </label>
