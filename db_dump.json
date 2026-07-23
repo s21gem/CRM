@@ -1,0 +1,737 @@
+{
+  "user": [
+    {
+      "id": "b46bd9bf-ddb3-4f98-9da6-3859d32dd3eb",
+      "email": "admin",
+      "password": "$2b$10$U9NzNAhU48U.7l5Zp6xBOO5HGBqaayfqVknLiLtekRcWuITDGhhiq",
+      "role": "SUPER_ADMIN",
+      "name": "System Administrator",
+      "department": null,
+      "clearance": null,
+      "status": "Active",
+      "lastLogin": null,
+      "createdAt": "2026-07-21T20:14:20.961Z",
+      "updatedAt": "2026-07-21T21:35:35.309Z"
+    },
+    {
+      "id": "7612069f-9557-4d45-9a4f-b41638e41162",
+      "email": "sales",
+      "password": "$2b$10$lRFfr3rQdABGWX1KDupSNeXQxsVeV7kwt3JKwr8fnsk1GEXHehJdO",
+      "role": "SALES_EXEC",
+      "name": "Sales Executive",
+      "department": null,
+      "clearance": null,
+      "status": "Active",
+      "lastLogin": null,
+      "createdAt": "2026-07-21T20:14:20.967Z",
+      "updatedAt": "2026-07-21T21:35:35.409Z"
+    },
+    {
+      "id": "ad4f69e6-2d04-481a-b5b3-2d9eada579a2",
+      "email": "ops",
+      "password": "$2b$10$Efqjw5/RQ8rv48MVXO9YdOi0w3dX2CZ4iO3Hq0vrF6hME2PYuqRpq",
+      "role": "OPERATIONS_OFFICER",
+      "name": "Operations Officer",
+      "department": null,
+      "clearance": null,
+      "status": "Active",
+      "lastLogin": null,
+      "createdAt": "2026-07-21T20:14:20.971Z",
+      "updatedAt": "2026-07-21T21:35:35.487Z"
+    },
+    {
+      "id": "659f4c98-cf0d-4071-b752-8e44305989e9",
+      "email": "client",
+      "password": "$2b$10$sxbHqMMlw6nxfHg71tdLV.nnbb/byEJROD51f9l6EaVzPYzlri6ze",
+      "role": "CORPORATE_CLIENT",
+      "name": "Corporate Client",
+      "department": null,
+      "clearance": null,
+      "status": "Active",
+      "lastLogin": null,
+      "createdAt": "2026-07-21T20:14:20.974Z",
+      "updatedAt": "2026-07-21T21:35:35.571Z"
+    },
+    {
+      "id": "1edb7ce6-2b7c-4041-9da7-85127f3f4458",
+      "email": "admin@fonebox.com",
+      "password": "$2b$10$fcYwjEPMDO/0c45Cw6v28ujZXScPcvjXYlBefvSKK716r./JiGRNS",
+      "role": "SUPER_ADMIN",
+      "name": "System Admin",
+      "department": "Global Infrastructure",
+      "clearance": "Top Secret",
+      "status": "Active",
+      "lastLogin": null,
+      "createdAt": "2026-07-22T22:35:03.120Z",
+      "updatedAt": "2026-07-22T22:35:03.120Z"
+    },
+    {
+      "id": "89eeaf87-5554-4606-ba5a-7be548d26d3e",
+      "email": "abdullahpro949@gmail.com",
+      "password": "$2b$10$iIgWYhEZ9MvbYf6WWcztNOIJtzVf9AsxbQEdk8VbcEMAwuGtut.b.",
+      "role": "CORPORATE_CLIENT",
+      "name": "hjgyug",
+      "department": "NEXUS Global Airlines",
+      "clearance": "Standard",
+      "status": "Active",
+      "lastLogin": null,
+      "createdAt": "2026-07-23T02:19:47.801Z",
+      "updatedAt": "2026-07-23T02:19:47.801Z"
+    },
+    {
+      "id": "f78b4bf4-dca0-4dfa-8333-7db88133a05b",
+      "email": "musaabdullahpro1@gmail.com",
+      "password": "$2b$10$Ju8feizDlvDyQWjsdn9J/u.Q33OU/T9zLreREpxItu9HfnKJcZovy",
+      "role": "CORPORATE_CLIENT",
+      "name": "MUSA ABDULLAH",
+      "department": "MUSA Global",
+      "clearance": "Standard",
+      "status": "Active",
+      "lastLogin": null,
+      "createdAt": "2026-07-23T03:06:36.111Z",
+      "updatedAt": "2026-07-23T03:06:36.111Z"
+    }
+  ],
+  "consultationRequest": [],
+  "supportCase": [
+    {
+      "id": "cas_001",
+      "title": "FIPS 140-3 HSM pool sync drift alarm",
+      "orgName": "World Tech Bank",
+      "severity": "CRITICAL",
+      "status": "Investigating",
+      "description": null,
+      "assignedTo": "Chief Operator Robert",
+      "category": "Hardware Security Module",
+      "createdDate": "2026-07-19 14:22",
+      "updatedDate": "2026-07-19 17:15",
+      "createdAt": "2026-07-21T20:12:32.819Z",
+      "updatedAt": "2026-07-21T20:12:32.819Z"
+    },
+    {
+      "id": "cas_002",
+      "title": "Smart gate 1:N biometric matcher lookup delay",
+      "orgName": "International Ministry of Interior",
+      "severity": "High",
+      "status": "HSM Verification",
+      "description": null,
+      "assignedTo": "Sarah Jenkins",
+      "category": "Biometric Matcher",
+      "createdDate": "2026-07-18 09:12",
+      "updatedDate": "2026-07-19 11:30",
+      "createdAt": "2026-07-21T20:12:32.823Z",
+      "updatedAt": "2026-07-21T20:12:32.823Z"
+    },
+    {
+      "id": "9a728d07-6cf1-4a6e-8e8d-653af90b1270",
+      "title": "Chat Request from Musa",
+      "orgName": "abdullahpro949@gmail.com",
+      "severity": "Critical",
+      "status": "Closed",
+      "description": "[05:15 AM] GUEST: Hello\n[05:16 AM] GUEST: I need a help\n[05:16 AM] OPS_AGENT: How can I help you, sir?",
+      "assignedTo": "Unassigned",
+      "category": "Live Support",
+      "createdDate": "2026-07-22",
+      "updatedDate": "2026-07-22",
+      "createdAt": "2026-07-22T23:17:41.274Z",
+      "updatedAt": "2026-07-22T23:17:41.274Z"
+    },
+    {
+      "id": "d585278e-9247-4868-8280-712c8022697e",
+      "title": "Chat Request from Musa Abdullah",
+      "orgName": "musaabdullahpro1@gmail.com",
+      "severity": "Medium",
+      "status": "Open",
+      "description": "[05:39 AM] OPS_AGENT: Welcome! Please wait a moment while a support representative joins the chat.\n[05:39 AM] GUEST: hello\n[05:40 AM] OPS_AGENT: Hello! How can I help you today?\n[05:40 AM] GUEST: how to order?\n[05:40 AM] OPS_AGENT: Could you provide more details?\n[05:41 AM] GUEST: I need E-Passport chip\n[05:41 AM] OPS_AGENT: Please wait a moment while I check on that for you.\n[05:41 AM] GUEST: okay",
+      "assignedTo": "Unassigned",
+      "category": "Live Support",
+      "createdDate": "2026-07-22",
+      "updatedDate": "2026-07-22",
+      "createdAt": "2026-07-22T23:41:38.362Z",
+      "updatedAt": "2026-07-22T23:41:38.362Z"
+    },
+    {
+      "id": "0ea94301-b1ec-48a5-823b-d3e3448528f5",
+      "title": "Payment Failure",
+      "orgName": "abdullahpro949@gmail.com",
+      "severity": "Medium",
+      "status": "Open",
+      "description": "I need support",
+      "assignedTo": "Unassigned",
+      "category": "Live Support",
+      "createdDate": "2026-07-22",
+      "updatedDate": "2026-07-22",
+      "createdAt": "2026-07-22T23:49:51.198Z",
+      "updatedAt": "2026-07-22T23:49:51.198Z"
+    },
+    {
+      "id": "84a0d6ce-a7e7-41e0-9609-aac4eaaa0e0b",
+      "title": "login issue",
+      "orgName": "abdullahpro949@gmail.com",
+      "severity": "Medium",
+      "status": "Closed",
+      "description": "hello",
+      "assignedTo": "Unassigned",
+      "category": "Live Support",
+      "createdDate": "2026-07-23",
+      "updatedDate": "2026-07-23",
+      "createdAt": "2026-07-23T00:00:58.776Z",
+      "updatedAt": "2026-07-23T00:00:58.776Z"
+    },
+    {
+      "id": "f588d32b-dad9-4ece-8312-42bcc951d808",
+      "title": "problem",
+      "orgName": "Department of Immigration and Passports",
+      "severity": "High",
+      "status": "Escalated",
+      "description": "login",
+      "assignedTo": "Unassigned",
+      "category": "Technical Support",
+      "createdDate": "2026-07-23",
+      "updatedDate": "2026-07-23",
+      "createdAt": "2026-07-23T00:04:52.410Z",
+      "updatedAt": "2026-07-23T00:04:52.410Z"
+    }
+  ],
+  "organization": [
+    {
+      "id": "org_001",
+      "name": "Global Finance Corp",
+      "sector": "Financial",
+      "country": "United States",
+      "purpose": null,
+      "securityClearance": "Top Secret",
+      "status": "Active",
+      "assignedManager": "Michael Chang",
+      "contactCount": 14,
+      "totalDealValue": 4800000,
+      "createdAt": "2026-07-21T20:12:32.784Z",
+      "updatedAt": "2026-07-21T20:12:32.784Z"
+    },
+    {
+      "id": "org_002",
+      "name": "International Ministry of Interior",
+      "sector": "Government",
+      "country": "United Kingdom",
+      "purpose": null,
+      "securityClearance": "Top Secret",
+      "status": "Active",
+      "assignedManager": "Sarah Jenkins",
+      "contactCount": 19,
+      "totalDealValue": 9500000,
+      "createdAt": "2026-07-21T20:12:32.793Z",
+      "updatedAt": "2026-07-21T20:12:32.793Z"
+    },
+    {
+      "id": "org_003",
+      "name": "World Tech Bank",
+      "sector": "Financial",
+      "country": "Switzerland",
+      "purpose": null,
+      "securityClearance": "Top Secret",
+      "status": "Active",
+      "assignedManager": "Sarah Jenkins",
+      "contactCount": 11,
+      "totalDealValue": 6200000,
+      "createdAt": "2026-07-21T20:12:32.795Z",
+      "updatedAt": "2026-07-21T20:12:32.795Z"
+    },
+    {
+      "id": "org_004",
+      "name": "Global ICT Division",
+      "sector": "Government",
+      "country": "Singapore",
+      "purpose": null,
+      "securityClearance": "Top Secret",
+      "status": "Active",
+      "assignedManager": "Michael Chang",
+      "contactCount": 8,
+      "totalDealValue": 3500000,
+      "createdAt": "2026-07-21T20:12:32.796Z",
+      "updatedAt": "2026-07-21T20:12:32.796Z"
+    },
+    {
+      "id": "org_005",
+      "name": "NEXUS Global Airlines",
+      "sector": "Corporate",
+      "country": "Germany",
+      "purpose": null,
+      "securityClearance": "Secret",
+      "status": "Active",
+      "assignedManager": "Robert Williams",
+      "contactCount": 15,
+      "totalDealValue": 2800000,
+      "createdAt": "2026-07-21T20:12:32.797Z",
+      "updatedAt": "2026-07-21T20:12:32.797Z"
+    },
+    {
+      "id": "183f334e-a22b-4515-a263-75094dd3b82c",
+      "name": "MUSA Global",
+      "sector": "Corporate",
+      "country": "United States",
+      "purpose": "Bank Cards",
+      "securityClearance": "L1",
+      "status": "Active",
+      "assignedManager": "Zubair",
+      "contactCount": 1,
+      "totalDealValue": 2800000,
+      "createdAt": "2026-07-23T01:19:40.665Z",
+      "updatedAt": "2026-07-23T01:19:40.665Z"
+    }
+  ],
+  "contact": [
+    {
+      "id": "con_001",
+      "name": "General Arthur Pendelton",
+      "title": "Director, Border Security",
+      "organizationId": "org_002",
+      "orgName": "International Ministry of Interior",
+      "email": "arthur.p@interior.gov.uk",
+      "phone": "+44 20 7946 0958",
+      "clearanceLevel": "Top Secret",
+      "status": "Active",
+      "createdAt": "2026-07-21T20:12:32.798Z",
+      "updatedAt": "2026-07-21T20:12:32.798Z"
+    },
+    {
+      "id": "con_002",
+      "name": "Dr. Elizabeth Chen",
+      "title": "Executive Director, Payments",
+      "organizationId": "org_003",
+      "orgName": "World Tech Bank",
+      "email": "e.chen@worldtechbank.ch",
+      "phone": "+41 44 213 4567",
+      "clearanceLevel": "Top Secret",
+      "status": "Active",
+      "createdAt": "2026-07-21T20:12:32.801Z",
+      "updatedAt": "2026-07-21T20:12:32.801Z"
+    },
+    {
+      "id": "con_003",
+      "name": "William Foster",
+      "title": "Chief Information Security Officer",
+      "organizationId": "org_001",
+      "orgName": "Global Finance Corp",
+      "email": "wfoster@globalfinance.com",
+      "phone": "+1 212 555 0198",
+      "clearanceLevel": "Top Secret",
+      "status": "Active",
+      "createdAt": "2026-07-21T20:12:32.802Z",
+      "updatedAt": "2026-07-21T20:12:32.802Z"
+    },
+    {
+      "id": "con_004",
+      "name": "David Schmidt",
+      "title": "Head of IT Infrastructure",
+      "organizationId": "org_005",
+      "orgName": "NEXUS Global Airlines",
+      "email": "d.schmidt@nexus.de",
+      "phone": "+49 69 1234 5678",
+      "clearanceLevel": "Secret",
+      "status": "Active",
+      "createdAt": "2026-07-21T20:12:32.803Z",
+      "updatedAt": "2026-07-21T20:12:32.803Z"
+    }
+  ],
+  "lead": [
+    {
+      "id": "lead_001",
+      "companyName": "EuroBank Group",
+      "sector": "Financial",
+      "country": "France",
+      "contactPerson": "Jean-Paul Dubois",
+      "email": "jdubois@eurobank.fr",
+      "value": 1850000,
+      "status": "Proposal Sent",
+      "confidence": 75,
+      "source": "Global FinTech Summit",
+      "createdDate": "2026-05-12",
+      "createdAt": "2026-07-21T20:12:32.805Z",
+      "updatedAt": "2026-07-21T20:12:32.805Z"
+    },
+    {
+      "id": "lead_002",
+      "companyName": "Oceanic Transport Authority",
+      "sector": "Government",
+      "country": "Australia",
+      "contactPerson": "Emma Watson",
+      "email": "ewatson@ota.gov.au",
+      "value": 4200000,
+      "status": "Qualified",
+      "confidence": 60,
+      "source": "Gov Data Center RFP",
+      "createdDate": "2026-06-02",
+      "createdAt": "2026-07-21T20:12:32.808Z",
+      "updatedAt": "2026-07-21T20:12:32.808Z"
+    }
+  ],
+  "opportunity": [
+    {
+      "id": "opp_001",
+      "title": "Global E-Passport Core Implementation",
+      "orgId": "org_002",
+      "orgName": "International Ministry of Interior",
+      "value": 9500000,
+      "stage": "Negotiation",
+      "probability": 80,
+      "closeDate": "2026-09-30",
+      "leadSource": "B2B Tender",
+      "lastUpdated": "2026-07-20",
+      "createdAt": "2026-07-21T20:12:32.809Z",
+      "updatedAt": "2026-07-21T20:12:32.809Z"
+    },
+    {
+      "id": "opp_002",
+      "title": "Cloud HSM Infrastructure Upgrade",
+      "orgId": "org_003",
+      "orgName": "World Tech Bank",
+      "value": 6200000,
+      "stage": "Procurement",
+      "probability": 95,
+      "closeDate": "2026-08-01",
+      "leadSource": "Compliance Directive",
+      "lastUpdated": "2026-07-17",
+      "createdAt": "2026-07-21T20:12:32.811Z",
+      "updatedAt": "2026-07-21T20:12:32.811Z"
+    }
+  ],
+  "meeting": [
+    {
+      "id": "meet_001",
+      "title": "ICAO Laser Personalization Vetting Review",
+      "date": "2026-07-20",
+      "time": "10:30 AM",
+      "orgName": "International Ministry of Interior",
+      "location": "London HQ, Level 6",
+      "status": "Scheduled",
+      "attendees": "General Arthur Pendelton, Sarah Jenkins",
+      "createdAt": "2026-07-21T20:12:32.812Z",
+      "updatedAt": "2026-07-21T20:12:32.812Z"
+    },
+    {
+      "id": "meet_002",
+      "title": "PKI HSM Core Key Ceremony Prep",
+      "date": "2026-07-22",
+      "time": "02:00 PM",
+      "orgName": "World Tech Bank",
+      "location": "Geneva Datacenter Room B",
+      "status": "Scheduled",
+      "attendees": "Dr. Elizabeth Chen, Robert Williams",
+      "createdAt": "2026-07-21T20:12:32.815Z",
+      "updatedAt": "2026-07-21T20:12:32.815Z"
+    }
+  ],
+  "project": [
+    {
+      "id": "proj_001",
+      "name": "Global e-Passport Personalization Line Overhaul",
+      "orgId": "org_002",
+      "orgName": "International Ministry of Interior",
+      "category": "Border Security & Identity",
+      "status": "In Progress",
+      "budget": 9500000,
+      "spent": 4100000,
+      "startDate": "2025-06-01",
+      "targetDate": "2027-01-15",
+      "completionPercentage": 65,
+      "securityLevel": "Top Secret (Level 4)",
+      "milestones": "[{\"id\":\"ms_101\",\"title\":\"Offline PKI Root key ceremony\",\"dueDate\":\"2025-08-15\",\"status\":\"Completed\"},{\"id\":\"ms_102\",\"title\":\"Hardware production line installation\",\"dueDate\":\"2026-02-10\",\"status\":\"Completed\"},{\"id\":\"ms_103\",\"title\":\"Live testing of chip personalization\",\"dueDate\":\"2026-08-01\",\"status\":\"In Progress\"}]",
+      "createdAt": "2026-07-21T20:12:32.816Z",
+      "updatedAt": "2026-07-21T20:12:32.816Z"
+    },
+    {
+      "id": "proj_002",
+      "name": "Federal Reserve PKI Infrastructure",
+      "orgId": "org_001",
+      "orgName": "Global Finance Corp",
+      "category": "Financial Security",
+      "status": "In Progress",
+      "budget": 4800000,
+      "spent": 3000000,
+      "startDate": "2025-09-01",
+      "targetDate": "2026-11-30",
+      "completionPercentage": 70,
+      "securityLevel": "Top Secret (Level 4)",
+      "milestones": "[]",
+      "createdAt": "2026-07-21T20:12:32.818Z",
+      "updatedAt": "2026-07-21T20:12:32.818Z"
+    }
+  ],
+  "invoice": [
+    {
+      "id": "inv_001",
+      "orgName": "World Tech Bank",
+      "projectName": "National Smart Cryptographic Infrastructure",
+      "amount": 4500000,
+      "issuedDate": "2026-06-15",
+      "dueDate": "2026-07-15",
+      "status": "Paid",
+      "paymentMethod": "SWIFT Transfer",
+      "transactionHash": "0x8f2d9c44bb...",
+      "createdAt": "2026-07-21T20:12:32.825Z",
+      "updatedAt": "2026-07-21T20:12:32.825Z"
+    },
+    {
+      "id": "inv_002",
+      "orgName": "Global Finance Corp",
+      "projectName": "Cyber Defense Architecture",
+      "amount": 2800000,
+      "issuedDate": "2026-07-01",
+      "dueDate": "2026-07-30",
+      "status": "Pending",
+      "paymentMethod": "Pending",
+      "transactionHash": "",
+      "createdAt": "2026-07-21T20:12:32.827Z",
+      "updatedAt": "2026-07-21T20:12:32.827Z"
+    },
+    {
+      "id": "ef3a7110-50c3-4394-8495-72869218d711",
+      "orgName": "NEXUS Global Airlines",
+      "projectName": "login",
+      "amount": 28000000,
+      "issuedDate": "2026-07-23",
+      "dueDate": "2026-07-31",
+      "status": "Paid",
+      "paymentMethod": null,
+      "transactionHash": null,
+      "createdAt": "2026-07-23T02:32:15.909Z",
+      "updatedAt": "2026-07-23T03:00:16.816Z"
+    }
+  ],
+  "apiKey": [
+    {
+      "id": "key_001",
+      "name": "Production e-Visa Gateway",
+      "tokenPreview": "fn_live_8x99a...",
+      "role": "Read/Write",
+      "status": "Active",
+      "createdDate": "2026-01-15",
+      "expiryDate": "2027-01-15",
+      "callsCount": 14509200,
+      "createdAt": "2026-07-21T20:12:32.829Z",
+      "updatedAt": "2026-07-21T20:12:32.829Z"
+    },
+    {
+      "id": "key_002",
+      "name": "Biometric Matcher Sync API",
+      "tokenPreview": "fn_live_3b41c...",
+      "role": "Admin",
+      "status": "Active",
+      "createdDate": "2025-11-10",
+      "expiryDate": "2026-11-10",
+      "callsCount": 8904500,
+      "createdAt": "2026-07-21T20:12:32.831Z",
+      "updatedAt": "2026-07-21T20:12:32.831Z"
+    }
+  ],
+  "systemAuditLog": [
+    {
+      "id": "log_001",
+      "timestamp": "2026-07-20 08:14:02",
+      "actor": "SysAdmin (Michael)",
+      "action": "HSM Node Reboot",
+      "status": "SUCCESS",
+      "payload": "Node: NY-DC-04",
+      "createdAt": "2026-07-21T20:12:32.832Z",
+      "updatedAt": "2026-07-21T20:12:32.832Z"
+    },
+    {
+      "id": "log_002",
+      "timestamp": "2026-07-20 09:30:15",
+      "actor": "Sarah Jenkins",
+      "action": "Update Project SLA",
+      "status": "SUCCESS",
+      "payload": "Project: proj_001, Target Date adjusted",
+      "createdAt": "2026-07-21T20:12:32.835Z",
+      "updatedAt": "2026-07-21T20:12:32.835Z"
+    },
+    {
+      "id": "3fc1ce10-5019-4989-8af6-27549ded4346",
+      "timestamp": "2026-07-23T01:41:03.178Z",
+      "actor": "System",
+      "action": "USER_PROVISION",
+      "status": "SUCCESS",
+      "payload": "Provisioned new user: musaabdullahpro1@gmail.com with role CORPORATE_CLIENT",
+      "createdAt": "2026-07-23T01:41:03.181Z",
+      "updatedAt": "2026-07-23T01:41:03.181Z"
+    },
+    {
+      "id": "1032fcf8-406d-4130-868b-2e99de06438b",
+      "timestamp": "2026-07-23T02:19:47.836Z",
+      "actor": "System",
+      "action": "USER_PROVISION",
+      "status": "SUCCESS",
+      "payload": "Provisioned new user: abdullahpro949@gmail.com with role CORPORATE_CLIENT",
+      "createdAt": "2026-07-23T02:19:47.838Z",
+      "updatedAt": "2026-07-23T02:19:47.838Z"
+    },
+    {
+      "id": "839ce0b5-6a03-4195-bb77-bc3141009a3b",
+      "timestamp": "2026-07-23T01:43:50.998Z",
+      "actor": "SALES_EXEC",
+      "action": "PORTAL_PROVISION_REQUEST",
+      "status": "SUCCESS",
+      "payload": "NEXUS Global Airlines",
+      "createdAt": "2026-07-23T01:43:51.008Z",
+      "updatedAt": "2026-07-23T02:19:49.054Z"
+    },
+    {
+      "id": "3bae3792-39a7-4877-8ed5-4e35391dde9f",
+      "timestamp": "2026-07-23T03:06:23.811Z",
+      "actor": "System",
+      "action": "USER_REVOCATION",
+      "status": "SUCCESS",
+      "payload": "Revoked access and deleted user: musaabdullahpro1@gmail.com (f8dbdc0b-ea44-447d-bf1b-538953b5b2db)",
+      "createdAt": "2026-07-23T03:06:23.814Z",
+      "updatedAt": "2026-07-23T03:06:23.814Z"
+    },
+    {
+      "id": "026c7b29-d9e2-498c-8ab9-c1684fb9bd5c",
+      "timestamp": "2026-07-23T03:06:36.127Z",
+      "actor": "System",
+      "action": "USER_PROVISION",
+      "status": "SUCCESS",
+      "payload": "Provisioned new user: musaabdullahpro1@gmail.com with role CORPORATE_CLIENT",
+      "createdAt": "2026-07-23T03:06:36.129Z",
+      "updatedAt": "2026-07-23T03:06:36.129Z"
+    },
+    {
+      "id": "50b13ac9-a012-4831-a298-67d1a1047d49",
+      "timestamp": "2026-07-23T01:32:36.292Z",
+      "actor": "SALES_EXEC",
+      "action": "PORTAL_PROVISION_REQUEST",
+      "status": "SUCCESS",
+      "payload": "MUSA Global",
+      "createdAt": "2026-07-23T01:32:36.412Z",
+      "updatedAt": "2026-07-23T03:06:37.399Z"
+    }
+  ],
+  "announcement": [
+    {
+      "id": "ann_001",
+      "title": "System Maintenance: New York Datacenter",
+      "date": "2026-07-25",
+      "category": "Maintenance",
+      "content": "We will be performing scheduled firmware upgrades on our primary FIPS 140-3 HSM clusters in the New York region.",
+      "createdAt": "2026-07-21T20:12:32.836Z",
+      "updatedAt": "2026-07-21T20:12:32.836Z"
+    },
+    {
+      "id": "ann_002",
+      "title": "ISO 27001 Re-certification Successful",
+      "date": "2026-07-10",
+      "category": "Compliance",
+      "content": "FoneBox Global has successfully renewed its ISO 27001 and SOC 2 Type II certifications for all global operations.",
+      "createdAt": "2026-07-21T20:12:32.839Z",
+      "updatedAt": "2026-07-21T20:12:32.839Z"
+    }
+  ],
+  "knowledgeBaseArticle": [
+    {
+      "id": "kb_001",
+      "title": "How to rotate your API Keys securely",
+      "category": "Security",
+      "rating": 4.8,
+      "views": 1240,
+      "createdAt": "2026-07-21T20:12:32.841Z",
+      "updatedAt": "2026-07-21T20:12:32.841Z"
+    },
+    {
+      "id": "kb_002",
+      "title": "Understanding HSM Sync Drift Alerts",
+      "category": "Troubleshooting",
+      "rating": 4.5,
+      "views": 890,
+      "createdAt": "2026-07-21T20:12:32.843Z",
+      "updatedAt": "2026-07-21T20:12:32.843Z"
+    }
+  ],
+  "siteSettings": [
+    {
+      "id": "20d7f613-c591-4ff1-ab4e-60035eb4fed2",
+      "logoUrl": "/uploads/logo-1784767535722-451977340.png",
+      "faviconUrl": "/uploads/favicon-1784767535740-432202777.png",
+      "createdAt": "2026-07-21T20:21:02.465Z",
+      "updatedAt": "2026-07-23T00:45:35.753Z"
+    }
+  ],
+  "serviceCard": [],
+  "testimonial": [],
+  "featuredSolution": [
+    {
+      "id": "b844cb31-4066-45d1-9f15-613f60bdd0f0",
+      "title": "Global E-Passports",
+      "category": "Government & Sovereignty",
+      "desc": "Full polycarbonate structure personalisations featuring high-resolution 1:N AFIS bio-search engines and country-signing cryptographic CAs.",
+      "imageUrl": "/uploads/epassport_tech.png",
+      "createdAt": "2026-07-21T20:14:20.929Z",
+      "updatedAt": "2026-07-21T21:00:21.532Z"
+    },
+    {
+      "id": "fdcd6209-9cd3-447e-8c74-5232acc470df",
+      "title": "High-Security EMV Payment Cards",
+      "category": "FinTech & Banking",
+      "desc": "PCI-DSS certified smartcard production line configurations, supporting custom metallic foils, security engraving, and dynamic CVV chips.",
+      "imageUrl": "/uploads/emv_smartcard.png",
+      "createdAt": "2026-07-21T20:14:20.929Z",
+      "updatedAt": "2026-07-21T21:00:21.553Z"
+    },
+    {
+      "id": "fc903f94-0125-4694-9244-33e2acb32421",
+      "title": "Global E-Visa Portals",
+      "category": "Immigration & Borders",
+      "desc": "Embassy-grade adjudication workflows with automated Interpol database vetting, generating cryptographically signed high-density QR-Codes.",
+      "imageUrl": "/uploads/evisa_portal.png",
+      "createdAt": "2026-07-21T20:14:20.929Z",
+      "updatedAt": "2026-07-21T21:00:21.554Z"
+    },
+    {
+      "id": "59653a6c-62b0-4553-b5bf-36d4803f176c",
+      "title": "Cybersecurity Infrastructure",
+      "category": "Critical Protection",
+      "desc": "Robust cyber security integration protecting critical infrastructures with Zero Trust gateway micro-segmentation.",
+      "imageUrl": "/uploads/cyber_command_center.png",
+      "createdAt": "2026-07-21T20:14:20.929Z",
+      "updatedAt": "2026-07-21T21:00:21.555Z"
+    }
+  ],
+  "enterpriseSolution": [
+    {
+      "id": "3284eca9-5782-4052-8fc0-d65040a60fa9",
+      "title": "Electronic Passports (e-Passports)",
+      "category": "Government Security",
+      "desc": "National scale identity personalization and high-security chip programming conforming to ICAO Doc 9303 standards. Polycarbonate datasheets with Active & Passive chip authorization.",
+      "useCases": "[\"Immigration checkpoints\",\"Airport security gates\",\"Diplomatic clearance\",\"Consulate applications\"]",
+      "benefits": "[\"100% clone proof smart RFID chip configuration\",\"Under 3-second clearance timelines at secure e-Gates\",\"Polycarbonate fusing prevents physical counterfeits\"]",
+      "industries": "[\"Government\",\"Immigration\",\"Defense\"]",
+      "flow": "[{\"title\":\"Biometric Enrollment\",\"desc\":\"Face & fingerprints captured via ISO/IEC 19794 compliance scanners.\"},{\"title\":\"Deduplication Vetting\",\"desc\":\"1:N biometric search inside secure central civilian databases.\"},{\"title\":\"LDS Cryptography signing\",\"desc\":\"Logical Data Structure signed with CSCA Country Root Key in FIPS 140-3 HSM.\"},{\"title\":\"Polycarbonate Laser Flash\",\"desc\":\"Laser engrave data-page & flash Smart chip simultaneously.\"}]",
+      "createdAt": "2026-07-21T20:14:20.954Z",
+      "updatedAt": "2026-07-21T20:44:39.050Z"
+    },
+    {
+      "id": "d725264f-e138-4893-b4db-acaecf217077",
+      "title": "Secure EMV Payment Cards",
+      "category": "FinTech Customization",
+      "desc": "High-speed payment card (EMV) customization pipelines. Features secure derived key exchange, contactless chip programming, and physical custom design personalizations.",
+      "useCases": "[\"Retail customer banking\",\"Central bank reserves\",\"Corporate high-balance cards\",\"Government funding disbursals\"]",
+      "benefits": "[\"Derived EMV master keys (MDK, UDK) secure injection\",\"PCI-DSS 4.0 certified localized vaults\",\"Contactless smartcard dual-interface security\"]",
+      "industries": "[\"Banking\",\"Finance\",\"Enterprise\"]",
+      "flow": "[{\"title\":\"PGP Encrypted ingest\",\"desc\":\"Bank cardholder parameters ingested over dedicated secure IPSec tunnel.\"},{\"title\":\"Key derivation\",\"desc\":\"NIST derived master parameters mapped via dedicated HSM engines.\"},{\"title\":\"Electrical injection\",\"desc\":\"Chip applets configured & EMV keys injected into smart processor.\"},{\"title\":\"Visual customization\",\"desc\":\"Laser emboss metallic safety numbers and apply branding foils.\"}]",
+      "createdAt": "2026-07-21T20:14:20.954Z",
+      "updatedAt": "2026-07-21T20:44:39.051Z"
+    },
+    {
+      "id": "b0662b96-1331-4d37-95c3-b97cce4714b1",
+      "title": "Electronic Visa Systems (e-Visa)",
+      "category": "Borders & Consular",
+      "desc": "Sovereign end-to-end digital visa application, adjudication workflow, and immediate border integration. Generates digitally signed QR Codes.",
+      "useCases": "[\"Consulate adjudication dashboards\",\"Border verification API gateways\",\"Consular visa registries\"]",
+      "benefits": "[\"Consular officers process requests in under 60 seconds\",\"Automated watchlist vetting against local and Interpol systems\",\"Digital signed tokens cannot be modified or forged\"]",
+      "industries": "[\"Government\",\"Borders\",\"Immigration\"]",
+      "flow": "[{\"title\":\"Application submission\",\"desc\":\"Sovereign portal ingests identity documentation and biodata.\"},{\"title\":\"Watchlist vetting\",\"desc\":\"Queries security databases within milliseconds over secure bus.\"},{\"title\":\"Adjudication audit\",\"desc\":\"Consular team reviews parameters and records final decision on log.\"},{\"title\":\"Secure token issuance\",\"desc\":\"Generates digitally signed high-density JWS QR-code.\"}]",
+      "createdAt": "2026-07-21T20:14:20.954Z",
+      "updatedAt": "2026-07-21T20:44:39.053Z"
+    }
+  ],
+  "systemSettings": []
+}

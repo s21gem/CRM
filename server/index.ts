@@ -96,6 +96,7 @@ const PORT = process.env.PORT || 5000;
 // Security and Rate Limiting
 app.use(helmet({
   crossOriginResourcePolicy: false,
+  contentSecurityPolicy: false,
 }));
 
 const apiLimiter = rateLimit({
