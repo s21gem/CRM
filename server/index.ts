@@ -283,6 +283,39 @@ app.post('/api/crm/consultations', async (req, res) => {
     const consultation = await prisma.consultationRequest.create({
       data: { name, email, org, tier },
     });
+    
+    // Convert consultation into a sales lead
+    await prisma.lead.create({
+      data: {
+        companyName: org || 'Unknown',
+        sector: tier,
+        country: 'Global',
+        contactPerson: name,
+        email: email,
+        value: 0,
+        status: 'New'
+      }
+    });
+
+    // Send confirmation email
+    try {
+      await sendEmail(
+        email,
+        'Your Fonebox Consultation Briefing Request',
+        'Your executive consultation ticket has been registered. A representative will contact you shortly.',
+        `<div style="font-family: sans-serif; color: #1e293b;">
+          <h2>Consultation Ticket Registered</h2>
+          <p>Dear ${name},</p>
+          <p>Your executive consultation ticket for <strong>${tier}</strong> has been registered successfully.</p>
+          <p>A regional security architect or director of custom integrations will contact you within 12 hours via an encrypted channel.</p>
+          <br/>
+          <p>Best regards,<br/>Fonebox Operations Team</p>
+        </div>`
+      );
+    } catch (emailErr) {
+      console.error('Failed to send consultation email:', emailErr);
+    }
+
     res.json(consultation);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create consultation' });
