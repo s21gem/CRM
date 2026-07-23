@@ -385,7 +385,43 @@ app.post('/api/crm/demo-request', async (req, res) => {
 
 app.post('/api/crm/security-vetting', async (req, res) => {
   try {
-    const vetting = await (prisma as any).securityVettingRequest.create({ data: {} });
+    const { name, company, email } = req.body;
+    const vetting = await (prisma as any).securityVettingRequest.create({ 
+      data: { company: company || 'unknown', email: email || 'unknown' } 
+    });
+
+    // Convert vetting request into a sales lead
+    await prisma.lead.create({
+      data: {
+        companyName: company || 'Security Vetting Requester',
+        sector: 'Security Audit',
+        country: 'Global',
+        contactPerson: name || 'Pending',
+        email: email || 'unknown',
+        value: 0,
+        status: 'New'
+      }
+    });
+
+    // Send email notification
+    try {
+      await sendEmail(
+        email,
+        'FoneBox Security Audit Vetting Request',
+        `Thank you for requesting a Security Audit Vetting. Our operations team will contact you shortly.`,
+        `<div style="font-family: sans-serif; color: #1e293b;">
+          <h2>Security Vetting Request Confirmation</h2>
+          <p>Dear ${name || 'Valued Client'},</p>
+          <p>Thank you for requesting a sovereign vulnerability vetting for <strong>${company}</strong>.</p>
+          <p>Our security operations center (SOC) has logged your request. A security architect will establish contact via an encrypted channel shortly to outline the next steps.</p>
+          <br/>
+          <p>Best regards,<br/>Fonebox Security Operations</p>
+        </div>`
+      );
+    } catch (emailErr) {
+      console.error('Failed to send vetting email:', emailErr);
+    }
+
     res.json(vetting);
   } catch (e) { res.status(500).json({ error: 'Vetting request failed' }); }
 });
