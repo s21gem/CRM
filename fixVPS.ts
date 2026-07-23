@@ -15,11 +15,11 @@ const runCommand = (cmd: string) => new Promise((resolve, reject) => {
 conn.on('ready', async () => {
   console.log('SSH Connection ready.');
   try {
-    // We need to set NODE_ENV=production
-    await runCommand('cd /var/www/CRM && pm2 stop crm && pm2 delete crm || true');
-    await runCommand('cd /var/www/CRM && export NODE_ENV=production && pm2 start npm --name "crm" -- run start');
-    await runCommand('pm2 save');
-    console.log('FIX COMPLETE!');
+    await runCommand('cd /var/www/CRM && rm db_dump.json restoreDb.ts');
+    await runCommand('cd /var/www/CRM && git pull origin main');
+    await runCommand('cd /var/www/CRM && npm run build');
+    await runCommand('cd /var/www/CRM && pm2 restart crm');
+    console.log('RESTART COMPLETE!');
   } catch (err) {
     console.error(err);
   } finally {
