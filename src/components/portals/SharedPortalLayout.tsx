@@ -4,7 +4,9 @@ import {
   ArrowLeft,
   Search,
   Bell,
-  ChevronDown
+  ChevronDown,
+  Menu,
+  X
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,6 +27,7 @@ export default function SharedPortalLayout({
 }: SharedPortalLayoutProps) {
   const navigate = useNavigate();
   const [showNotificationDrawer, setShowNotificationDrawer] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const handleExit = async () => {
     try {
@@ -40,11 +43,24 @@ export default function SharedPortalLayout({
       <header className="h-12 flex items-center justify-between px-4 border-b z-40 select-none bg-white dark:bg-[#0B132B] border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
         <div className="flex items-center gap-3">
           <button
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="lg:hidden p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <button
             onClick={handleExit}
-            className="flex items-center gap-1 text-[10px] uppercase font-mono tracking-wider font-bold px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800/40 hover:bg-slate-200 dark:hover:bg-slate-50 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-700/50 text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
+            className="hidden sm:flex items-center gap-1 text-[10px] uppercase font-mono tracking-wider font-bold px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800/40 hover:bg-slate-200 dark:hover:bg-slate-50 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-700/50 text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Logout & Exit
+          </button>
+          
+          <button
+            onClick={handleExit}
+            className="sm:hidden p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
+          >
+             <ArrowLeft className="w-4 h-4" />
           </button>
 
           <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800 hidden sm:block"></div>
@@ -100,6 +116,24 @@ export default function SharedPortalLayout({
           </div>
         </div>
       </header>
+
+      {/* Mobile Sidebar Overlay */}
+      {isMobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 flex lg:hidden">
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setIsMobileSidebarOpen(false)} />
+          <div className="relative w-64 max-w-sm h-full bg-white dark:bg-[#0B132B] border-r border-slate-200 dark:border-slate-800 flex flex-col animate-slide-in">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+              <span className="font-bold text-slate-900 dark:text-white">{portalTitle}</span>
+              <button onClick={() => setIsMobileSidebarOpen(false)} className="p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto flex-1 space-y-1.5" onClick={() => setIsMobileSidebarOpen(false)}>
+              {sidebarItems}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex-grow flex relative">
         {/* Left Sidebar */}

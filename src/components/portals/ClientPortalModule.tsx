@@ -395,17 +395,17 @@ export default function ClientPortalModule({ isDarkMode, currentUserRole }: Clie
             </div>
             <div style={{ textAlign: 'right' }}>
               <p style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#94a3b8', marginBottom: '8px' }}>Invoice Details</p>
-              <table style={{ fontSize: '14px', width: '100%', textAlign: 'right', borderCollapse: 'collapse' }}>
+              <div className="overflow-x-auto w-full"><table style={{ fontSize: '14px', width: '100%', textAlign: 'right', borderCollapse: 'collapse' }}>
                 <tbody>
                   <tr><td style={{ paddingRight: '16px', color: '#64748b', padding: '4px 0' }}>Date Issued:</td><td style={{ fontWeight: 'bold', color: '#0f172a' }}>{printingInvoice.issuedDate || new Date().toISOString().split('T')[0]}</td></tr>
                   <tr><td style={{ paddingRight: '16px', color: '#64748b', padding: '4px 0' }}>Due Date:</td><td style={{ fontWeight: 'bold', color: '#0f172a' }}>{printingInvoice.dueDate}</td></tr>
                   <tr><td style={{ paddingRight: '16px', color: '#64748b', padding: '4px 0' }}>Payment Status:</td><td style={{ fontWeight: 'bold', color: printingInvoice.status === 'Paid' ? '#059669' : '#dc2626' }}>{printingInvoice.status.toUpperCase()}</td></tr>
                 </tbody>
-              </table>
+              </table></div>
             </div>
           </div>
           
-          <table style={{ width: '100%', marginBottom: '40px', textAlign: 'left', borderCollapse: 'collapse' }}>
+          <div className="overflow-x-auto w-full"><table style={{ width: '100%', marginBottom: '40px', textAlign: 'left', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
                 <th style={{ padding: '12px 16px', fontWeight: 'bold', color: '#334155', fontSize: '14px' }}>Description</th>
@@ -420,7 +420,7 @@ export default function ClientPortalModule({ isDarkMode, currentUserRole }: Clie
                 <td style={{ padding: '16px', fontSize: '14px', color: '#1e293b', textAlign: 'right' }}>{formatCurrency(printingInvoice.amount)}</td>
               </tr>
             </tbody>
-          </table>
+          </table></div>
           
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '64px' }}>
             <div style={{ width: '50%' }}>

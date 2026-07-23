@@ -534,7 +534,7 @@ export default function SuperAdminModule({
               )}
 
               <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950/20">
-                <table className="w-full text-left text-xs border-collapse">
+                <div className="overflow-x-auto w-full"><table className="w-full text-left text-xs border-collapse">
                   <thead className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-mono uppercase text-[9px] tracking-wider">
                     <tr>
                       <th className="p-3">User</th>
@@ -601,7 +601,7 @@ export default function SuperAdminModule({
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                </table></div>
               </div>
             </div>
           )}

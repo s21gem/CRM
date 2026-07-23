@@ -183,8 +183,8 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
               <Shield className="w-3.5 h-3.5 animate-pulse" /> Sovereign High-Security Tech
             </div>
             
-            <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-tight text-slate-900 dark:text-white">
-              Secure Digital Identity & <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-slate-900 dark:from-blue-400 dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">FinTech Personalization</span>
+            <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-tight text-slate-900 dark:text-white">
+              Secure Digital Identity & <br className="hidden sm:block" /><span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-slate-900 dark:from-blue-400 dark:via-indigo-200 dark:to-white bg-clip-text text-transparent">FinTech Personalization</span>
             </h1>
 
             <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto lg:mx-0">
@@ -272,7 +272,7 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, idx) => {
             const Icon = service.icon;
             return (
@@ -318,7 +318,7 @@ export default function Home({ isDarkMode, setActiveTab, onOpenConsultation }: H
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredSolutions.map((sol, i) => (
             <div
               key={i}
