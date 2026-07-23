@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { sendEmail } from '../services/emailService';
 
 const router = Router();
 const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-2026';
 
 // ==========================================
 // USERS (Super Admin)
@@ -34,12 +37,21 @@ router.get('/users', async (req, res) => {
 
 router.post('/users', async (req: any, res) => {
   try {
+    const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    
+    try {
+      req.user = jwt.verify(token, JWT_SECRET);
+    } catch(e) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+
     // Only SUPER_ADMIN can create users directly via this endpoint
     if (req.user?.role !== 'SUPER_ADMIN') {
       return res.status(403).json({ error: 'Forbidden: Requires SUPER_ADMIN role' });
     }
 
-    const { email, password, name, role, department, clearance, status } = req.body;
+    const { email, password, name, role, department, clearance, status, sendEmailCredentials } = req.body;
 
     // RULE 3: Block web UI creation of SUPER_ADMIN
     if (role === 'SUPER_ADMIN') {
@@ -77,6 +89,34 @@ router.post('/users', async (req: any, res) => {
     });
 
     const { password: _, ...userWithoutPassword } = newUser;
+
+    // Send credentials email if requested
+    if (sendEmailCredentials) {
+      const emailHtml = `
+        <div style="font-family: sans-serif; color: #1e293b;">
+          <h2>Welcome to Fonebox Sovereign Ecosystem</h2>
+          <p>Dear ${name || 'Client'},</p>
+          <p>Your secure Corporate Portal account has been provisioned.</p>
+          <p><strong>Login URL:</strong> <a href="http://localhost:5173">http://localhost:5173</a></p>
+          <p><strong>Username:</strong> ${email}</p>
+          <p><strong>Temporary Password:</strong> ${password}</p>
+          <p>Please log in and update your security settings immediately.</p>
+          <br/>
+          <p>Best regards,<br/>Fonebox Operations Team</p>
+        </div>
+      `;
+      try {
+        await sendEmail(
+          email,
+          'Your Fonebox Portal Credentials',
+          `Your login is ${email} and your temporary password is ${password}.`,
+          emailHtml
+        );
+      } catch (emailErr) {
+        console.error('Failed to send credentials email:', emailErr);
+      }
+    }
+
     res.json(userWithoutPassword);
   } catch (error) {
     console.error(error);
@@ -84,8 +124,48 @@ router.post('/users', async (req: any, res) => {
   }
 });
 
+router.put('/users/me/credentials', async (req: any, res) => {
+  try {
+    const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch(e) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+
+    const userId = (decoded as any).userId;
+    const { email, password } = req.body;
+
+    const dataToUpdate: any = {};
+    if (email) dataToUpdate.email = email;
+    if (password) dataToUpdate.password = await bcrypt.hash(password, 10);
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: dataToUpdate
+    });
+
+    res.json({ success: true, user: { id: updatedUser.id, email: updatedUser.email } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update credentials' });
+  }
+});
+
 router.delete('/users/:id', async (req: any, res) => {
   try {
+    const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+    
+    try {
+      req.user = jwt.verify(token, JWT_SECRET);
+    } catch(e) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+
     if (req.user?.role !== 'SUPER_ADMIN') {
       return res.status(403).json({ error: 'Forbidden: Requires SUPER_ADMIN role' });
     }
@@ -409,7 +489,33 @@ router.get('/invoices', async (req, res) => {
 
 router.post('/invoices', async (req, res) => {
   try {
-    const invoice = await prisma.invoice.create({ data: req.body });
+    const { clientEmail, ...invoiceData } = req.body;
+    const invoice = await prisma.invoice.create({ data: invoiceData });
+    
+    // Attempt to send email notification
+    try {
+      const emailHtml = `
+        <div style="font-family: sans-serif; color: #1e293b;">
+          <h2>New Invoice Issued: ${invoice.projectName || 'Enterprise ICT Service'}</h2>
+          <p>Dear ${invoice.orgName || 'Client'},</p>
+          <p>A new invoice for <strong>$${invoice.amount.toLocaleString()}</strong> has been issued to your organization.</p>
+          <p><strong>Due Date:</strong> ${invoice.dueDate}</p>
+          <p>Please log in to the Fonebox Sovereign Ecosystem Client Portal to view the secure invoice and complete the payment.</p>
+          <br/>
+          <p>Best regards,<br/>Fonebox Finance Team</p>
+        </div>
+      `;
+      // Send to a generic address for demonstration, or extract client email if stored
+      await sendEmail(
+        clientEmail || 'client@example.com', 
+        `New Fonebox Invoice: ${invoice.projectName || 'Service Fees'}`, 
+        `A new invoice for $${invoice.amount} has been issued. Due: ${invoice.dueDate}.`, 
+        emailHtml
+      );
+    } catch (emailErr) {
+      console.error('Failed to send invoice email:', emailErr);
+    }
+
     res.json(invoice);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create invoice' });
@@ -418,13 +524,25 @@ router.post('/invoices', async (req, res) => {
 
 router.put('/invoices/:id', async (req, res) => {
   try {
+    const { clientEmail, ...invoiceData } = req.body;
     const invoice = await prisma.invoice.update({
       where: { id: req.params.id },
-      data: req.body,
+      data: invoiceData,
     });
     res.json(invoice);
   } catch (error) {
     res.status(500).json({ error: 'Failed to update invoice' });
+  }
+});
+
+router.delete('/invoices/:id', async (req, res) => {
+  try {
+    await prisma.invoice.delete({
+      where: { id: req.params.id },
+    });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete invoice' });
   }
 });
 
@@ -482,6 +600,18 @@ router.post('/auditlogs', async (req, res) => {
   }
 });
 
+router.put('/auditlogs/:id', async (req, res) => {
+  try {
+    const log = await prisma.systemAuditLog.update({
+      where: { id: req.params.id },
+      data: req.body
+    });
+    res.json(log);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update audit log' });
+  }
+});
+
 // ==========================================
 // ANNOUNCEMENTS
 // ==========================================
@@ -534,7 +664,7 @@ router.post('/invoices/:id/pay', async (req, res) => {
   try {
     const invoice = await prisma.invoice.update({
       where: { id: req.params.id },
-      data: { status: 'PAID' }
+      data: { status: 'Paid' }
     });
     res.json(invoice);
   } catch (error) {

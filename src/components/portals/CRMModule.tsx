@@ -2,8 +2,10 @@ import { apiClient } from '../../lib/apiClient';
 import React, { useState, useEffect } from "react";
 import {
   Building2, Users, Target, Search, Filter, Plus, Trash2, Edit2, CheckCircle, 
-  Clock, AlertTriangle, ShieldAlert, Check, Calendar, Activity, X, Save, TrendingUp
+  Clock, AlertTriangle, ShieldAlert, Check, Calendar, Activity, X, Save, TrendingUp,
+  MessageSquare, Receipt
 } from "lucide-react";
+import LiveChatsTab from "./LiveChatsTab";
 
 interface CRMModuleProps {
   isDarkMode: boolean;
@@ -11,12 +13,15 @@ interface CRMModuleProps {
 }
 
 export default function CRMModule({ isDarkMode, currentUserRole }: CRMModuleProps) {
-  const [activeTab, setActiveTab] = useState<"overview" | "orgs" | "leads" | "meetings" | "cases">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "orgs" | "leads" | "meetings" | "cases" | "chats" | "invoices">("overview");
 
   const [organizations, setOrganizations] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [isRequestingPortal, setIsRequestingPortal] = useState<string | null>(null);
   const [leads, setLeads] = useState<any[]>([]);
   const [meetings, setMeetings] = useState<any[]>([]);
   const [cases, setCases] = useState<any[]>([]);
+  const [invoices, setInvoices] = useState<any[]>([]);
 
   const fetchAPI = async (endpoint: string, method: string = 'GET', body: any = null) => {
     try {
@@ -34,17 +39,53 @@ export default function CRMModule({ isDarkMode, currentUserRole }: CRMModuleProp
     }
   };
 
+  const handleRequestPortal = async (orgName: string) => {
+    setIsRequestingPortal(orgName);
+    try {
+      const token = localStorage.getItem('crm_token');
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      };
+      const res = await apiClient('/api/crm/auditlogs', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          action: 'PORTAL_PROVISION_REQUEST',
+          status: 'PENDING',
+          payload: orgName,
+          actor: currentUserRole,
+          timestamp: new Date().toISOString()
+        })
+      });
+      if (res.ok) {
+        alert(`Successfully requested Super Admin to provision a portal account for ${orgName}.`);
+      } else {
+        alert('Failed to send request.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error sending request.');
+    } finally {
+      setIsRequestingPortal(null);
+    }
+  };
+
   const loadData = async () => {
-    const [orgsData, leadsData, meetingsData, casesData] = await Promise.all([
+    const [orgsData, leadsData, meetingsData, casesData, invoicesData, usersData] = await Promise.all([
       fetchAPI('organizations'),
       fetchAPI('leads'),
       fetchAPI('meetings'),
-      fetchAPI('cases')
+      fetchAPI('cases'),
+      fetchAPI('invoices'),
+      fetchAPI('users')
     ]);
     if (orgsData) setOrganizations(orgsData);
     if (leadsData) setLeads(leadsData);
     if (meetingsData) setMeetings(meetingsData);
     if (casesData) setCases(casesData);
+    if (invoicesData) setInvoices(invoicesData);
+    if (usersData) setUsers(usersData);
   };
 
   useEffect(() => {
@@ -60,10 +101,12 @@ export default function CRMModule({ isDarkMode, currentUserRole }: CRMModuleProp
 
   const navItems = [
     { id: 'overview', label: 'Dashboard', icon: Activity },
+    { id: 'chats', label: 'Live Support', icon: MessageSquare },
     { id: 'orgs', label: 'Organizations', icon: Building2 },
     { id: 'leads', label: 'Leads & Deals', icon: Target },
     { id: 'meetings', label: 'Meetings', icon: Calendar },
     { id: 'cases', label: 'Support Cases', icon: AlertTriangle },
+    { id: 'invoices', label: 'Finance & Billing', icon: Receipt },
   ] as const;
 
   // Generic Edit States
@@ -74,6 +117,7 @@ export default function CRMModule({ isDarkMode, currentUserRole }: CRMModuleProp
   const [leadForm, setLeadForm] = useState({ companyName: '', sector: 'Government', country: 'United States', contactPerson: '', email: '', value: 0, status: 'Discovery', confidence: 50, source: 'Direct', createdDate: new Date().toISOString().split('T')[0] });
   const [meetingForm, setMeetingForm] = useState({ title: '', date: '', time: '', orgName: '', location: '', status: 'Scheduled', attendees: '' });
   const [caseForm, setCaseForm] = useState({ title: '', orgName: '', description: '', severity: 'Medium', status: 'Open', assignedTo: 'Tech Support', category: 'Hardware', createdDate: new Date().toISOString().split('T')[0], updatedDate: new Date().toISOString().split('T')[0] });
+  const [invoiceForm, setInvoiceForm] = useState({ projectName: '', orgName: '', amount: 0, dueDate: '', status: 'Pending', issuedDate: new Date().toISOString().split('T')[0], clientEmail: '' });
 
   // Generic Handlers
   const handleSaveOrg = async (e: React.FormEvent) => {
@@ -122,6 +166,18 @@ export default function CRMModule({ isDarkMode, currentUserRole }: CRMModuleProp
     setEditingId(null);
     loadData();
     setCaseForm({ title: '', orgName: '', description: '', severity: 'Medium', status: 'Open', assignedTo: 'Tech Support', category: 'Hardware', createdDate: new Date().toISOString().split('T')[0], updatedDate: new Date().toISOString().split('T')[0] });
+  };
+
+  const handleSaveInvoice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingId) {
+      await fetchAPI(`invoices/${editingId}`, 'PUT', invoiceForm);
+    } else {
+      await fetchAPI('invoices', 'POST', invoiceForm);
+    }
+    setEditingId(null);
+    loadData();
+    setInvoiceForm({ projectName: '', orgName: '', amount: 0, dueDate: '', status: 'Pending', issuedDate: new Date().toISOString().split('T')[0], clientEmail: '' });
   };
 
   const handleDelete = async (endpoint: string, id: string) => {
@@ -195,6 +251,20 @@ export default function CRMModule({ isDarkMode, currentUserRole }: CRMModuleProp
               {org.purpose && <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 p-2 bg-slate-50 dark:bg-slate-950 rounded border border-slate-100 dark:border-slate-800 italic">"{org.purpose}"</p>}
             </div>
             <div className="flex gap-2">
+              {users.some(u => u.role === 'CORPORATE_CLIENT' && u.department === org.name) ? (
+                <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded flex items-center gap-1">
+                  <CheckCircle className="w-3 h-3" /> Portal Active
+                </span>
+              ) : (
+                <button 
+                  onClick={() => handleRequestPortal(org.name)}
+                  disabled={isRequestingPortal === org.name}
+                  title="Request Client Portal Account from Super Admin"
+                  className="px-3 py-1 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-800/40 text-blue-600 dark:text-blue-400 text-xs font-bold rounded flex items-center gap-1 disabled:opacity-50"
+                >
+                  {isRequestingPortal === org.name ? 'Sending...' : 'Request Portal'}
+                </button>
+              )}
               <button onClick={() => { setEditingId(org.id); setOrgForm(org); }} className="p-2 text-blue-500 hover:bg-blue-50 rounded"><Edit2 className="w-4 h-4"/></button>
               <button onClick={() => handleDelete('organizations', org.id)} className="p-2 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4"/></button>
             </div>
@@ -317,6 +387,58 @@ export default function CRMModule({ isDarkMode, currentUserRole }: CRMModuleProp
     </div>
   );
 
+  const renderInvoices = () => (
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Finance & Billing</h2>
+      </div>
+
+      <form onSubmit={handleSaveInvoice} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-4">
+        <h3 className="text-sm font-bold flex items-center gap-2 text-slate-900 dark:text-white"><Receipt className="w-4 h-4 text-blue-500"/> {editingId ? 'Edit Invoice' : 'Issue New Invoice'}</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="space-y-1"><label className="text-xs text-slate-500">Project / Description</label><input required value={invoiceForm.projectName} onChange={e=>setInvoiceForm({...invoiceForm, projectName: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" placeholder="e.g. Server Maintenance" /></div>
+          <div className="space-y-1">
+            <label className="text-xs text-slate-500">Client Org</label>
+            <select required value={invoiceForm.orgName} onChange={e=>setInvoiceForm({...invoiceForm, orgName: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+              <option value="" disabled>Select an Organization</option>
+              {organizations.map(org => (
+                <option key={org.id} value={org.name}>{org.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-1"><label className="text-xs text-slate-500">Amount (USD)</label><input type="number" required value={invoiceForm.amount} onChange={e=>setInvoiceForm({...invoiceForm, amount: Number(e.target.value)})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
+          <div className="space-y-1"><label className="text-xs text-slate-500">Due Date</label><input type="date" required value={invoiceForm.dueDate} onChange={e=>setInvoiceForm({...invoiceForm, dueDate: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" /></div>
+          <div className="space-y-1"><label className="text-xs text-slate-500">Status</label><select value={invoiceForm.status} onChange={e=>setInvoiceForm({...invoiceForm, status: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800"><option>Pending</option><option>Paid</option><option>Overdue</option></select></div>
+          <div className="space-y-1"><label className="text-xs text-slate-500">Client Email (Optional)</label><input type="email" value={invoiceForm.clientEmail} onChange={e=>setInvoiceForm({...invoiceForm, clientEmail: e.target.value})} className="w-full px-3 py-2 text-xs rounded bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800" placeholder="Notification recipient" /></div>
+        </div>
+        <div className="flex gap-2">
+          <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded flex items-center gap-1">{editingId ? <><Save className="w-4 h-4"/> Update</> : <><Plus className="w-4 h-4"/> Issue Invoice</>}</button>
+          {editingId && <button type="button" onClick={() => { setEditingId(null); setInvoiceForm({ projectName: '', orgName: '', amount: 0, dueDate: '', status: 'Pending', issuedDate: new Date().toISOString().split('T')[0], clientEmail: '' }) }} className="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded">Cancel</button>}
+        </div>
+      </form>
+
+      <div className="grid grid-cols-1 gap-4">
+        {invoices.map(inv => (
+          <div key={inv.id} className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex justify-between items-center">
+            <div>
+              <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">{inv.projectName || 'Service Invoice'} <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-[10px] rounded">{inv.orgName}</span></h4>
+              <p className="text-xs text-slate-500 mt-1">Amount: <span className="font-bold text-emerald-500">{formatCurrency(inv.amount)}</span> • Due: {inv.dueDate}</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded ${inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : inv.status === 'Overdue' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'}`}>
+                {inv.status}
+              </span>
+              <div className="flex gap-2">
+                <button onClick={() => { setEditingId(inv.id); setInvoiceForm({...inv, clientEmail: ''}); }} className="p-2 text-blue-500 hover:bg-blue-50 rounded"><Edit2 className="w-4 h-4"/></button>
+                <button onClick={() => handleDelete('invoices', inv.id)} className="p-2 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4"/></button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex h-full min-h-[80vh] overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/20">
       {/* Sidebar */}
@@ -346,10 +468,12 @@ export default function CRMModule({ isDarkMode, currentUserRole }: CRMModuleProp
       {/* Main Content Area */}
       <div className="flex-1 p-6 overflow-y-auto">
         {activeTab === 'overview' && renderOverview()}
+        {activeTab === 'chats' && <LiveChatsTab onDataRefresh={loadData} />}
         {activeTab === 'orgs' && renderOrganizations()}
         {activeTab === 'leads' && renderLeads()}
         {activeTab === 'meetings' && renderMeetings()}
         {activeTab === 'cases' && renderCases()}
+        {activeTab === 'invoices' && renderInvoices()}
       </div>
     </div>
   );

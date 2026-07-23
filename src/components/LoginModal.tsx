@@ -34,6 +34,9 @@ export default function LoginModal({ isOpen, onClose, isDarkMode }: LoginModalPr
 
       if (response.ok && data.user) {
         localStorage.setItem('crm_role', data.user.role);
+        localStorage.setItem('crm_user_org', data.user.department || '');
+        localStorage.setItem('crm_user_name', data.user.name || '');
+        localStorage.setItem('crm_user_email', data.user.email || '');
         onClose();
         
         switch (data.user.role) {

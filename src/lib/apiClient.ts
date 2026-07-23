@@ -1,5 +1,6 @@
 export const apiClient = async (endpoint: string, options: RequestInit = {}) => {
-  const url = endpoint.startsWith('http') ? endpoint : `http://localhost:5000${endpoint}`;
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`;
   
   const headers = new Headers(options.headers || {});
   if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {

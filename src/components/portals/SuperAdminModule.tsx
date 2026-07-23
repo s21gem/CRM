@@ -27,6 +27,8 @@ import {
   Sparkles,
   Database,
   FileText,
+  Activity,
+  CheckCircle,
 } from "lucide-react";
 import {
   ENTERPRISE_USERS,
@@ -88,7 +90,16 @@ export default function SuperAdminModule({
 
   // Form states
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: 'INTERNAL_STAFF', department: '', clearance: 'None' });
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "INTERNAL_STAFF",
+    department: "",
+    clearance: "None",
+    sendEmailCredentials: false,
+    requestId: undefined as string | undefined
+  });
   const [isCreatingUser, setIsCreatingUser] = useState(false);
   
   const [showAddKeyModal, setShowAddKeyModal] = useState(false);
@@ -224,7 +235,17 @@ export default function SuperAdminModule({
         const savedUser = await res.json();
         setUsers([savedUser, ...users]);
         setShowAddUserModal(false);
-        setNewUser({ name: '', email: '', password: '', role: 'INTERNAL_STAFF', department: '', clearance: 'None' });
+
+        // If this was from a CRM request, mark the request as SUCCESS
+        if (newUser.requestId) {
+          await apiClient(`/api/crm/auditlogs/${newUser.requestId}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({ status: 'SUCCESS' })
+          });
+        }
+
+        setNewUser({ name: '', email: '', password: '', role: 'INTERNAL_STAFF', department: '', clearance: 'None', sendEmailCredentials: false, requestId: undefined });
         alert(`User provisioned successfully and added to identity registry.`);
         
         // Also fetch updated logs since backend creates an audit log
@@ -474,6 +495,43 @@ export default function SuperAdminModule({
                   Provision User
                 </button>
               </div>
+
+              {/* CRM Provisioning Requests Queue */}
+              {auditLogs.filter(l => l.action === 'PORTAL_PROVISION_REQUEST' && l.status === 'PENDING').length > 0 && (
+                <div className="p-4 rounded-xl bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-500/20 space-y-3">
+                  <h4 className="text-xs font-bold text-orange-800 dark:text-orange-400 flex items-center gap-2">
+                    <Activity className="w-4 h-4" /> CRM Provisioning Requests
+                  </h4>
+                  <div className="space-y-2">
+                    {auditLogs.filter(l => l.action === 'PORTAL_PROVISION_REQUEST' && l.status === 'PENDING').map((reqLog: any) => (
+                      <div key={reqLog.id} className="flex justify-between items-center bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white">Request for: {reqLog.payload}</p>
+                          <p className="text-[10px] text-slate-500 font-mono">Requested by {reqLog.actor} • {new Date(reqLog.timestamp).toLocaleString()}</p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setNewUser({ 
+                              name: '', 
+                              email: '', 
+                              password: '', 
+                              role: 'CORPORATE_CLIENT', 
+                              department: reqLog.payload, 
+                              clearance: 'Standard', 
+                              sendEmailCredentials: true,
+                              requestId: reqLog.id
+                            });
+                            setShowAddUserModal(true);
+                          }}
+                          className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1"
+                        >
+                          <CheckCircle className="w-3 h-3" /> Approve & Provision
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950/20">
                 <table className="w-full text-left text-xs border-collapse">
@@ -725,9 +783,9 @@ export default function SuperAdminModule({
             </div>
           )}
 
-          {/* CMS Settings Tab */}
+      {/* CMS Settings Tab */}
       {adminTab === "cms" && !isLoading && (
-        <CmsModule isDarkMode={isDarkMode} currentUserRole={currentUserRole} />
+        <CmsModule />
       )}
 
       {/* Payment Gateway Settings Tab */}
@@ -926,12 +984,12 @@ export default function SuperAdminModule({
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-mono text-slate-600 dark:text-slate-500 uppercase tracking-widest block font-bold">
-                    Department
+                    Department / Organization Link
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Cybersecurity"
+                    placeholder="e.g. Google (Must match CRM Org Name for clients)"
                     value={newUser.department}
                     onChange={(e) => setNewUser({...newUser, department: e.target.value})}
                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs focus:outline-none focus:border-blue-500"
@@ -974,7 +1032,20 @@ export default function SuperAdminModule({
                 </div>
               </div>
 
-              <p className="text-[9px] text-slate-500 dark:text-slate-400 leading-relaxed font-sans">
+              <div className="flex items-center gap-2 mt-2">
+                <input
+                  type="checkbox"
+                  id="sendEmailCreds"
+                  checked={newUser.sendEmailCredentials}
+                  onChange={(e) => setNewUser({...newUser, sendEmailCredentials: e.target.checked})}
+                  className="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-slate-800 dark:bg-slate-700 dark:border-slate-600"
+                />
+                <label htmlFor="sendEmailCreds" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Email credentials to client
+                </label>
+              </div>
+
+              <p className="text-[9px] text-slate-500 dark:text-slate-400 leading-relaxed font-sans mt-4">
                 Upon creation, the user will be instantly activated and logged into the system audit registry. The password will be cryptographically hashed via bcrypt prior to database insertion.
               </p>
 

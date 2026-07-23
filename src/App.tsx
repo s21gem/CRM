@@ -9,6 +9,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import SearchModal from './components/SearchModal';
 import LoginModal from './components/LoginModal';
+import ChatWidget from './components/ChatWidget';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Lazy load public components
@@ -164,14 +165,14 @@ function PublicApp() {
       {/* Premium Footer with Sitemap & Newsletter */}
       <Footer 
         isDarkMode={isDarkMode} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={(tab: string) => setActiveTab(tab as any)} 
       />
 
       {/* Global Search Modal Overlay */}
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        setActiveTab={setActiveTab}
+        setActiveTab={(tab: string) => setActiveTab(tab as any)}
         isDarkMode={isDarkMode}
       />
 
@@ -324,22 +325,25 @@ function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, 
 export default function App() {
   const isDarkMode = document.documentElement.classList.contains('dark');
   return (
-    <Suspense fallback={<ComponentLoader />}>
-      <Routes>
-        <Route path="/" element={<PublicApp />} />
-        <Route path="/admin" element={
-          <ProtectedRoute allowedRole="SUPER_ADMIN"><AdminPortal isDarkMode={isDarkMode} /></ProtectedRoute>
-        } />
-        <Route path="/crm" element={
-          <ProtectedRoute allowedRole="SALES_EXEC"><CRMPortal isDarkMode={isDarkMode} /></ProtectedRoute>
-        } />
-        <Route path="/client" element={
-          <ProtectedRoute allowedRole="CORPORATE_CLIENT"><ClientPortal isDarkMode={isDarkMode} /></ProtectedRoute>
-        } />
-        <Route path="/ops" element={
-          <ProtectedRoute allowedRole="OPERATIONS_OFFICER"><OpsPortal isDarkMode={isDarkMode} /></ProtectedRoute>
-        } />
-      </Routes>
-    </Suspense>
+    <>
+      <Suspense fallback={<ComponentLoader />}>
+        <Routes>
+          <Route path="/" element={<PublicApp />} />
+          <Route path="/admin" element={
+            <ProtectedRoute allowedRole="SUPER_ADMIN"><AdminPortal isDarkMode={isDarkMode} /></ProtectedRoute>
+          } />
+          <Route path="/crm" element={
+            <ProtectedRoute allowedRole="SALES_EXEC"><CRMPortal isDarkMode={isDarkMode} /></ProtectedRoute>
+          } />
+          <Route path="/client" element={
+            <ProtectedRoute allowedRole="CORPORATE_CLIENT"><ClientPortal isDarkMode={isDarkMode} /></ProtectedRoute>
+          } />
+          <Route path="/ops" element={
+            <ProtectedRoute allowedRole="OPERATIONS_OFFICER"><OpsPortal isDarkMode={isDarkMode} /></ProtectedRoute>
+          } />
+        </Routes>
+      </Suspense>
+      <ChatWidget />
+    </>
   );
 }

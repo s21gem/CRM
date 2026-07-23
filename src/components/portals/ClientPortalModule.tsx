@@ -4,7 +4,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import {
   FolderGit2, CreditCard, HelpCircle, Activity, CheckCircle, 
-  AlertCircle, Building, Plus, Save
+  AlertCircle, Building, Plus, Save, Laptop
 } from "lucide-react";
 
 interface ClientPortalModuleProps {
@@ -13,11 +13,10 @@ interface ClientPortalModuleProps {
 }
 
 export default function ClientPortalModule({ isDarkMode, currentUserRole }: ClientPortalModuleProps) {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "projects" | "billing" | "support">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "projects" | "billing" | "support" | "settings">("dashboard");
 
-  // Since we don't have a real login system attached to specific orgs right now, 
-  // we'll default the "logged in client org" to a dummy name or the first one they pick.
-  const clientOrgName = currentUserRole === "Corporate Client" ? "Dutch-Bangla Bank PLC" : "Department of Immigration and Passports";
+  // Retrieve the organization name that was saved during login (tied to the user's Department field)
+  const clientOrgName = localStorage.getItem('crm_user_org') || "Dutch-Bangla Bank PLC";
 
   const [projects, setProjects] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -57,9 +56,9 @@ export default function ClientPortalModule({ isDarkMode, currentUserRole }: Clie
     ]);
     
     // Filter data to only show what belongs to this specific client org (simulated auth)
-    if (projData) setProjects(projData.filter((p: any) => p.orgName.includes(clientOrgName) || p.orgName === ''));
-    if (invData) setInvoices(invData.filter((i: any) => i.orgName.includes(clientOrgName) || i.orgName === ''));
-    if (casesData) setCases(casesData.filter((c: any) => c.orgName.includes(clientOrgName) || c.orgName === ''));
+    if (Array.isArray(projData)) setProjects(projData.filter((p: any) => p.orgName?.includes(clientOrgName) || !p.orgName));
+    if (Array.isArray(invData)) setInvoices(invData.filter((i: any) => i.orgName?.includes(clientOrgName) || !i.orgName));
+    if (Array.isArray(casesData)) setCases(casesData.filter((c: any) => c.orgName?.includes(clientOrgName) || !c.orgName));
   };
 
   useEffect(() => {
@@ -78,6 +77,7 @@ export default function ClientPortalModule({ isDarkMode, currentUserRole }: Clie
     { id: 'projects', label: 'My Projects', icon: FolderGit2 },
     { id: 'billing', label: 'Billing & Invoices', icon: CreditCard },
     { id: 'support', label: 'Support Cases', icon: HelpCircle },
+    { id: 'settings', label: 'Settings', icon: Laptop }, // Reusing Laptop icon or any icon imported
   ] as const;
 
   const handlePayInvoice = async (invoiceId: string) => {
@@ -124,6 +124,79 @@ export default function ClientPortalModule({ isDarkMode, currentUserRole }: Clie
       </div>
     );
   };
+
+  const [settingsForm, setSettingsForm] = useState({ email: '', password: '' });
+  const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
+
+  const handleUpdateCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!settingsForm.email && !settingsForm.password) return;
+    
+    setIsUpdatingSettings(true);
+    try {
+      const token = localStorage.getItem('crm_token');
+      const res = await apiClient('/api/crm/users/me/credentials', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(settingsForm)
+      });
+      if (res.ok) {
+        alert('Credentials updated securely. Please login again with your new credentials.');
+        localStorage.removeItem('crm_role');
+        localStorage.removeItem('crm_token');
+        window.location.href = '/';
+      } else {
+        alert('Failed to update credentials.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error updating settings.');
+    } finally {
+      setIsUpdatingSettings(false);
+    }
+  };
+
+  const renderSettings = () => (
+    <div className="space-y-6 animate-fade-in max-w-2xl">
+      <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Laptop className="w-5 h-5 text-blue-500"/> Account Security</h2>
+      
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4">Update Login Credentials</h3>
+        <form onSubmit={handleUpdateCredentials} className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">New Email Address</label>
+            <input 
+              type="email" 
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded p-2 text-sm dark:text-white"
+              placeholder="Leave blank to keep current"
+              value={settingsForm.email}
+              onChange={(e) => setSettingsForm({ ...settingsForm, email: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">New Password</label>
+            <input 
+              type="password" 
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded p-2 text-sm dark:text-white"
+              placeholder="Leave blank to keep current"
+              value={settingsForm.password}
+              onChange={(e) => setSettingsForm({ ...settingsForm, password: e.target.value })}
+            />
+          </div>
+          <button 
+            type="submit" 
+            disabled={isUpdatingSettings}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold text-sm transition-colors"
+          >
+            {isUpdatingSettings ? 'Updating...' : 'Update Security Settings'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 
   const renderProjects = () => (
     <div className="space-y-6 animate-fade-in">
@@ -287,12 +360,18 @@ export default function ClientPortalModule({ isDarkMode, currentUserRole }: Clie
         {activeTab === 'projects' && renderProjects()}
         {activeTab === 'billing' && renderBilling()}
         {activeTab === 'support' && renderSupport()}
+        {activeTab === 'settings' && renderSettings()}
       </div>
 
       {/* Hidden Invoice Template for PDF Generation */}
       {printingInvoice && (
         <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', width: '800px', padding: '40px', backgroundColor: '#ffffff', color: '#000000', fontFamily: 'sans-serif' }} id="invoice-print-template">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #e2e8f0', paddingBottom: '32px', marginBottom: '32px' }}>
+          {printingInvoice.status === 'Paid' && (
+            <div style={{ position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%, -50%) rotate(-30deg)', fontSize: '100px', fontWeight: '900', color: 'rgba(5, 150, 105, 0.15)', border: '12px solid rgba(5, 150, 105, 0.15)', borderRadius: '24px', padding: '16px 64px', textTransform: 'uppercase', letterSpacing: '20px', zIndex: 0, pointerEvents: 'none', textAlign: 'center' }}>
+              PAID
+            </div>
+          )}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #e2e8f0', paddingBottom: '32px', marginBottom: '32px', position: 'relative', zIndex: 1 }}>
             <div>
               <img src="/logo.png" alt="Fonebox Logo" style={{ height: '48px', marginBottom: '16px' }} />
               <h1 style={{ fontSize: '30px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>INVOICE</h1>

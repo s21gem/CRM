@@ -14,6 +14,8 @@ import { sendEmail } from './services/emailService';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import { createClient } from 'redis';
+import { Server as SocketIOServer } from 'socket.io';
+import chatRoutes from './routes/chatRoutes';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-2026';
 
@@ -102,7 +104,8 @@ const apiLimiter = rateLimit({
   message: { error: 'Too many requests from this IP, please try again later.' }
 });
 
-app.use(cors({ origin: true, credentials: true })); // Enable cookies cross-origin
+const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'] : true;
+app.use(cors({ origin: allowedOrigins, credentials: true })); // Enable cookies cross-origin
 app.use(express.json());
 app.use(cookieParser());
 app.use(compression()); // Optimize API payloads
@@ -110,6 +113,7 @@ app.use(compression()); // Optimize API payloads
 app.use('/api/', apiLimiter);
 app.use('/api/crm', crmRoutes);
 app.use('/api/cms', cacheMiddleware(60), cmsRoutes);
+app.use('/api/chat', chatRoutes);
 app.use('/uploads', express.static(path.join(process.cwd(), 'server', 'public', 'uploads')));
 
 // Seed Admin and Demo Users
@@ -246,7 +250,7 @@ app.post('/api/auth/login', async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
       });
 
-      res.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+      res.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department } });
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -260,7 +264,7 @@ app.get('/api/auth/me', authMiddleware, async (req: any, res: any) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
     if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+    res.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department } });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -380,6 +384,59 @@ if (process.env.NODE_ENV === 'production') {
 
 const server = app.listen(PORT, () => {
   console.log(`[SYS] Server running on port ${PORT}`);
+});
+
+// Setup Socket.IO
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
+
+app.set('io', io);
+
+io.on('connection', (socket) => {
+  console.log('[SOCKET] Client connected:', socket.id);
+
+  socket.on('join_session', (sessionId) => {
+    socket.join(sessionId);
+    console.log(`[SOCKET] ${socket.id} joined session ${sessionId}`);
+  });
+
+  socket.on('send_message', async (data) => {
+    try {
+      const { sessionId, content, senderType } = data;
+      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      const message = await prisma.chatMessage.create({
+        data: {
+          sessionId,
+          content,
+          senderType,
+          timestamp
+        }
+      });
+
+      // Broadcast to room
+      io.to(sessionId).emit('receive_message', message);
+      
+      // Also notify operations team globally if they are in the 'operations_room'
+      io.to('operations_room').emit('new_chat_message', { sessionId, message });
+
+    } catch (e) {
+      console.error('[SOCKET] Error sending message:', e);
+    }
+  });
+
+  socket.on('join_ops_room', () => {
+    socket.join('operations_room');
+    console.log(`[SOCKET] Ops agent ${socket.id} joined operations_room`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('[SOCKET] Client disconnected:', socket.id);
+  });
 });
 
 // Graceful Shutdown Handler
