@@ -5,7 +5,7 @@ import SuperAdminModule from './SuperAdminModule';
 
 export default function AdminPortal({ isDarkMode }: { isDarkMode: boolean }) {
   return (
-    <SharedPortalLayout 
+    <SharedPortalLayout
       isDarkMode={isDarkMode}
       roleName="SUPER_ADMIN"
       portalTitle="Sovereign Ecosystem"

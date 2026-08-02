@@ -12,18 +12,28 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (user && await bcrypt.compare(password, user.password)) {
-      const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
-      
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
+        expiresIn: '24h',
+      });
+
       // Set HttpOnly secure cookie
       res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
       });
 
-      res.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department } });
+      res.json({
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          department: user.department,
+        },
+      });
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -37,7 +47,15 @@ router.get('/me', authMiddleware, async (req: any, res: any) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
     if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department } });
+    res.json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }

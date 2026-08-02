@@ -13,7 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-2026';
 // ==========================================
 router.get('/users', async (req, res) => {
   try {
-    const users = await prisma.user.findMany({ 
+    const users = await prisma.user.findMany({
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
@@ -25,9 +25,9 @@ router.get('/users', async (req, res) => {
         status: true,
         lastLogin: true,
         createdAt: true,
-        updatedAt: true
+        updatedAt: true,
         // Specifically excluding password
-      }
+      },
     });
     res.json(users);
   } catch (error) {
@@ -39,10 +39,10 @@ router.post('/users', async (req: any, res) => {
   try {
     const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    
+
     try {
       req.user = jwt.verify(token, JWT_SECRET);
-    } catch(e) {
+    } catch (e) {
       return res.status(401).json({ error: 'Invalid token' });
     }
 
@@ -51,11 +51,14 @@ router.post('/users', async (req: any, res) => {
       return res.status(403).json({ error: 'Forbidden: Requires SUPER_ADMIN role' });
     }
 
-    const { email, password, name, role, department, clearance, status, sendEmailCredentials } = req.body;
+    const { email, password, name, role, department, clearance, status, sendEmailCredentials } =
+      req.body;
 
     // RULE 3: Block web UI creation of SUPER_ADMIN
     if (role === 'SUPER_ADMIN') {
-      return res.status(403).json({ error: 'Forbidden: Super Admins can only be provisioned via secure terminal CLI.' });
+      return res.status(403).json({
+        error: 'Forbidden: Super Admins can only be provisioned via secure terminal CLI.',
+      });
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -73,10 +76,10 @@ router.post('/users', async (req: any, res) => {
         role: role || 'CUSTOMER',
         department,
         clearance,
-        status: status || 'Active'
-      }
+        status: status || 'Active',
+      },
     });
-    
+
     // Add audit log for user creation
     await prisma.systemAuditLog.create({
       data: {
@@ -84,8 +87,8 @@ router.post('/users', async (req: any, res) => {
         actor: req.user.email || 'System',
         action: 'USER_PROVISION',
         status: 'SUCCESS',
-        payload: `Provisioned new user: ${email} with role ${role}`
-      }
+        payload: `Provisioned new user: ${email} with role ${role}`,
+      },
     });
 
     const { password: _, ...userWithoutPassword } = newUser;
@@ -128,11 +131,11 @@ router.put('/users/me/credentials', async (req: any, res) => {
   try {
     const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    
+
     let decoded;
     try {
       decoded = jwt.verify(token, JWT_SECRET);
-    } catch(e) {
+    } catch (e) {
       return res.status(401).json({ error: 'Invalid token' });
     }
 
@@ -145,7 +148,7 @@ router.put('/users/me/credentials', async (req: any, res) => {
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: dataToUpdate
+      data: dataToUpdate,
     });
 
     res.json({ success: true, user: { id: updatedUser.id, email: updatedUser.email } });
@@ -159,10 +162,10 @@ router.delete('/users/:id', async (req: any, res) => {
   try {
     const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
-    
+
     try {
       req.user = jwt.verify(token, JWT_SECRET);
-    } catch(e) {
+    } catch (e) {
       return res.status(401).json({ error: 'Invalid token' });
     }
 
@@ -171,13 +174,13 @@ router.delete('/users/:id', async (req: any, res) => {
     }
 
     const { id } = req.params;
-    
+
     // Check if user exists
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     // Prevent self-deletion if needed (optional safety measure)
     if (user.email === req.user.email) {
       return res.status(400).json({ error: 'Cannot delete your own account' });
@@ -185,11 +188,13 @@ router.delete('/users/:id', async (req: any, res) => {
 
     // RULE 2: Horizontal Shield - Block deletion of fellow Super Admins
     if (user.role === 'SUPER_ADMIN') {
-      return res.status(403).json({ error: 'Forbidden: Cannot revoke another Super Admin via the web interface.' });
+      return res
+        .status(403)
+        .json({ error: 'Forbidden: Cannot revoke another Super Admin via the web interface.' });
     }
 
     await prisma.user.delete({ where: { id } });
-    
+
     // Log the deletion
     await prisma.systemAuditLog.create({
       data: {
@@ -197,8 +202,8 @@ router.delete('/users/:id', async (req: any, res) => {
         actor: req.user.email || 'System',
         action: 'USER_REVOCATION',
         status: 'SUCCESS',
-        payload: `Revoked access and deleted user: ${user.email} (${id})`
-      }
+        payload: `Revoked access and deleted user: ${user.email} (${id})`,
+      },
     });
 
     res.json({ success: true });
@@ -491,7 +496,7 @@ router.post('/invoices', async (req, res) => {
   try {
     const { clientEmail, ...invoiceData } = req.body;
     const invoice = await prisma.invoice.create({ data: invoiceData });
-    
+
     // Attempt to send email notification
     try {
       const emailHtml = `
@@ -507,9 +512,9 @@ router.post('/invoices', async (req, res) => {
       `;
       // Send to a generic address for demonstration, or extract client email if stored
       await sendEmail(
-        clientEmail || 'client@example.com', 
-        `New Fonebox Invoice: ${invoice.projectName || 'Service Fees'}`, 
-        `A new invoice for $${invoice.amount} has been issued. Due: ${invoice.dueDate}.`, 
+        clientEmail || 'client@example.com',
+        `New Fonebox Invoice: ${invoice.projectName || 'Service Fees'}`,
+        `A new invoice for $${invoice.amount} has been issued. Due: ${invoice.dueDate}.`,
         emailHtml
       );
     } catch (emailErr) {
@@ -604,7 +609,7 @@ router.put('/auditlogs/:id', async (req, res) => {
   try {
     const log = await prisma.systemAuditLog.update({
       where: { id: req.params.id },
-      data: req.body
+      data: req.body,
     });
     res.json(log);
   } catch (error) {
@@ -664,7 +669,7 @@ router.post('/invoices/:id/pay', async (req, res) => {
   try {
     const invoice = await prisma.invoice.update({
       where: { id: req.params.id },
-      data: { status: 'Paid' }
+      data: { status: 'Paid' },
     });
     res.json(invoice);
   } catch (error) {
@@ -684,7 +689,7 @@ router.get('/payment-settings', async (req, res) => {
           provider: 'stripe',
           publicKey: '',
           secretKey: '',
-        }
+        },
       });
     }
     res.json(settings);
@@ -698,7 +703,7 @@ router.put('/payment-settings', async (req, res) => {
     const { id, provider, publicKey, secretKey, webhookSecret, isActive } = req.body;
     const settings = await prisma.paymentGatewaySettings.update({
       where: { id },
-      data: { provider, publicKey, secretKey, webhookSecret, isActive }
+      data: { provider, publicKey, secretKey, webhookSecret, isActive },
     });
     res.json(settings);
   } catch (error) {

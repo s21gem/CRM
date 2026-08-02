@@ -4,67 +4,99 @@
  */
 
 import { useState } from 'react';
-import { Shield, Lock, Cpu, Server, Key, Eye, AlertTriangle, CheckCircle, Activity, Landmark, Loader2, X } from 'lucide-react';
+import {
+  Shield,
+  Lock,
+  Cpu,
+  Server,
+  Key,
+  Eye,
+  AlertTriangle,
+  CheckCircle,
+  Activity,
+  Landmark,
+  Loader2,
+  X,
+} from 'lucide-react';
 
 export default function Security() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Vetting Modal State
   const [isVettingModalOpen, setIsVettingModalOpen] = useState(false);
   const [vettingName, setVettingName] = useState('');
   const [vettingEmail, setVettingEmail] = useState('');
   const [vettingOrg, setVettingOrg] = useState('');
   const [vettingIsSubmitted, setVettingIsSubmitted] = useState(false);
-  
+
   const securityPillars = [
     {
       title: 'Global Compliance Standards',
       desc: 'FoneBox Global is certified under FIPS 140-3 Level 4 (the highest hardware-level validation), SOC 2 Type II, ISO/IEC 27001, PCI-DSS 4.0, and FedRAMP High sovereign cloud standards.',
-      icon: CheckCircle
+      icon: CheckCircle,
     },
     {
       title: 'High-Assurance Cryptography',
       desc: 'All data layers utilize military-grade encryption primitives including AES-GCM-256, RSA-4096, and ECDSA-P384. Post-quantum lattice-based signature preparations are currently actively deployed.',
-      icon: Key
+      icon: Key,
     },
     {
       title: 'Public Key Infrastructure (PKI)',
       desc: 'We design and configure offline Master Root Certificate Authorities isolated inside physically guarded steel faraday cages. Dual-custody multi-signature HSM cards govern all state certificate rolls.',
-      icon: Shield
+      icon: Shield,
     },
     {
       title: 'Secure Infrastructure Nodes',
       desc: 'Our processing systems run inside private, redundant container cells. Continuous runtime integrity checks prevent raw kernel injection or document data exfiltrations.',
-      icon: Server
+      icon: Server,
     },
     {
       title: 'Advanced Identity Protection',
       desc: '1:N biometric de-duplication utilizes ISO/IEC 19794 compliant templates. Strict zero-knowledge proofs (ZKP) allow citizens to verify identity without revealing actual biodata records.',
-      icon: Eye
+      icon: Eye,
     },
     {
       title: 'Security Operations & Governance',
       desc: 'A dedicated 24/7 sovereign SOC monitors threat streams. Custom automated orchestration blocks anomaly gateways in milliseconds while storing immutable logs in append-only ledgers.',
-      icon: Activity
-    }
+      icon: Activity,
+    },
   ];
 
   const riskGovernance = [
-    { rule: 'Dual-Custody Mandate', details: 'All HSM cryptographic operations require physical presence and concurrent authorization keys from three certified Security Officers.' },
-    { rule: 'Zero-Trust Gateways', details: 'No external IPs possess direct database connections. Access requires client-side certificate validation and hardware FIDO2 tokens.' },
-    { rule: 'Continuous Audit Trails', details: 'Every administrative event is hashed and piped instantly to an append-only cryptographic ledger, preventing local log modifications.' },
-    { rule: 'Physical Faraday Vaults', details: 'Our country-signing Root CA systems operate completely offline inside guarded physical cages with biometric dual-airlocks.' }
+    {
+      rule: 'Dual-Custody Mandate',
+      details:
+        'All HSM cryptographic operations require physical presence and concurrent authorization keys from three certified Security Officers.',
+    },
+    {
+      rule: 'Zero-Trust Gateways',
+      details:
+        'No external IPs possess direct database connections. Access requires client-side certificate validation and hardware FIDO2 tokens.',
+    },
+    {
+      rule: 'Continuous Audit Trails',
+      details:
+        'Every administrative event is hashed and piped instantly to an append-only cryptographic ledger, preventing local log modifications.',
+    },
+    {
+      rule: 'Physical Faraday Vaults',
+      details:
+        'Our country-signing Root CA systems operate completely offline inside guarded physical cages with biometric dual-airlocks.',
+    },
   ];
 
   const handleVettingRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/crm/security-vetting`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: vettingName, company: vettingOrg, email: vettingEmail })
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000'))}/api/crm/security-vetting`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: vettingName, company: vettingOrg, email: vettingEmail }),
+        }
+      );
       setVettingIsSubmitted(true);
     } catch (err) {
       console.error('Failed to submit vetting request', err);
@@ -85,13 +117,17 @@ export default function Security() {
 
   return (
     <div className="space-y-16 pt-28 pb-12">
-      
       {/* Page Intro */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 text-center">
-        <span className="text-[10px] font-mono tracking-widest uppercase text-blue-500 font-bold font-bold">Security & Sovereignty</span>
-        <h1 className="font-display font-bold text-4xl sm:text-5xl text-slate-900 dark:text-white">Sovereign Defensive Posture</h1>
+        <span className="text-[10px] font-mono tracking-widest uppercase text-blue-500 font-bold font-bold">
+          Security & Sovereignty
+        </span>
+        <h1 className="font-display font-bold text-4xl sm:text-5xl text-slate-900 dark:text-white">
+          Sovereign Defensive Posture
+        </h1>
         <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed max-w-3xl mx-auto">
-          FoneBox Global operates under the highest military and diplomatic security standards to guarantee the absolute confidentiality of citizen identities and payment credentials.
+          FoneBox Global operates under the highest military and diplomatic security standards to
+          guarantee the absolute confidentiality of citizen identities and payment credentials.
         </p>
       </section>
 
@@ -108,8 +144,12 @@ export default function Security() {
                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
                   <Icon className="w-5 h-5 animate-pulse" />
                 </div>
-                <h3 className="font-display font-bold text-sm text-slate-900 dark:text-slate-100">{pillar.title}</h3>
-                <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">{pillar.desc}</p>
+                <h3 className="font-display font-bold text-sm text-slate-900 dark:text-slate-100">
+                  {pillar.title}
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+                  {pillar.desc}
+                </p>
               </div>
               <div className="pt-4 border-t border-slate-200 dark:border-slate-800/40 text-[9px] font-mono text-slate-500 uppercase tracking-widest">
                 System Active & Verified
@@ -122,19 +162,30 @@ export default function Security() {
       {/* Strict Risk Governance */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="border-b border-slate-200 dark:border-slate-800/40 pb-6 text-center md:text-left">
-          <span className="text-[10px] font-mono tracking-widest uppercase text-blue-500 font-bold">Governance & Risk</span>
-          <h2 className="font-display font-bold text-2xl text-slate-900 dark:text-white mt-1">Operational Security Policies</h2>
+          <span className="text-[10px] font-mono tracking-widest uppercase text-blue-500 font-bold">
+            Governance & Risk
+          </span>
+          <h2 className="font-display font-bold text-2xl text-slate-900 dark:text-white mt-1">
+            Operational Security Policies
+          </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {riskGovernance.map((gov, i) => (
-            <div key={i} className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950/20 flex gap-4 items-start">
+            <div
+              key={i}
+              className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950/20 flex gap-4 items-start"
+            >
               <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5">
                 <AlertTriangle className="w-4 h-4" />
               </div>
               <div className="space-y-1.5">
-                <h4 className="font-display font-bold text-xs text-slate-800 dark:text-slate-100">{gov.rule}</h4>
-                <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">{gov.details}</p>
+                <h4 className="font-display font-bold text-xs text-slate-800 dark:text-slate-100">
+                  {gov.rule}
+                </h4>
+                <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+                  {gov.details}
+                </p>
               </div>
             </div>
           ))}
@@ -145,9 +196,16 @@ export default function Security() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="p-8 rounded-3xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-none flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="space-y-1">
-            <span className="text-[9px] font-mono text-slate-500 uppercase">Defense-Grade Auditing</span>
-            <h3 className="font-display font-bold text-lg text-slate-900 dark:text-white">Is your ecosystem ready for audit?</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-xs">Our security audit teams deploy localized testing suits mimicking state threat vectors.</p>
+            <span className="text-[9px] font-mono text-slate-500 uppercase">
+              Defense-Grade Auditing
+            </span>
+            <h3 className="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Is your ecosystem ready for audit?
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 text-xs">
+              Our security audit teams deploy localized testing suits mimicking state threat
+              vectors.
+            </p>
           </div>
           <button
             onClick={() => setIsVettingModalOpen(true)}
@@ -162,9 +220,9 @@ export default function Security() {
       {isVettingModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 md:p-20 flex justify-center items-center">
           {/* Backdrop */}
-          <div 
+          <div
             onClick={closeVettingModal}
-            className="fixed inset-0 bg-slate-950/75 backdrop-blur-sm transition-opacity" 
+            className="fixed inset-0 bg-slate-950/75 backdrop-blur-sm transition-opacity"
           />
 
           {/* Modal Card */}
@@ -175,11 +233,15 @@ export default function Security() {
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-[9px] font-mono tracking-widest text-blue-400 uppercase font-bold block">Sovereign Channels</span>
-                  <h3 className="font-display font-bold text-sm text-slate-900 dark:text-slate-100">Security Audit Vetting</h3>
+                  <span className="text-[9px] font-mono tracking-widest text-blue-400 uppercase font-bold block">
+                    Sovereign Channels
+                  </span>
+                  <h3 className="font-display font-bold text-sm text-slate-900 dark:text-slate-100">
+                    Security Audit Vetting
+                  </h3>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={closeVettingModal}
                 className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
               >
@@ -194,11 +256,20 @@ export default function Security() {
                     <CheckCircle className="w-6 h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-display font-bold text-base text-slate-900 dark:text-white">Audit Request Logged</h4>
-                    <p className="text-slate-400 text-xs">Tracking token: <span className="font-mono text-blue-400 font-bold">AUDIT-{Math.random().toString(36).substring(2, 8).toUpperCase()}</span></p>
+                    <h4 className="font-display font-bold text-base text-slate-900 dark:text-white">
+                      Audit Request Logged
+                    </h4>
+                    <p className="text-slate-400 text-xs">
+                      Tracking token:{' '}
+                      <span className="font-mono text-blue-400 font-bold">
+                        AUDIT-{Math.random().toString(36).substring(2, 8).toUpperCase()}
+                      </span>
+                    </p>
                   </div>
                   <p className="text-slate-500 text-[11px] leading-relaxed max-w-sm mx-auto">
-                    Your request for a sovereign vulnerability vetting has been secured. Our security operations center (SOC) will contact you via encrypted channel shortly to outline next steps.
+                    Your request for a sovereign vulnerability vetting has been secured. Our
+                    security operations center (SOC) will contact you via encrypted channel shortly
+                    to outline next steps.
                   </p>
                   <button
                     onClick={closeVettingModal}
@@ -210,7 +281,9 @@ export default function Security() {
               ) : (
                 <form onSubmit={handleVettingRequest} className="space-y-4">
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Representative Name</label>
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">
+                      Representative Name
+                    </label>
                     <input
                       type="text"
                       required
@@ -222,7 +295,9 @@ export default function Security() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Secure Contact Email</label>
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">
+                      Secure Contact Email
+                    </label>
                     <input
                       type="email"
                       required
@@ -234,7 +309,9 @@ export default function Security() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Government agency or Corporation</label>
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">
+                      Government agency or Corporation
+                    </label>
                     <input
                       type="text"
                       required
@@ -265,7 +342,6 @@ export default function Security() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

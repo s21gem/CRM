@@ -5,7 +5,7 @@ import CRMModule from './CRMModule';
 
 export default function CRMPortal({ isDarkMode }: { isDarkMode: boolean }) {
   return (
-    <SharedPortalLayout 
+    <SharedPortalLayout
       isDarkMode={isDarkMode}
       roleName="SALES_EXEC"
       portalTitle="Sovereign Ecosystem"

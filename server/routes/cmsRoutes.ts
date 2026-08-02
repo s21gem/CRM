@@ -19,9 +19,9 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-  }
+  },
 });
 const upload = multer({ storage });
 
@@ -40,34 +40,41 @@ router.get('/settings', async (req, res) => {
   }
 });
 
-router.put('/settings', upload.fields([{ name: 'logo', maxCount: 1 }, { name: 'favicon', maxCount: 1 }]), async (req, res) => {
-  try {
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    const logoFile = files['logo']?.[0];
-    const faviconFile = files['favicon']?.[0];
+router.put(
+  '/settings',
+  upload.fields([
+    { name: 'logo', maxCount: 1 },
+    { name: 'favicon', maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const logoFile = files['logo']?.[0];
+      const faviconFile = files['favicon']?.[0];
 
-    const updateData: any = {};
-    if (logoFile) {
-      updateData.logoUrl = `/uploads/${logoFile.filename}`;
-    }
-    if (faviconFile) {
-      updateData.faviconUrl = `/uploads/${faviconFile.filename}`;
-    }
+      const updateData: any = {};
+      if (logoFile) {
+        updateData.logoUrl = `/uploads/${logoFile.filename}`;
+      }
+      if (faviconFile) {
+        updateData.faviconUrl = `/uploads/${faviconFile.filename}`;
+      }
 
-    let settings = await prisma.siteSettings.findFirst();
-    if (settings) {
-      settings = await prisma.siteSettings.update({
-        where: { id: settings.id },
-        data: updateData
-      });
-    } else {
-      settings = await prisma.siteSettings.create({ data: updateData });
+      let settings = await prisma.siteSettings.findFirst();
+      if (settings) {
+        settings = await prisma.siteSettings.update({
+          where: { id: settings.id },
+          data: updateData,
+        });
+      } else {
+        settings = await prisma.siteSettings.create({ data: updateData });
+      }
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update settings' });
     }
-    res.json(settings);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update settings' });
   }
-});
+);
 
 // ==========================================
 // SYSTEM SETTINGS (Social Links, etc.)
@@ -76,10 +83,13 @@ router.get('/system-settings', async (req, res) => {
   try {
     const settings = await prisma.systemSettings.findMany();
     // Convert to object { key: value }
-    const settingsObj = settings.reduce((acc, curr) => {
-      acc[curr.key] = curr.value;
-      return acc;
-    }, {} as Record<string, string>);
+    const settingsObj = settings.reduce(
+      (acc, curr) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      },
+      {} as Record<string, string>
+    );
     res.json(settingsObj);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch system settings' });
@@ -89,18 +99,18 @@ router.get('/system-settings', async (req, res) => {
 router.put('/system-settings', async (req, res) => {
   try {
     const updates = req.body; // e.g. { linkedinUrl: '...', twitterUrl: '...' }
-    
+
     // Process each key in the object and upsert
     for (const [key, value] of Object.entries(updates)) {
       if (typeof value === 'string') {
         await prisma.systemSettings.upsert({
           where: { key },
           update: { value },
-          create: { key, value }
+          create: { key, value },
         });
       }
     }
-    
+
     res.json({ message: 'Settings updated successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update system settings' });
@@ -128,8 +138,8 @@ router.post('/services', upload.single('image'), async (req, res) => {
       data: {
         title,
         description,
-        imageUrl
-      }
+        imageUrl,
+      },
     });
     res.json(service);
   } catch (error) {
@@ -147,7 +157,7 @@ router.put('/services/:id', upload.single('image'), async (req, res) => {
 
     const service = await prisma.serviceCard.update({
       where: { id: req.params.id },
-      data: updateData
+      data: updateData,
     });
     res.json(service);
   } catch (error) {
@@ -184,8 +194,8 @@ router.post('/testimonials', async (req, res) => {
         author,
         role,
         quote,
-        rating: parseInt(rating) || 5
-      }
+        rating: parseInt(rating) || 5,
+      },
     });
     res.json(testimonial);
   } catch (error) {
@@ -202,8 +212,8 @@ router.put('/testimonials/:id', async (req, res) => {
         author,
         role,
         quote,
-        rating: parseInt(rating) || 5
-      }
+        rating: parseInt(rating) || 5,
+      },
     });
     res.json(testimonial);
   } catch (error) {
@@ -225,7 +235,9 @@ router.delete('/testimonials/:id', async (req, res) => {
 // ==========================================
 router.get('/featured-solutions', async (req, res) => {
   try {
-    const solutions = await (prisma as any).featuredSolution.findMany({ orderBy: { createdAt: 'asc' } });
+    const solutions = await (prisma as any).featuredSolution.findMany({
+      orderBy: { createdAt: 'asc' },
+    });
     res.json(solutions);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch featured solutions' });
@@ -242,8 +254,8 @@ router.post('/featured-solutions', upload.single('image'), async (req, res) => {
         title,
         category,
         desc,
-        imageUrl
-      }
+        imageUrl,
+      },
     });
     res.json(solution);
   } catch (error) {
@@ -261,7 +273,7 @@ router.put('/featured-solutions/:id', upload.single('image'), async (req, res) =
 
     const solution = await (prisma as any).featuredSolution.update({
       where: { id: req.params.id },
-      data: updateData
+      data: updateData,
     });
     res.json(solution);
   } catch (error) {
@@ -278,13 +290,14 @@ router.delete('/featured-solutions/:id', async (req, res) => {
   }
 });
 
-
 // ==========================================
 // ENTERPRISE SOLUTIONS (Solutions Page)
 // ==========================================
 router.get('/enterprise-solutions', async (req, res) => {
   try {
-    const solutions = await (prisma as any).enterpriseSolution.findMany({ orderBy: { createdAt: 'asc' } });
+    const solutions = await (prisma as any).enterpriseSolution.findMany({
+      orderBy: { createdAt: 'asc' },
+    });
     res.json(solutions);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch enterprise solutions' });
@@ -295,7 +308,7 @@ router.post('/enterprise-solutions', async (req, res) => {
   try {
     const { title, category, desc, useCases, benefits, industries, flow } = req.body;
     const solution = await (prisma as any).enterpriseSolution.create({
-      data: { title, category, desc, useCases, benefits, industries, flow }
+      data: { title, category, desc, useCases, benefits, industries, flow },
     });
     res.json(solution);
   } catch (error) {
@@ -308,7 +321,7 @@ router.put('/enterprise-solutions/:id', async (req, res) => {
     const { title, category, desc, useCases, benefits, industries, flow } = req.body;
     const solution = await (prisma as any).enterpriseSolution.update({
       where: { id: req.params.id },
-      data: { title, category, desc, useCases, benefits, industries, flow }
+      data: { title, category, desc, useCases, benefits, industries, flow },
     });
     res.json(solution);
   } catch (error) {

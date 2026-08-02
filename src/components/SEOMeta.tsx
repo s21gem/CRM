@@ -9,7 +9,7 @@ interface SEOMetaProps {
 }
 
 export default function SEOMeta({ title, description, url, image }: SEOMetaProps) {
-  const siteName = "FoneBox Global Enterprise";
+  const siteName = 'FoneBox Global Enterprise';
   const fullTitle = `${title} | ${siteName}`;
 
   return (
@@ -35,16 +35,16 @@ export default function SEOMeta({ title, description, url, image }: SEOMetaProps
       {/* Structured Data (JSON-LD) for Organization */}
       <script type="application/ld+json">
         {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "name": siteName,
-          "url": url || "https://foneboxglobal.com",
-          "logo": "https://foneboxglobal.com/logo.png",
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+1-800-555-0199",
-            "contactType": "customer service"
-          }
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: siteName,
+          url: url || 'https://foneboxglobal.com',
+          logo: 'https://foneboxglobal.com/logo.png',
+          contactPoint: {
+            '@type': 'ContactPoint',
+            telephone: '+1-800-555-0199',
+            contactType: 'customer service',
+          },
         })}
       </script>
     </Helmet>

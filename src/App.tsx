@@ -4,7 +4,17 @@
  */
 
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Shield, Sparkles, X, CheckCircle, Server, Lock, Send, HelpCircle, Loader2 } from 'lucide-react';
+import {
+  Shield,
+  Sparkles,
+  X,
+  CheckCircle,
+  Server,
+  Lock,
+  Send,
+  HelpCircle,
+  Loader2,
+} from 'lucide-react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SearchModal from './components/SearchModal';
@@ -37,7 +47,17 @@ const ComponentLoader = () => (
 
 function PublicApp() {
   // Navigation & Aesthetic States
-  const [activeTab, setActiveTab] = useState<'home' | 'about' | 'services' | 'solutions' | 'industries' | 'security' | 'careers' | 'contact' | 'developer-spec'>('home');
+  const [activeTab, setActiveTab] = useState<
+    | 'home'
+    | 'about'
+    | 'services'
+    | 'solutions'
+    | 'industries'
+    | 'security'
+    | 'careers'
+    | 'contact'
+    | 'developer-spec'
+  >('home');
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isConsultationOpen, setIsConsultationOpen] = useState<boolean>(false);
@@ -59,10 +79,15 @@ function PublicApp() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/cms/settings`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000'))}/api/cms/settings`
+        );
         if (res.ok) {
           const data = await res.json();
-          if (data.logoUrl) setLogoUrl(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${data.logoUrl}`);
+          if (data.logoUrl)
+            setLogoUrl(
+              `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000'))}${data.logoUrl}`
+            );
           if (data.faviconUrl) {
             let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
             if (!link) {
@@ -70,17 +95,15 @@ function PublicApp() {
               link.rel = 'icon';
               document.head.appendChild(link);
             }
-            link.href = `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}${data.faviconUrl}`;
+            link.href = `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000'))}${data.faviconUrl}`;
           }
         }
       } catch (err) {
-        console.error("Failed to fetch settings", err);
+        console.error('Failed to fetch settings', err);
       }
     };
     fetchSettings();
   }, []);
-
-
 
   // Consultation Form States
   const [consultName, setConsultName] = useState('');
@@ -92,11 +115,19 @@ function PublicApp() {
   const handleConsultSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/crm/consultations`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: consultName, email: consultEmail, org: consultOrg, tier: consultTier }),
-      });
+      await fetch(
+        `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000'))}/api/crm/consultations`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: consultName,
+            email: consultEmail,
+            org: consultOrg,
+            tier: consultTier,
+          }),
+        }
+      );
       setConsultIsSubmitted(true);
     } catch (error) {
       console.error('Failed to submit consultation', error);
@@ -116,9 +147,6 @@ function PublicApp() {
 
   return (
     <div className="min-h-screen flex flex-col justify-between transition-colors duration-300 bg-slate-50 dark:bg-[#090D16] text-slate-900 dark:text-white selection:bg-blue-200 dark:selection:bg-blue-500/30 selection:text-blue-900 dark:selection:text-blue-200">
-      
-
-
       {/* Header Sticky Navigation */}
       <Header
         logoUrl={logoUrl}
@@ -135,23 +163,23 @@ function PublicApp() {
       <main className="flex-grow">
         <Suspense fallback={<ComponentLoader />}>
           {activeTab === 'home' && (
-            <Home 
-              isDarkMode={isDarkMode} 
-              setActiveTab={setActiveTab} 
-              onOpenConsultation={() => setIsConsultationOpen(true)} 
+            <Home
+              isDarkMode={isDarkMode}
+              setActiveTab={setActiveTab}
+              onOpenConsultation={() => setIsConsultationOpen(true)}
             />
           )}
           {activeTab === 'about' && <About />}
           {activeTab === 'services' && (
-            <Services 
-              isDarkMode={isDarkMode} 
-              onOpenConsultation={() => setIsConsultationOpen(true)} 
+            <Services
+              isDarkMode={isDarkMode}
+              onOpenConsultation={() => setIsConsultationOpen(true)}
             />
           )}
           {activeTab === 'solutions' && (
-            <Solutions 
-              isDarkMode={isDarkMode} 
-              onOpenConsultation={() => setIsConsultationOpen(true)} 
+            <Solutions
+              isDarkMode={isDarkMode}
+              onOpenConsultation={() => setIsConsultationOpen(true)}
             />
           )}
           {activeTab === 'industries' && <Industries />}
@@ -159,14 +187,10 @@ function PublicApp() {
           {activeTab === 'careers' && <Careers />}
           {activeTab === 'contact' && <Contact />}
         </Suspense>
-
       </main>
 
       {/* Premium Footer with Sitemap & Newsletter */}
-      <Footer 
-        isDarkMode={isDarkMode} 
-        setActiveTab={(tab: string) => setActiveTab(tab as any)} 
-      />
+      <Footer isDarkMode={isDarkMode} setActiveTab={(tab: string) => setActiveTab(tab as any)} />
 
       {/* Global Search Modal Overlay */}
       <SearchModal
@@ -176,9 +200,9 @@ function PublicApp() {
         isDarkMode={isDarkMode}
       />
 
-      <LoginModal 
-        isOpen={isLoginOpen} 
-        onClose={() => setIsLoginOpen(false)} 
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
         isDarkMode={isDarkMode}
       />
 
@@ -186,9 +210,9 @@ function PublicApp() {
       {isConsultationOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 md:p-20 flex justify-center items-center">
           {/* Backdrop */}
-          <div 
+          <div
             onClick={closeConsultModal}
-            className="fixed inset-0 bg-slate-950/75 backdrop-blur-sm transition-opacity" 
+            className="fixed inset-0 bg-slate-950/75 backdrop-blur-sm transition-opacity"
           />
 
           {/* Consultation Form Card */}
@@ -199,11 +223,15 @@ function PublicApp() {
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="text-[9px] font-mono tracking-widest text-blue-400 uppercase font-bold block">Sovereign Channels</span>
-                  <h3 className="font-display font-bold text-sm text-slate-900 dark:text-slate-100">Consultation Briefing Request</h3>
+                  <span className="text-[9px] font-mono tracking-widest text-blue-400 uppercase font-bold block">
+                    Sovereign Channels
+                  </span>
+                  <h3 className="font-display font-bold text-sm text-slate-900 dark:text-slate-100">
+                    Consultation Briefing Request
+                  </h3>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={closeConsultModal}
                 className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
               >
@@ -218,11 +246,20 @@ function PublicApp() {
                     <CheckCircle className="w-6 h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-display font-bold text-base text-slate-900 dark:text-white">Sovereign Ticket Registered</h4>
-                    <p className="text-slate-400 text-xs">Cryptographic tracking token: <span className="font-mono text-blue-400 font-bold">REQ-{Math.random().toString(36).substring(2, 8).toUpperCase()}</span></p>
+                    <h4 className="font-display font-bold text-base text-slate-900 dark:text-white">
+                      Sovereign Ticket Registered
+                    </h4>
+                    <p className="text-slate-400 text-xs">
+                      Cryptographic tracking token:{' '}
+                      <span className="font-mono text-blue-400 font-bold">
+                        REQ-{Math.random().toString(36).substring(2, 8).toUpperCase()}
+                      </span>
+                    </p>
                   </div>
                   <p className="text-slate-500 text-[11px] leading-relaxed max-w-sm mx-auto">
-                    Your executive consultation ticket has been hashed and queued inside our secure operations registry. A regional security architect or director of custom integrations will contact you within 12 hours via encrypted channel.
+                    Your executive consultation ticket has been hashed and queued inside our secure
+                    operations registry. A regional security architect or director of custom
+                    integrations will contact you within 12 hours via encrypted channel.
                   </p>
                   <button
                     onClick={closeConsultModal}
@@ -233,10 +270,11 @@ function PublicApp() {
                 </div>
               ) : (
                 <form onSubmit={handleConsultSubmit} className="space-y-4">
-                  
                   {/* Name */}
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Representative Name</label>
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">
+                      Representative Name
+                    </label>
                     <input
                       type="text"
                       required
@@ -249,7 +287,9 @@ function PublicApp() {
 
                   {/* Email */}
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Secure Contact Email</label>
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">
+                      Secure Contact Email
+                    </label>
                     <input
                       type="email"
                       required
@@ -262,7 +302,9 @@ function PublicApp() {
 
                   {/* Organization */}
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Government agency or Corporation</label>
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">
+                      Government agency or Corporation
+                    </label>
                     <input
                       type="text"
                       required
@@ -275,14 +317,18 @@ function PublicApp() {
 
                   {/* Consultation Category */}
                   <div className="space-y-1">
-                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">Sovereign Capability Required</label>
+                    <label className="text-[9px] font-mono text-slate-500 uppercase tracking-widest block font-bold">
+                      Sovereign Capability Required
+                    </label>
                     <select
                       value={consultTier}
                       onChange={(e) => setConsultTier(e.target.value)}
                       className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
                     >
                       <option value="gov-vetting">National e-Passport & Biometric Vetting</option>
-                      <option value="fintech-emv">Retail or Central Bank EMV Personalization</option>
+                      <option value="fintech-emv">
+                        Retail or Central Bank EMV Personalization
+                      </option>
                       <option value="zero-trust">Defense Networks & PKI Root CA Setup</option>
                       <option value="general-consult">Comprehensive Secure Audit Vetting</option>
                     </select>
@@ -296,7 +342,6 @@ function PublicApp() {
                       Transmit Consultation Briefing
                     </button>
                   </div>
-
                 </form>
               )}
             </div>
@@ -308,13 +353,18 @@ function PublicApp() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
 
 // Route protection helper
-function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole: string }) {
+function ProtectedRoute({
+  children,
+  allowedRole,
+}: {
+  children: React.ReactNode;
+  allowedRole: string;
+}) {
   const role = localStorage.getItem('crm_role');
   if (role !== allowedRole) {
     return <Navigate to="/" replace />;
@@ -329,18 +379,38 @@ export default function App() {
       <Suspense fallback={<ComponentLoader />}>
         <Routes>
           <Route path="/" element={<PublicApp />} />
-          <Route path="/admin" element={
-            <ProtectedRoute allowedRole="SUPER_ADMIN"><AdminPortal isDarkMode={isDarkMode} /></ProtectedRoute>
-          } />
-          <Route path="/crm" element={
-            <ProtectedRoute allowedRole="SALES_EXEC"><CRMPortal isDarkMode={isDarkMode} /></ProtectedRoute>
-          } />
-          <Route path="/client" element={
-            <ProtectedRoute allowedRole="CORPORATE_CLIENT"><ClientPortal isDarkMode={isDarkMode} /></ProtectedRoute>
-          } />
-          <Route path="/ops" element={
-            <ProtectedRoute allowedRole="OPERATIONS_OFFICER"><OpsPortal isDarkMode={isDarkMode} /></ProtectedRoute>
-          } />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRole="SUPER_ADMIN">
+                <AdminPortal isDarkMode={isDarkMode} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/crm"
+            element={
+              <ProtectedRoute allowedRole="SALES_EXEC">
+                <CRMPortal isDarkMode={isDarkMode} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/client"
+            element={
+              <ProtectedRoute allowedRole="CORPORATE_CLIENT">
+                <ClientPortal isDarkMode={isDarkMode} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ops"
+            element={
+              <ProtectedRoute allowedRole="OPERATIONS_OFFICER">
+                <OpsPortal isDarkMode={isDarkMode} />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Suspense>
       <ChatWidget />

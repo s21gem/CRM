@@ -4,7 +4,17 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Shield, Sun, Moon, Menu, X, Search, ChevronDown, ExternalLink, Laptop } from 'lucide-react';
+import {
+  Shield,
+  Sun,
+  Moon,
+  Menu,
+  X,
+  Search,
+  ChevronDown,
+  ExternalLink,
+  Laptop,
+} from 'lucide-react';
 
 interface HeaderProps {
   logoUrl: string;
@@ -25,7 +35,7 @@ export default function Header({
   setActiveTab,
   onOpenSearch,
   onOpenConsultation,
-  onEnterPortal
+  onEnterPortal,
 }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -45,7 +55,7 @@ export default function Header({
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'services', label: 'Services' },
-    { id: 'solutions', label: 'Solutions' }
+    { id: 'solutions', label: 'Solutions' },
   ];
 
   const handleNavClick = (id: string) => {
@@ -64,14 +74,17 @@ export default function Header({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-20">
-          
           {/* Logo Left */}
           <button
             onClick={() => handleNavClick('home')}
             className="tour-logo flex items-center gap-3 group focus:outline-none cursor-pointer"
           >
             <div className="flex items-center">
-              <img src={logoUrl} alt="FoneBox Logo" className="h-8 sm:h-10 object-contain bg-white/90 p-1 rounded-md" />
+              <img
+                src={logoUrl}
+                alt="FoneBox Logo"
+                className="h-8 sm:h-10 object-contain bg-white/90 p-1 rounded-md"
+              />
             </div>
           </button>
 
@@ -153,7 +166,6 @@ export default function Header({
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
-
         </div>
       </div>
 

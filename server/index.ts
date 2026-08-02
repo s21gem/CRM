@@ -22,15 +22,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-2026';
 
 // Cache System
 let redisClient: any = null;
-const memoryCache = new Map<string, { value: any, expiry: number }>();
+const memoryCache = new Map<string, { value: any; expiry: number }>();
 
 const initRedis = async () => {
   try {
-    const client = createClient({ 
+    const client = createClient({
       url: process.env.REDIS_URL || 'redis://localhost:6379',
       socket: {
-        reconnectStrategy: false
-      }
+        reconnectStrategy: false,
+      },
     });
     client.on('error', (err) => {
       // Suppress spam if it hasn't connected
@@ -58,13 +58,17 @@ export const cacheMiddleware = (durationSecs: number) => {
         const cached = memoryCache.get(key);
         if (cached && cached.expiry > Date.now()) return res.send(cached.value);
       }
-      
+
       const originalSend = res.send.bind(res);
       res.send = (body: any) => {
         if (redisClient) {
-          redisClient.setEx(key, durationSecs, typeof body === 'string' ? body : JSON.stringify(body));
+          redisClient.setEx(
+            key,
+            durationSecs,
+            typeof body === 'string' ? body : JSON.stringify(body)
+          );
         } else {
-          memoryCache.set(key, { value: body, expiry: Date.now() + (durationSecs * 1000) });
+          memoryCache.set(key, { value: body, expiry: Date.now() + durationSecs * 1000 });
         }
         return originalSend(body);
       };
@@ -95,18 +99,22 @@ const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5000;
 
 // Security and Rate Limiting
-app.use(helmet({
-  crossOriginResourcePolicy: false,
-  contentSecurityPolicy: false,
-}));
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false,
+  })
+);
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
-  message: { error: 'Too many requests from this IP, please try again later.' }
+  message: { error: 'Too many requests from this IP, please try again later.' },
 });
 
-const allowedOrigins = process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000'] : true;
+const allowedOrigins = process.env.FRONTEND_URL
+  ? [process.env.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:3000']
+  : true;
 app.use(cors({ origin: allowedOrigins, credentials: true })); // Enable cookies cross-origin
 app.use(express.json());
 app.use(cookieParser());
@@ -125,14 +133,16 @@ const seedUsers = async () => {
     { email: 'admin', password: 'admin', role: 'SUPER_ADMIN', name: 'System Administrator' },
     { email: 'sales', password: 'sales', role: 'SALES_EXEC', name: 'Sales Executive' },
     { email: 'ops', password: 'ops', role: 'OPERATIONS_OFFICER', name: 'Operations Officer' },
-    { email: 'client', password: 'client', role: 'CORPORATE_CLIENT', name: 'Corporate Client' }
+    { email: 'client', password: 'client', role: 'CORPORATE_CLIENT', name: 'Corporate Client' },
   ];
 
   for (const user of usersToSeed) {
     const exists = await prisma.user.findUnique({ where: { email: user.email } });
     if (!exists) {
       const hashedPassword = await bcrypt.hash(user.password, 10);
-      await prisma.user.create({ data: { ...user, password: hashedPassword, role: user.role as any } });
+      await prisma.user.create({
+        data: { ...user, password: hashedPassword, role: user.role as any },
+      });
       console.log(`User seeded (${user.email}) - Role: ${user.role}`);
     }
   }
@@ -166,16 +176,15 @@ const seedFeaturedSolutions = async () => {
           category: 'Critical Protection',
           desc: 'Robust cyber security integration protecting critical infrastructures with Zero Trust gateway micro-segmentation.',
           imageUrl: '/images/cybersecurity_infrastructure_1784515711400.png',
-        }
+        },
       ];
       await (prisma as any).featuredSolution.createMany({ data: featuredSolutions });
       console.log('Seeded Featured Solutions.');
     }
-  } catch(e) {
-    console.error("Seed error (featured solutions might not exist yet):", e);
+  } catch (e) {
+    console.error('Seed error (featured solutions might not exist yet):', e);
   }
 };
-
 
 const seedEnterpriseSolutions = async () => {
   try {
@@ -186,50 +195,112 @@ const seedEnterpriseSolutions = async () => {
           title: 'Electronic Passports (e-Passports)',
           category: 'Government Security',
           desc: 'National scale identity personalization and high-security chip programming conforming to ICAO Doc 9303 standards. Polycarbonate datasheets with Active & Passive chip authorization.',
-          useCases: JSON.stringify(['Immigration checkpoints', 'Airport security gates', 'Diplomatic clearance', 'Consulate applications']),
-          benefits: JSON.stringify(['100% clone proof smart RFID chip configuration', 'Under 3-second clearance timelines at secure e-Gates', 'Polycarbonate fusing prevents physical counterfeits']),
+          useCases: JSON.stringify([
+            'Immigration checkpoints',
+            'Airport security gates',
+            'Diplomatic clearance',
+            'Consulate applications',
+          ]),
+          benefits: JSON.stringify([
+            '100% clone proof smart RFID chip configuration',
+            'Under 3-second clearance timelines at secure e-Gates',
+            'Polycarbonate fusing prevents physical counterfeits',
+          ]),
           industries: JSON.stringify(['Government', 'Immigration', 'Defense']),
           flow: JSON.stringify([
-            { title: 'Biometric Enrollment', desc: 'Face & fingerprints captured via ISO/IEC 19794 compliance scanners.' },
-            { title: 'Deduplication Vetting', desc: '1:N biometric search inside secure central civilian databases.' },
-            { title: 'LDS Cryptography signing', desc: 'Logical Data Structure signed with CSCA Country Root Key in FIPS 140-3 HSM.' },
-            { title: 'Polycarbonate Laser Flash', desc: 'Laser engrave data-page & flash Smart chip simultaneously.' }
-          ])
+            {
+              title: 'Biometric Enrollment',
+              desc: 'Face & fingerprints captured via ISO/IEC 19794 compliance scanners.',
+            },
+            {
+              title: 'Deduplication Vetting',
+              desc: '1:N biometric search inside secure central civilian databases.',
+            },
+            {
+              title: 'LDS Cryptography signing',
+              desc: 'Logical Data Structure signed with CSCA Country Root Key in FIPS 140-3 HSM.',
+            },
+            {
+              title: 'Polycarbonate Laser Flash',
+              desc: 'Laser engrave data-page & flash Smart chip simultaneously.',
+            },
+          ]),
         },
         {
           title: 'Secure EMV Payment Cards',
           category: 'FinTech Customization',
           desc: 'High-speed payment card (EMV) customization pipelines. Features secure derived key exchange, contactless chip programming, and physical custom design personalizations.',
-          useCases: JSON.stringify(['Retail customer banking', 'Central bank reserves', 'Corporate high-balance cards', 'Government funding disbursals']),
-          benefits: JSON.stringify(['Derived EMV master keys (MDK, UDK) secure injection', 'PCI-DSS 4.0 certified localized vaults', 'Contactless smartcard dual-interface security']),
+          useCases: JSON.stringify([
+            'Retail customer banking',
+            'Central bank reserves',
+            'Corporate high-balance cards',
+            'Government funding disbursals',
+          ]),
+          benefits: JSON.stringify([
+            'Derived EMV master keys (MDK, UDK) secure injection',
+            'PCI-DSS 4.0 certified localized vaults',
+            'Contactless smartcard dual-interface security',
+          ]),
           industries: JSON.stringify(['Banking', 'Finance', 'Enterprise']),
           flow: JSON.stringify([
-            { title: 'PGP Encrypted ingest', desc: 'Bank cardholder parameters ingested over dedicated secure IPSec tunnel.' },
-            { title: 'Key derivation', desc: 'NIST derived master parameters mapped via dedicated HSM engines.' },
-            { title: 'Electrical injection', desc: 'Chip applets configured & EMV keys injected into smart processor.' },
-            { title: 'Visual customization', desc: 'Laser emboss metallic safety numbers and apply branding foils.' }
-          ])
+            {
+              title: 'PGP Encrypted ingest',
+              desc: 'Bank cardholder parameters ingested over dedicated secure IPSec tunnel.',
+            },
+            {
+              title: 'Key derivation',
+              desc: 'NIST derived master parameters mapped via dedicated HSM engines.',
+            },
+            {
+              title: 'Electrical injection',
+              desc: 'Chip applets configured & EMV keys injected into smart processor.',
+            },
+            {
+              title: 'Visual customization',
+              desc: 'Laser emboss metallic safety numbers and apply branding foils.',
+            },
+          ]),
         },
         {
           title: 'Electronic Visa Systems (e-Visa)',
           category: 'Borders & Consular',
           desc: 'Sovereign end-to-end digital visa application, adjudication workflow, and immediate border integration. Generates digitally signed QR Codes.',
-          useCases: JSON.stringify(['Consulate adjudication dashboards', 'Border verification API gateways', 'Consular visa registries']),
-          benefits: JSON.stringify(['Consular officers process requests in under 60 seconds', 'Automated watchlist vetting against local and Interpol systems', 'Digital signed tokens cannot be modified or forged']),
+          useCases: JSON.stringify([
+            'Consulate adjudication dashboards',
+            'Border verification API gateways',
+            'Consular visa registries',
+          ]),
+          benefits: JSON.stringify([
+            'Consular officers process requests in under 60 seconds',
+            'Automated watchlist vetting against local and Interpol systems',
+            'Digital signed tokens cannot be modified or forged',
+          ]),
           industries: JSON.stringify(['Government', 'Borders', 'Immigration']),
           flow: JSON.stringify([
-            { title: 'Application submission', desc: 'Sovereign portal ingests identity documentation and biodata.' },
-            { title: 'Watchlist vetting', desc: 'Queries security databases within milliseconds over secure bus.' },
-            { title: 'Adjudication audit', desc: 'Consular team reviews parameters and records final decision on log.' },
-            { title: 'Secure token issuance', desc: 'Generates digitally signed high-density JWS QR-code.' }
-          ])
-        }
+            {
+              title: 'Application submission',
+              desc: 'Sovereign portal ingests identity documentation and biodata.',
+            },
+            {
+              title: 'Watchlist vetting',
+              desc: 'Queries security databases within milliseconds over secure bus.',
+            },
+            {
+              title: 'Adjudication audit',
+              desc: 'Consular team reviews parameters and records final decision on log.',
+            },
+            {
+              title: 'Secure token issuance',
+              desc: 'Generates digitally signed high-density JWS QR-code.',
+            },
+          ]),
+        },
       ];
       await (prisma as any).enterpriseSolution.createMany({ data: enterpriseSolutions });
       console.log('Seeded Enterprise Solutions.');
     }
-  } catch(e) {
-    console.error("Seed error (enterprise solutions might not exist yet):", e);
+  } catch (e) {
+    console.error('Seed error (enterprise solutions might not exist yet):', e);
   }
 };
 
@@ -246,7 +317,7 @@ app.post('/api/crm/consultations', async (req, res) => {
     const consultation = await prisma.consultationRequest.create({
       data: { name, email, org, tier },
     });
-    
+
     // Convert consultation into a sales lead
     await prisma.lead.create({
       data: {
@@ -256,8 +327,8 @@ app.post('/api/crm/consultations', async (req, res) => {
         contactPerson: name,
         email: email,
         value: 0,
-        status: 'New'
-      }
+        status: 'New',
+      },
     });
 
     // Send confirmation email
@@ -288,7 +359,7 @@ app.post('/api/crm/consultations', async (req, res) => {
 app.get('/api/crm/consultations', authMiddleware, async (req, res) => {
   try {
     const consultations = await prisma.consultationRequest.findMany({
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
     res.json(consultations);
   } catch (error) {
@@ -302,14 +373,18 @@ app.post('/api/crm/subscribe', async (req, res) => {
     const { email } = req.body;
     const sub = await (prisma as any).newsletterSubscriber.create({ data: { email } });
     res.json(sub);
-  } catch (e) { res.status(500).json({ error: 'Subscription failed' }); }
+  } catch (e) {
+    res.status(500).json({ error: 'Subscription failed' });
+  }
 });
 
 app.post('/api/crm/demo-request', async (req, res) => {
   try {
     const { email, solution, name, org } = req.body;
-    const demo = await (prisma as any).demoRequest.create({ data: { email: email || 'unknown', solution } });
-    
+    const demo = await (prisma as any).demoRequest.create({
+      data: { email: email || 'unknown', solution },
+    });
+
     // Convert demo request into a sales lead
     await prisma.lead.create({
       data: {
@@ -319,8 +394,8 @@ app.post('/api/crm/demo-request', async (req, res) => {
         contactPerson: name || 'Pending',
         email: email,
         value: 0,
-        status: 'New'
-      }
+        status: 'New',
+      },
     });
 
     // Send email notification
@@ -341,16 +416,18 @@ app.post('/api/crm/demo-request', async (req, res) => {
     } catch (emailErr) {
       console.error('Failed to send demo email:', emailErr);
     }
-    
+
     res.json(demo);
-  } catch (e) { res.status(500).json({ error: 'Demo request failed' }); }
+  } catch (e) {
+    res.status(500).json({ error: 'Demo request failed' });
+  }
 });
 
 app.post('/api/crm/security-vetting', async (req, res) => {
   try {
     const { name, company, email } = req.body;
-    const vetting = await (prisma as any).securityVettingRequest.create({ 
-      data: { company: company || 'unknown', email: email || 'unknown' } 
+    const vetting = await (prisma as any).securityVettingRequest.create({
+      data: { company: company || 'unknown', email: email || 'unknown' },
     });
 
     // Convert vetting request into a sales lead
@@ -362,8 +439,8 @@ app.post('/api/crm/security-vetting', async (req, res) => {
         contactPerson: name || 'Pending',
         email: email || 'unknown',
         value: 0,
-        status: 'New'
-      }
+        status: 'New',
+      },
     });
 
     // Send email notification
@@ -386,37 +463,45 @@ app.post('/api/crm/security-vetting', async (req, res) => {
     }
 
     res.json(vetting);
-  } catch (e) { res.status(500).json({ error: 'Vetting request failed' }); }
+  } catch (e) {
+    res.status(500).json({ error: 'Vetting request failed' });
+  }
 });
 
 import multer from 'multer';
-const uploadResume = multer({ dest: path.join(process.cwd(), 'server', 'public', 'uploads', 'resumes') });
+const uploadResume = multer({
+  dest: path.join(process.cwd(), 'server', 'public', 'uploads', 'resumes'),
+});
 app.post('/api/crm/job-application', uploadResume.single('resume'), async (req, res) => {
   try {
     const { name, email, role } = req.body;
     const resumeUrl = req.file ? `/uploads/resumes/${req.file.filename}` : '';
     const application = await (prisma as any).jobApplication.create({
-      data: { name, email, role, resumeUrl }
+      data: { name, email, role, resumeUrl },
     });
-    
+
     // Send email notification
     await sendEmail(
       email,
       'FoneBox Application Received',
       `Dear ${name},\n\nWe have received your application for the ${role} position. Your resume has been securely stored. Our HR command will review and contact you.`
     );
-    
+
     res.json(application);
-  } catch (e) { res.status(500).json({ error: 'Application failed' }); }
+  } catch (e) {
+    res.status(500).json({ error: 'Application failed' });
+  }
 });
 
 // Portals data
 app.get('/api/portals/stats', async (req, res) => {
   try {
     const totalConsultations = await prisma.consultationRequest.count();
-    const pendingConsultations = await prisma.consultationRequest.count({ where: { status: 'PENDING' }});
+    const pendingConsultations = await prisma.consultationRequest.count({
+      where: { status: 'PENDING' },
+    });
     const totalUsers = await prisma.user.count();
-    
+
     res.json({
       totalConsultations,
       pendingConsultations,
@@ -448,8 +533,8 @@ const server = app.listen(PORT, () => {
 const io = new SocketIOServer(server, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST']
-  }
+    methods: ['GET', 'POST'],
+  },
 });
 
 app.set('io', io);
@@ -466,22 +551,21 @@ io.on('connection', (socket) => {
     try {
       const { sessionId, content, senderType } = data;
       const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
+
       const message = await prisma.chatMessage.create({
         data: {
           sessionId,
           content,
           senderType,
-          timestamp
-        }
+          timestamp,
+        },
       });
 
       // Broadcast to room
       io.to(sessionId).emit('receive_message', message);
-      
+
       // Also notify operations team globally if they are in the 'operations_room'
       io.to('operations_room').emit('new_chat_message', { sessionId, message });
-
     } catch (e) {
       console.error('[SOCKET] Error sending message:', e);
     }

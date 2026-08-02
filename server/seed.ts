@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import { 
-  ORGANIZATIONS, 
-  CONTACTS, 
-  LEADS, 
-  OPPORTUNITIES, 
+import {
+  ORGANIZATIONS,
+  CONTACTS,
+  LEADS,
+  OPPORTUNITIES,
   CRM_MEETINGS,
   PROJECTS,
   SUPPORT_CASES,
@@ -11,7 +11,7 @@ import {
   API_KEYS,
   INITIAL_AUDIT_LOGS,
   ANNOUNCEMENTS,
-  KNOWLEDGE_BASE_ARTICLES
+  KNOWLEDGE_BASE_ARTICLES,
 } from '../src/components/portals/portalData';
 
 const prisma = new PrismaClient();
@@ -31,8 +31,8 @@ async function main() {
         status: org.status,
         assignedManager: org.assignedManager,
         contactCount: org.contactCount,
-        totalDealValue: org.totalDealValue
-      }
+        totalDealValue: org.totalDealValue,
+      },
     });
   }
   console.log('Organizations seeded');
@@ -49,8 +49,8 @@ async function main() {
         email: contact.email,
         phone: contact.phone,
         clearanceLevel: contact.clearanceLevel,
-        status: contact.status
-      }
+        status: contact.status,
+      },
     });
   }
   console.log('Contacts seeded');
@@ -69,8 +69,8 @@ async function main() {
         status: lead.status,
         confidence: lead.confidence,
         source: lead.source,
-        createdDate: lead.createdDate
-      }
+        createdDate: lead.createdDate,
+      },
     });
   }
   console.log('Leads seeded');
@@ -88,8 +88,8 @@ async function main() {
         probability: opp.probability,
         closeDate: opp.closeDate,
         leadSource: opp.leadSource,
-        lastUpdated: opp.lastUpdated
-      }
+        lastUpdated: opp.lastUpdated,
+      },
     });
   }
   console.log('Opportunities seeded');
@@ -105,8 +105,8 @@ async function main() {
         orgName: meeting.orgName,
         location: meeting.location,
         status: meeting.status,
-        attendees: meeting.attendees.join(', ')
-      }
+        attendees: meeting.attendees.join(', '),
+      },
     });
   }
   console.log('Meetings seeded');
@@ -127,8 +127,8 @@ async function main() {
         targetDate: project.targetDate,
         completionPercentage: project.completionPercentage,
         securityLevel: project.securityLevel,
-        milestones: JSON.stringify(project.milestones)
-      }
+        milestones: JSON.stringify(project.milestones),
+      },
     });
   }
   console.log('Projects seeded');
@@ -145,8 +145,8 @@ async function main() {
         assignedTo: c.assignedTo,
         category: c.category,
         createdDate: c.createdDate,
-        updatedDate: c.updatedDate
-      }
+        updatedDate: c.updatedDate,
+      },
     });
   }
   console.log('Support Cases seeded');
@@ -163,8 +163,8 @@ async function main() {
         dueDate: inv.dueDate,
         status: inv.status,
         paymentMethod: inv.paymentMethod,
-        transactionHash: inv.transactionHash
-      }
+        transactionHash: inv.transactionHash,
+      },
     });
   }
   console.log('Invoices seeded');
@@ -180,8 +180,8 @@ async function main() {
         status: key.status,
         createdDate: key.createdDate,
         expiryDate: key.expiryDate,
-        callsCount: key.callsCount
-      }
+        callsCount: key.callsCount,
+      },
     });
   }
   console.log('API Keys seeded');
@@ -195,8 +195,8 @@ async function main() {
         actor: log.actor,
         action: log.action,
         status: log.status,
-        payload: log.payload
-      }
+        payload: log.payload,
+      },
     });
   }
   console.log('Audit Logs seeded');
@@ -209,8 +209,8 @@ async function main() {
         title: ann.title,
         date: ann.date,
         category: ann.category,
-        content: ann.content
-      }
+        content: ann.content,
+      },
     });
   }
   console.log('Announcements seeded');
@@ -223,8 +223,8 @@ async function main() {
         title: kb.title,
         category: kb.category,
         rating: kb.rating,
-        views: kb.views
-      }
+        views: kb.views,
+      },
     });
   }
   console.log('Knowledge Base seeded');

@@ -5,7 +5,7 @@ import ClientPortalModule from './ClientPortalModule';
 
 export default function ClientPortal({ isDarkMode }: { isDarkMode: boolean }) {
   return (
-    <SharedPortalLayout 
+    <SharedPortalLayout
       isDarkMode={isDarkMode}
       roleName="CORPORATE_CLIENT"
       portalTitle="Sovereign Ecosystem"

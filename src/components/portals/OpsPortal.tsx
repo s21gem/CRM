@@ -5,7 +5,7 @@ import OperationsModule from './OperationsModule';
 
 export default function OpsPortal({ isDarkMode }: { isDarkMode: boolean }) {
   return (
-    <SharedPortalLayout 
+    <SharedPortalLayout
       isDarkMode={isDarkMode}
       roleName="OPERATIONS_OFFICER"
       portalTitle="Sovereign Ecosystem"

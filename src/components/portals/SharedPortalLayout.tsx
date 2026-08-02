@@ -1,14 +1,6 @@
-import React, { useState } from "react";
-import {
-  Shield,
-  ArrowLeft,
-  Search,
-  Bell,
-  ChevronDown,
-  Menu,
-  X
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { Shield, ArrowLeft, Search, Bell, ChevronDown, Menu, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface SharedPortalLayoutProps {
   isDarkMode: boolean;
@@ -23,7 +15,7 @@ export default function SharedPortalLayout({
   roleName,
   portalTitle,
   sidebarItems,
-  children
+  children,
 }: SharedPortalLayoutProps) {
   const navigate = useNavigate();
   const [showNotificationDrawer, setShowNotificationDrawer] = useState(false);
@@ -31,8 +23,11 @@ export default function SharedPortalLayout({
 
   const handleExit = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000')))}/api/auth/logout`, { method: 'POST', credentials: 'include' });
-    } catch(e) {}
+      await fetch(
+        `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000'))}/api/auth/logout`,
+        { method: 'POST', credentials: 'include' }
+      );
+    } catch (e) {}
     localStorage.removeItem('crm_role');
     navigate('/');
   };
@@ -55,12 +50,12 @@ export default function SharedPortalLayout({
             <ArrowLeft className="w-3.5 h-3.5" />
             Logout & Exit
           </button>
-          
+
           <button
             onClick={handleExit}
             className="sm:hidden p-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
           >
-             <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" />
           </button>
 
           <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800 hidden sm:block"></div>
@@ -101,7 +96,9 @@ export default function SharedPortalLayout({
                     System Notifications
                   </span>
                 </div>
-                <div className="p-4 text-xs text-slate-600 dark:text-slate-500 text-center">No new alerts.</div>
+                <div className="p-4 text-xs text-slate-600 dark:text-slate-500 text-center">
+                  No new alerts.
+                </div>
               </div>
             )}
           </div>
@@ -120,15 +117,24 @@ export default function SharedPortalLayout({
       {/* Mobile Sidebar Overlay */}
       {isMobileSidebarOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setIsMobileSidebarOpen(false)} />
+          <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
           <div className="relative w-64 max-w-sm h-full bg-white dark:bg-[#0B132B] border-r border-slate-200 dark:border-slate-800 flex flex-col animate-slide-in">
             <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
               <span className="font-bold text-slate-900 dark:text-white">{portalTitle}</span>
-              <button onClick={() => setIsMobileSidebarOpen(false)} className="p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
+              <button
+                onClick={() => setIsMobileSidebarOpen(false)}
+                className="p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-4 overflow-y-auto flex-1 space-y-1.5" onClick={() => setIsMobileSidebarOpen(false)}>
+            <div
+              className="p-4 overflow-y-auto flex-1 space-y-1.5"
+              onClick={() => setIsMobileSidebarOpen(false)}
+            >
               {sidebarItems}
             </div>
           </div>
@@ -147,9 +153,7 @@ export default function SharedPortalLayout({
                 {portalTitle}
               </h4>
             </div>
-            <nav className="space-y-1.5">
-              {sidebarItems}
-            </nav>
+            <nav className="space-y-1.5">{sidebarItems}</nav>
           </div>
         </aside>
 
