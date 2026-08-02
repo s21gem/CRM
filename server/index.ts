@@ -16,6 +16,7 @@ import compression from 'compression';
 import { createClient } from 'redis';
 import { Server as SocketIOServer } from 'socket.io';
 import chatRoutes from './routes/chatRoutes';
+import authRoutes from './routes/authRoutes';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-2026';
 
@@ -115,6 +116,7 @@ app.use('/api/', apiLimiter);
 app.use('/api/crm', crmRoutes);
 app.use('/api/cms', cacheMiddleware(60), cmsRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/uploads', express.static(path.join(process.cwd(), 'server', 'public', 'uploads')));
 
 // Seed Admin and Demo Users
@@ -235,46 +237,7 @@ seedUsers();
 seedFeaturedSolutions();
 seedEnterpriseSolutions();
 
-// Auth routes (mocked for now)
-app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (user && await bcrypt.compare(password, user.password)) {
-      const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
-      
-      // Set HttpOnly secure cookie
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      });
-
-      res.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department } });
-    } else {
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Verify Auth State
-app.get('/api/auth/me', authMiddleware, async (req: any, res: any) => {
-  try {
-    const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json({ user: { id: user.id, name: user.name, email: user.email, role: user.role, department: user.department } });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-app.post('/api/auth/logout', (req, res) => {
-  res.clearCookie('token');
-  res.json({ success: true });
-});
+// Auth routes have been refactored to server/routes/authRoutes.ts
 
 // CRM Consultations
 app.post('/api/crm/consultations', async (req, res) => {

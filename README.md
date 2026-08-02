@@ -8,71 +8,126 @@
 
 ## 🌟 Total Project Overview
 
-The **FoneBox Enterprise ICT Solutions Platform** is a world-class, enterprise-grade Information and Communication Technology (ICT) platform. Engineered from the ground up to support national-level infrastructure, border control operations, and international fintech institutions, this platform serves as both a high-conversion public corporate portal and a comprehensive internal operations command center.
+The **FoneBox Enterprise ICT Solutions Platform** is a world-class, enterprise-grade Information and Communication Technology (ICT) platform. Engineered from the ground up to support national-level infrastructure, border control operations, and international fintech institutions.
 
-The architecture strictly adheres to a **Role-Based Access Control (RBAC)** model, offering five distinct, highly-secured portals interconnected via a central PostgreSQL database and an encrypted REST API.
-
----
-
-## 🚀 Key Benefits & Value Proposition
-
-- **Sovereign Data Security:** Built for defense-grade security, featuring zero-trust authentication, JWT rotation via secure HTTP-only cookies, and bcrypt password hashing to align with FIPS 140-3 protocols.
-- **Unified Enterprise Management:** Combines public lead generation (consultations, demo requests, vetting) directly into an internal CRM, removing the need for fragmented 3rd-party tools.
-- **Client Transparency:** Empowers corporate clients with a self-service portal to track project milestones, download PDF invoices, and raise end-to-end encrypted support cases.
-- **High-Performance Delivery:** Optimized with Vite, React code-splitting, automated WebP/AVIF image generation, and Brotli compression for sub-second load times globally.
-- **Seamless Scalability:** Node.js backend configured for PM2 clustering, ready for Traefik load balancing and Kubernetes deployment with `/health` probes.
+This repository contains the full monorepo source code for both the frontend client portals and the backend REST API, utilizing a strict **Role-Based Access Control (RBAC)** model.
 
 ---
 
-## 📸 System Portals & Facilities
+## 🏗️ System Architecture
 
-### 1. Public Corporate Portal
-The public-facing website acts as the primary acquisition channel, featuring a sleek, hardware-accelerated UI (Framer Motion).
-- **Dynamic Content:** Showcasing E-Passports, Secure Bank Cards, and Electronic Visas.
-- **Lead Capture:** Fully functional modal workflows for "Request Consultation", "Request Product Demo", and "Security Audit Vetting" routing directly to the internal CRM pipeline.
-- **Responsive Design:** Premium mobile-first UX with customized horizontal scrolling for complex datasets.
+The system is built on a modern, robust, and horizontally scalable architecture.
 
-![Public Corporate Portal](docs/public_corporate_portal.png)
+```mermaid
+graph TD
+    Client[Web Client - React/Vite] -->|HTTPS/REST| Gateway(API Gateway/Rate Limiter)
+    Client -->|WSS| SocketIO(Socket.io Real-time Bus)
+    
+    Gateway --> Auth[Auth Middleware]
+    Auth --> Cache[(Redis Cache)]
+    
+    Cache -- Cache Miss --> API[Express.js Node Server]
+    API --> Controller[Domain Controllers]
+    
+    Controller --> Prisma[Prisma ORM]
+    Prisma --> DB[(PostgreSQL Database)]
+    
+    SocketIO --> API
+```
 
-### 2. Super Admin Command Center (`/admin`)
-Absolute root-level control over the entire platform ecosystem.
-- **User Provisioning:** Securely manage active personnel, adjust security clearances, and revoke access instantly.
-- **System Audit Logs:** Immutable tracking of all sensitive actions across the platform.
-- **CMS Management:** Dynamically control public-facing site elements, social links, and security environments.
-
-![Super Admin Dashboard](docs/super_admin_dashboard.png)
-
-### 3. CRM & Sales Portal (`/crm`)
-Built for Sales Executives to track the complete enterprise lifecycle.
-- **Lead Pipeline:** Centralized dashboard to track inbound requests, vetting applications, and demos.
-- **Invoice Generation:** Tooling to automatically generate and dispatch professional, cryptographically stamped PDF invoices.
-- **Organization Management:** Maintain deep records of national and corporate clients and key stakeholders.
-
-![CRM Sales Portal](docs/crm_sales_portal.png)
-
-### 4. Operations Command Center (`/ops`)
-For SOC Analysts and Operations Officers managing physical and digital infrastructure.
-- **Project Tracking:** Monitor high-stakes deployments, budget utilization, and milestone completion.
-- **Support Command:** Process and resolve incoming support cases with severity tagging.
-- **Threat Intelligence:** Real-time visibility into active nodes and infrastructure health.
-
-![Operations Command Center](docs/operations_command_center.png)
-
-### 5. Client Self-Service Portal (`/client`)
-- **Infrastructure Tracking:** Corporate clients can log in to securely track ongoing deployments.
-- **Invoice Vault:** Secure viewing and downloading of outstanding invoices.
-- **End-to-End Ticketing:** Direct communication line to the SOC and Operations teams.
-
-![Client Self-Service Portal](docs/client_portal.png)
+### Key Design Decisions
+1. **Frontend:** React 19 + TypeScript + Vite. Optimized with `vite-plugin-image-optimizer` and `brotliCompress` for sub-second delivery. UI is heavily stylized using Tailwind CSS 4.x and Framer Motion.
+2. **Backend:** Express.js running on Node.js. Compiled to pure JavaScript via `tsc` in production for minimal memory footprint and fast startup times.
+3. **Security:** JWT authentication via strict `HttpOnly`, `Secure`, `SameSite=strict` cookies. Bcrypt for password hashing. Rate limiting and Helmet.js for API hardening.
+4. **Caching:** Redis is used for high-speed read operations on CMS routes (`/api/cms`) and websocket state management.
+5. **Database:** PostgreSQL accessed via Prisma ORM for type-safe database queries and migrations.
 
 ---
 
-## 🛡️ Tech Stack
+## 🚀 Getting Started (Local Development)
 
-- **Frontend:** React, TypeScript, Vite, Tailwind CSS, Lucide Icons, Framer Motion
-- **Backend:** Node.js, Express.js, TypeScript
-- **Database:** PostgreSQL (via Prisma ORM)
-- **Deployment:** PM2 Process Manager, Automated Git webhooks, VPS Server Deployment (`fixVPS.ts`)
+### Prerequisites
+- Node.js (v18+)
+- PostgreSQL (v14+)
+- Redis (Optional, falls back to memory cache)
+- npm or yarn
+
+### Environment Setup
+Create a `.env` file in the root directory:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/fonebox_db"
+JWT_SECRET="your-super-secret-jwt-key"
+PORT=5000
+REDIS_URL="redis://localhost:6379"
+FRONTEND_URL="http://localhost:3000"
+```
+
+### Installation
+```bash
+# Install all dependencies (Frontend & Backend)
+npm install
+
+# Generate Prisma Client
+npx prisma generate
+
+# Push DB schema and seed data
+npx prisma db push
+```
+
+### Running Locally
+```bash
+# Start both frontend (Vite) and backend (tsx) concurrently
+npm run dev
+```
+
+---
+
+## 🧪 Testing & Code Quality
+
+This repository adheres to strict engineering standards.
+
+```bash
+# Run unit tests (Vitest + React Testing Library)
+npm run test
+
+# Run code linting (ESLint)
+npm run lint
+
+# Format code (Prettier)
+npm run format
+```
+*Note: Pre-commit hooks via Husky and lint-staged ensure that only passing code is committed.*
+
+---
+
+## 📦 Deployment (Production)
+
+The application is fully containerized for deployment via Docker or Kubernetes.
+
+### Docker Setup
+```bash
+# Build the production image
+docker build -t fonebox-enterprise:latest .
+
+# Run the container
+docker run -p 5000:5000 --env-file .env fonebox-enterprise:latest
+```
+
+### CI/CD Pipeline
+Continuous Integration is configured via GitHub Actions (`.github/workflows/deploy.yml`).
+- **Triggers:** Push or Pull Request to `main`.
+- **Pipeline:** Installs dependencies -> Generates Prisma Client -> Builds Frontend -> Runs ESLint -> Runs Vitest.
+
+---
+
+## 🗺️ Technical Roadmap & Future Enhancements
+
+As part of our commitment to continuous architectural improvement, the following enhancements are prioritized:
+
+1. **E2E Testing:** Implementation of Playwright for end-to-end integration testing across all 5 portals.
+2. **Kubernetes Orchestration:** Migration from PM2 clustering to full K8s deployment with readiness/liveness probes.
+3. **GraphQL Migration:** Transitioning complex nested analytical queries from REST to GraphQL for the SOC Dashboard.
+4. **Zero-Trust Network:** Implementing Mutual TLS (mTLS) between the Node.js backend and the PostgreSQL database.
 
 ---
 *Property of FoneBox Global Intelligence. Unauthorized access to the secure portals is strictly prohibited and logged.*
