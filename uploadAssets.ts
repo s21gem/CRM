@@ -1,4 +1,5 @@
 import { Client } from 'ssh2';
+import 'dotenv/config';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -53,8 +54,8 @@ conn.on('ready', () => {
     }
   });
 }).connect({
-  host: '72.60.202.195',
+  host: process.env.VPS_HOST || '72.60.202.195',
   port: 22,
-  username: 'root',
-  password: 'LumasTowfiq@456'
+  username: process.env.VPS_USER || 'root',
+  password: process.env.VPS_PASSWORD
 });
