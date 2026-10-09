@@ -69,7 +69,7 @@ conn.on('ready', async () => {
     conn.end();
   }
 }).connect({
-  host: process.env.VPS_HOST || '72.60.202.195',
+  host: process.env.VPS_HOST,
   port: 22,
   username: process.env.VPS_USER || 'root',
   password: process.env.VPS_PASSWORD
